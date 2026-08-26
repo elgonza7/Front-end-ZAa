@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ZeroAutoapp — Frontend
 
 Panel web para ZeroAutoapp (SaaS de asistentes de WhatsApp con IA para
@@ -171,7 +170,3 @@ No hay guard de rutas todavía (los mocks aceptan cualquier email/contraseña;
 un email que contiene "admin" simula el rol admin). Cuando el backend emita
 JWTs con un claim de rol, agregar un `RequireAuth`/`RequireRole` wrapper en
 `App.jsx` alrededor de `/dashboard` y `/admin` es el siguiente paso natural.
-=======
-# ZeroAutoapp
-Proyecto IA Whatsapp
->>>>>>> 89dccaa7f0e3b44981130e5023237b5590d7a507
