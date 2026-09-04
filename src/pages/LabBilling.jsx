@@ -88,17 +88,28 @@ function CopyField({ label, value }) {
 export default function LabBilling() {
   const [billing, setBilling] = useState(null)
   const [destination, setDestination] = useState(null)
+  const [error, setError] = useState('')
   const [checkingOut, setCheckingOut] = useState(false)
   const [updatingAutoRenew, setUpdatingAutoRenew] = useState(false)
   const [transferReference, setTransferReference] = useState('')
   const [reportingTransfer, setReportingTransfer] = useState(false)
 
   useEffect(() => {
-    Promise.all([getLabBilling(), getPlatformBillingDestination()]).then(([billingData, destinationData]) => {
-      setBilling(billingData)
-      setDestination(destinationData)
-    })
+    Promise.all([getLabBilling(), getPlatformBillingDestination()])
+      .then(([billingData, destinationData]) => {
+        setBilling(billingData)
+        setDestination(destinationData)
+      })
+      .catch((err) => setError(err.message || 'No se pudo cargar la facturación.'))
   }, [])
+
+  if (error) {
+    return (
+      <LabLayout title="Facturación" userLabel="Error">
+        <div className="flex h-64 items-center justify-center text-sm text-red-400">{error}</div>
+      </LabLayout>
+    )
+  }
 
   async function handleCheckout() {
     setCheckingOut(true)

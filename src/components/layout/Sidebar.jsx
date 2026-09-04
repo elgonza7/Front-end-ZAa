@@ -61,7 +61,10 @@ export default function Sidebar({ items, open, onClose }) {
         </nav>
 
         <div className="border-t border-[#30363d] px-5 py-4">
-          <p className="text-xs text-[#8b949e]">© {new Date().getFullYear()} ZeroAutoapp</p>
+          <Link to="/legal#terminos" className="text-xs text-[#8b949e] transition-colors hover:text-white">
+            Términos y condiciones
+          </Link>
+          <p className="mt-2 text-xs text-[#8b949e]">© {new Date().getFullYear()} ZeroAutoapp</p>
         </div>
       </aside>
     </>

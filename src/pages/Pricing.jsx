@@ -1,10 +1,81 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, ArrowRight, CreditCard, Landmark } from 'lucide-react'
+import { Check, ArrowRight, CreditCard, Landmark, Calculator } from 'lucide-react'
 import LandingNavbar from '../components/layout/LandingNavbar.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Card from '../components/ui/Card.jsx'
 import Button from '../components/ui/Button.jsx'
 import { PLAN_PRICING } from '../lib/pricing.js'
+
+// Estimación para recomendar un plan según cuántos pacientes por día
+// escriben por WhatsApp: ~150 tokens promedio por conversación completa,
+// contactos/día × 30 días × 150 tokens, comparado contra el cupo de cada
+// plan. Es una guía, no una promesa exacta — el consumo real depende de
+// cuán largas son las conversaciones de cada laboratorio.
+const TOKENS_PER_CONTACT_ESTIMATE = 150
+const CALCULATOR_MAX_CONTACTS = 30
+
+function recommendPlan(dailyContacts) {
+  if (dailyContacts <= 5) return 'Básico'
+  if (dailyContacts <= 12) return 'Profesional'
+  return 'Premium'
+}
+
+function PlanCalculator() {
+  const [dailyContacts, setDailyContacts] = useState(5)
+  const recommended = recommendPlan(dailyContacts)
+  const estimatedTokens = dailyContacts * 30 * TOKENS_PER_CONTACT_ESTIMATE
+
+  return (
+    <Card className="p-6">
+      <div className="flex items-center gap-2">
+        <Calculator size={16} className="text-[#F8B500]" />
+        <h2 className="text-base font-bold text-white">¿No sabés qué plan te conviene?</h2>
+      </div>
+      <p className="mt-2 text-xs text-[#8b949e]">
+        Contanos más o menos cuántos pacientes distintos te escriben por WhatsApp por día y te
+        decimos qué plan te alcanza sin quedarte corto.
+      </p>
+
+      <div className="mt-5">
+        <div className="flex items-center justify-between text-sm text-white">
+          <span>Pacientes que te contactan por día</span>
+          <span className="font-bold text-[#F8B500]">
+            {dailyContacts}
+            {dailyContacts === CALCULATOR_MAX_CONTACTS ? '+' : ''}
+          </span>
+        </div>
+        <input
+          type="range"
+          min={1}
+          max={CALCULATOR_MAX_CONTACTS}
+          value={dailyContacts}
+          onChange={(event) => setDailyContacts(Number(event.target.value))}
+          className="mt-3 w-full accent-[#F8B500]"
+        />
+        <div className="mt-1 flex justify-between text-[10px] text-[#8b949e]">
+          <span>1</span>
+          <span>{CALCULATOR_MAX_CONTACTS}+</span>
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-xl border border-[#F8B500]/30 bg-[#F8B500]/5 p-4">
+        <p className="text-xs text-[#8b949e]">Plan recomendado</p>
+        <p className="mt-1 text-lg font-bold text-white">{recommended}</p>
+        <p className="mt-1 text-xs text-[#8b949e]">
+          Con ~{estimatedTokens.toLocaleString()} tokens estimados por mes, entra dentro del cupo
+          de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} tokens de {recommended}.
+        </p>
+      </div>
+
+      <p className="mt-3 text-[11px] text-[#8b949e]">
+        Es una estimación (varía según cuán largas sean las conversaciones). Si en algún mes te
+        pasás del cupo de tu plan, el asistente no se corta — el excedente se cobra aparte, a un
+        precio por cada 1.000 tokens extra.
+      </p>
+    </Card>
+  )
+}
 
 const PLAN_FEATURES = {
   Básico: [
@@ -92,6 +163,10 @@ export default function Pricing() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-2xl px-6 pb-16">
+        <PlanCalculator />
+      </section>
+
       <section className="mx-auto max-w-4xl px-6 pb-16">
         <Card className="p-6">
           <h2 className="text-base font-bold text-white">¿Cómo funciona el pago?</h2>
@@ -127,6 +202,10 @@ export default function Pricing() {
           <p className="mt-5 text-xs text-[#8b949e]">
             ¿Tenés más de un laboratorio? El 2° laboratorio del mismo dueño tiene 15% de descuento
             y el 3° en adelante, 25% — se gestiona desde el panel de Facturación.
+          </p>
+          <p className="mt-3 text-xs text-[#8b949e]">
+            ¿Y si me paso de los tokens de mi plan? El asistente sigue funcionando sin cortes — el
+            excedente se cobra aparte, a un precio por cada 1.000 tokens de más que uses ese mes.
           </p>
         </Card>
       </section>

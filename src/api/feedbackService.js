@@ -1,7 +1,7 @@
 import { apiFetch, mockDelay } from './client.js'
 import { mockFeedback } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once the /api/*/feedback endpoints exist
+const USE_MOCKS = false // flip to false once the /api/*/feedback endpoints exist
 
 let feedbackState = mockFeedback.map((item) => ({ ...item }))
 

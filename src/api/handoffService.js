@@ -1,7 +1,7 @@
 import { apiFetch, mockDelay } from './client.js'
 import { mockHandoffQueue } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once the /api/lab/handoff endpoints exist
+const USE_MOCKS = false // flip to false once the /api/lab/handoff endpoints exist
 
 let queueState = [...mockHandoffQueue]
 

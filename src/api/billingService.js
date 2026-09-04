@@ -1,7 +1,7 @@
 import { apiFetch, mockDelay } from './client.js'
 import { mockLabBilling, mockPlatformBilling } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once the /api/lab/billing endpoints exist
+const USE_MOCKS = false // flip to false once the /api/lab/billing endpoints exist
 
 let billingState = { ...mockLabBilling }
 
@@ -14,9 +14,17 @@ export async function getLabBilling() {
 // GET /api/platform/billing-destination -> cuentas de ZeroAutoapp donde pagan los laboratorios
 // (dato de plataforma, no específico del laboratorio — podría vivir en un
 // endpoint público o venir embebido en /api/lab/billing).
+// El backend devuelve los campos planos (aliasArs, cvuArs, aliasUsd, cbuUsd);
+// acá los agrupamos en { ars, usd } que es lo que consume LabBilling.jsx.
 export async function getPlatformBillingDestination() {
   if (USE_MOCKS) return mockDelay({ ...mockPlatformBilling })
-  return apiFetch('/platform/billing-destination')
+  const data = await apiFetch('/platform/billing-destination')
+  return {
+    ars: { alias: data.aliasArs, cvu: data.cvuArs },
+    usd: { alias: data.aliasUsd, cbu: data.cbuUsd },
+    segundoLabDiscountPct: data.segundoLabDiscountPct,
+    tercerLabOMasDiscountPct: data.tercerLabOMasDiscountPct,
+  }
 }
 
 // POST /api/lab/billing/checkout -> checkout de MercadoPago (Preapproval)

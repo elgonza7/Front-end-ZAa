@@ -1,25 +1,28 @@
 import { apiFetch, mockDelay } from './client.js'
 import { mockFlowTree } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once the /api/lab/flow endpoints exist
+const USE_MOCKS = false // flip to false once the /api/lab/flow endpoints exist
 
 let flowState = JSON.parse(JSON.stringify(mockFlowTree))
 
-// GET /api/lab/flow -> árbol de conversación completo del laboratorio
-// (se guarda como JSON en Postgres — ver "estructuras dinámicas" en el doc
-// de arquitectura — y se usa para armar el System Prompt dinámico de OpenAI).
+// GET /api/lab/flow -> { tree } con el árbol de conversación completo del
+// laboratorio (se guarda como JSON en Postgres y arma el System Prompt
+// dinámico de Gemini). Se desempaqueta acá: el resto de la app trabaja
+// siempre con el nodo raíz directamente, nunca con el wrapper.
 export async function getFlow() {
   if (USE_MOCKS) return mockDelay(JSON.parse(JSON.stringify(flowState)))
-  return apiFetch('/lab/flow')
+  const { tree } = await apiFetch('/lab/flow')
+  return tree
 }
 
-// PUT /api/lab/flow { tree } -> reemplaza el árbol completo
+// PUT /api/lab/flow { tree } -> reemplaza el árbol completo, devuelve { tree }
 export async function saveFlow(tree) {
   if (USE_MOCKS) {
     flowState = JSON.parse(JSON.stringify(tree))
     return mockDelay(JSON.parse(JSON.stringify(flowState)), 600)
   }
-  return apiFetch('/lab/flow', { method: 'PUT', body: JSON.stringify({ tree }) })
+  const result = await apiFetch('/lab/flow', { method: 'PUT', body: JSON.stringify({ tree }) })
+  return result.tree
 }
 
 // POST /api/lab/flow/nodes/{nodeId}/image (multipart, campo "file")

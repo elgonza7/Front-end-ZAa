@@ -18,18 +18,27 @@ export default function AdminPanel() {
   const [labs, setLabs] = useState([])
   const [metrics, setMetrics] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([getLabs(), getGlobalMetrics()]).then(([labsData, metricsData]) => {
-      setLabs(labsData.slice(0, 5))
-      setMetrics(metricsData)
-      setLoading(false)
-    })
+    Promise.all([getLabs(), getGlobalMetrics()])
+      .then(([labsData, metricsData]) => {
+        setLabs(labsData.slice(0, 5))
+        setMetrics(metricsData)
+      })
+      .catch((err) => setError(err.message || 'No se pudieron cargar los datos de la plataforma.'))
+      .finally(() => setLoading(false))
   }, [])
 
   return (
     <AdminLayout title="Panel de Administración" subtitle="Vista general de la plataforma">
       <div className="space-y-6">
+        {error && (
+          <div className="rounded-xl border border-red-500/30 bg-red-500/5 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard icon={Building2} label="Laboratorios" value={metrics?.totalLabs ?? '—'} accent />
           <StatCard icon={PlayCircle} label="Bots activos" value={metrics?.activeLabs ?? '—'} />
@@ -95,6 +104,14 @@ export default function AdminPanel() {
                       </tr>
                     )
                   })}
+
+                {!loading && labs.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-10 text-center text-sm text-[#8b949e]">
+                      Todavía no hay datos disponibles — no cargaste ningún laboratorio.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

@@ -40,16 +40,35 @@ function RevenueTooltip({ active, payload, label }) {
   )
 }
 
+function EmptyChart({ label }) {
+  return (
+    <div className="flex h-full items-center justify-center text-center text-xs text-[#8b949e]">
+      Todavía no hay datos disponibles{label ? ` de ${label}` : ''}.
+    </div>
+  )
+}
+
 export default function AdminMetrics() {
   const [history, setHistory] = useState(null)
   const [metrics, setMetrics] = useState(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([getMetricsHistory(), getGlobalMetrics()]).then(([historyData, metricsData]) => {
-      setHistory(historyData)
-      setMetrics(metricsData)
-    })
+    Promise.all([getMetricsHistory(), getGlobalMetrics()])
+      .then(([historyData, metricsData]) => {
+        setHistory(historyData)
+        setMetrics(metricsData)
+      })
+      .catch((err) => setError(err.message || 'No se pudieron cargar las métricas.'))
   }, [])
+
+  if (error) {
+    return (
+      <AdminLayout title="Métricas" userLabel="Error">
+        <div className="flex h-64 items-center justify-center text-sm text-red-400">{error}</div>
+      </AdminLayout>
+    )
+  }
 
   if (!history || !metrics) {
     return (
@@ -71,6 +90,9 @@ export default function AdminMetrics() {
           </div>
 
           <div className="mt-4 h-80">
+            {history.tokenHistory.length === 0 ? (
+              <EmptyChart label="consumo de tokens" />
+            ) : (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={history.tokenHistory} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                 <defs>
@@ -100,6 +122,7 @@ export default function AdminMetrics() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+            )}
           </div>
         </Card>
 
@@ -107,6 +130,9 @@ export default function AdminMetrics() {
           <Card className="p-6 lg:col-span-2">
             <h2 className="text-sm font-semibold text-white">Ingresos mensuales (USD)</h2>
             <div className="mt-4 h-64">
+              {history.revenueHistory.length === 0 ? (
+                <EmptyChart label="ingresos" />
+              ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={history.revenueHistory} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <CartesianGrid stroke="#30363d" strokeDasharray="3 3" vertical={false} />
@@ -123,12 +149,16 @@ export default function AdminMetrics() {
                   />
                 </LineChart>
               </ResponsiveContainer>
+              )}
             </div>
           </Card>
 
           <Card className="p-6">
             <h2 className="text-sm font-semibold text-white">Distribución de planes</h2>
             <div className="mt-4 h-64">
+              {history.planDistribution.length === 0 ? (
+                <EmptyChart label="planes contratados" />
+              ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -158,6 +188,7 @@ export default function AdminMetrics() {
                   />
                 </PieChart>
               </ResponsiveContainer>
+              )}
             </div>
           </Card>
         </div>

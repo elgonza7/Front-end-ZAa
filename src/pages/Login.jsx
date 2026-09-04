@@ -18,8 +18,8 @@ export default function Login() {
     setLoading(true)
     setError('')
     try {
-      const { role } = await login(email, password)
-      navigate(role === 'admin' ? '/admin' : '/dashboard')
+      const { role, mustChangePassword } = await login(email, password)
+      navigate(mustChangePassword ? '/cambiar-password' : role === 'admin' ? '/admin' : '/dashboard')
     } catch (err) {
       setError(err.message || 'No se pudo iniciar sesión.')
     } finally {
@@ -71,9 +71,12 @@ export default function Login() {
             {loading ? 'Ingresando…' : 'Ingresar'}
           </Button>
 
-          <p className="text-center text-xs text-[#8b949e]">
-            Tip: usá un email con "admin" para ver el panel de administración.
-          </p>
+          <Link
+            to="/olvide-password"
+            className="block text-center text-xs text-[#8b949e] hover:text-white"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
         </form>
 
         <Link to="/" className="mt-6 block text-center text-xs text-[#8b949e] hover:text-white">

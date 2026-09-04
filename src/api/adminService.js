@@ -8,7 +8,7 @@ import {
   mockPlanDistribution,
 } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once the /api/admin/* endpoints exist
+const USE_MOCKS = false // flip to false once the /api/admin/* endpoints exist
 
 // Mutable copy so create/suspend/reactivate persist across navigations in the mock session.
 let tenantsState = mockAdminTenants.map((tenant) => ({ ...tenant }))

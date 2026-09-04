@@ -1,7 +1,7 @@
 import { apiFetch, mockDelay } from './client.js'
 import { mockChangelog, mockSystemStatus } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once /api/public/* endpoints exist
+const USE_MOCKS = false // flip to false once /api/public/* endpoints exist
 
 // GET /api/public/changelog -> historial de versiones (footer > Actualizaciones)
 export async function getChangelog() {

@@ -1,6 +1,6 @@
 import { mockDelay } from './client.js'
 
-const USE_MOCKS = true // flip to false once POST /api/lab/ai/improve-message exists
+const USE_MOCKS = false // flip to false once POST /api/lab/ai/improve-message exists
 
 // POST /api/lab/ai/improve-message { text } -> { text }
 // Backend implementation (per el doc de arquitectura): inyecta el texto en un

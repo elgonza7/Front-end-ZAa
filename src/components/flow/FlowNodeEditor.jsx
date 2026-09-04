@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Plus, Trash2, Sparkles, Headset, MessageSquare } from 'lucide-react'
 import Card from '../ui/Card.jsx'
 import Badge from '../ui/Badge.jsx'
@@ -22,6 +22,16 @@ function emptyNode() {
 // componente edita (ver FlowNodePanel).
 export default function FlowNodeEditor({ node, onChange, allowHandoff = true, label, onOpenChild }) {
   const [improving, setImproving] = useState(false)
+  const textareaRef = useRef(null)
+
+  // Auto-crece con el contenido para ver el mensaje completo sin scroll
+  // interno — el textarea nunca se achica de menos de ~110px (rows=4).
+  useEffect(() => {
+    const el = textareaRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
+  }, [node.text])
 
   function updateOption(optionId, patch) {
     onChange({
@@ -64,11 +74,13 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
 
       <div className="flex items-start gap-2">
         <textarea
+          ref={textareaRef}
           value={node.text}
           onChange={(event) => onChange({ ...node, text: event.target.value })}
-          rows={3}
+          rows={4}
           placeholder="Texto que enviará el bot en este paso…"
-          className="w-full resize-none rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+          className="w-full resize-y overflow-hidden rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+          style={{ minHeight: 110 }}
         />
       </div>
 

@@ -1,7 +1,7 @@
 import { apiFetch, mockDelay } from './client.js'
 import { mockWhatsappConnection } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once the /api/lab/whatsapp/* endpoints exist
+const USE_MOCKS = false // flip to false once the /api/lab/whatsapp/* endpoints exist
 
 let connectionState = { ...mockWhatsappConnection }
 

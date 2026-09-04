@@ -11,12 +11,37 @@ function WhatsappTutorial() {
   return (
     <>
       <p>
-        Estos datos salen de <strong>Meta for Developers</strong>, la plataforma de Meta para
-        conectar aplicaciones a WhatsApp. Se configura una sola vez:
+        Estos datos salen de <strong>Meta for Developers</strong>, la plataforma de Meta (la
+        empresa de Facebook/WhatsApp) para conectar aplicaciones a WhatsApp. No hace falta saber
+        de programación: es completar formularios en su sitio. Se configura <strong>una sola vez</strong>{' '}
+        y de ahí en más el asistente queda funcionando solo.
       </p>
-      <ol className="list-decimal space-y-2 pl-5">
+
+      <div>
+        <p className="text-sm font-semibold text-white">Antes de empezar, necesitás:</p>
+        <ul className="mt-2 list-disc space-y-1.5 pl-5">
+          <li>
+            Una cuenta de Facebook (personal, sirve la del dueño o encargado del laboratorio) para
+            entrar a Meta for Developers.
+          </li>
+          <li>
+            Un <strong>Facebook Business Manager</strong> (administrador comercial). Si no lo
+            tenés, Meta te lo ofrece crear gratis en el mismo paso 1 — no es necesario tenerlo de
+            antemano.
+          </li>
+          <li>
+            El número de WhatsApp que vas a usar para el bot. <strong>Importante:</strong> ese
+            número no puede tener WhatsApp normal o WhatsApp Business App instalado al mismo
+            tiempo — Meta lo migra a la API y deja de funcionar en el celular. Si querés seguir
+            usando ese número a mano, usá otro número para el bot (podés arrancar con el número de
+            prueba gratuito de Meta mientras tanto, ver paso 2).
+          </li>
+        </ul>
+      </div>
+
+      <ol className="list-decimal space-y-3 pl-5">
         <li>
-          Entrá a{' '}
+          <strong>Creá la App de Meta.</strong> Entrá a{' '}
           <a
             href="https://developers.facebook.com"
             target="_blank"
@@ -25,43 +50,74 @@ function WhatsappTutorial() {
           >
             developers.facebook.com
           </a>{' '}
-          con el Facebook del laboratorio y creá una App de tipo <strong>"Business"</strong>.
+          → arriba a la derecha, "Mis Apps" → "Crear app". Elegí el tipo <strong>"Business"</strong>{' '}
+          (Empresa), ponele un nombre (ej. el nombre del laboratorio) y confirmá. Si te pide crear
+          un Business Manager nuevo, aceptá — es gratis.
         </li>
         <li>
-          Dentro de la App, agregá el producto <strong>WhatsApp</strong>. Meta te crea
-          automáticamente un número de prueba con un token temporal (dura 24 hs) — sirve para
-          probar la conexión.
+          <strong>Agregá el producto WhatsApp.</strong> Dentro del panel de la App, en la lista de
+          productos que aparece, buscá la tarjeta <strong>"WhatsApp"</strong> y tocá "Configurar" /
+          "Set up". Meta te asigna automáticamente un número de prueba gratuito con un token
+          temporal (dura 24 hs) — sirve para probar todo el flujo antes de usar tu número real.
         </li>
         <li>
-          En <strong>WhatsApp → Configuración de la API</strong> vas a encontrar el{' '}
-          <strong>Phone Number ID</strong> y el <strong>WhatsApp Business Account ID</strong>{' '}
-          (WABA ID). Copialos tal cual figuran ahí.
+          <strong>Copiá el Phone Number ID y el WABA ID.</strong> En el menú lateral{' '}
+          <strong>WhatsApp → Configuración de la API</strong> ("API Setup") vas a ver dos códigos
+          largos de números: <strong>Phone Number ID</strong> (el número que envía los mensajes) y
+          más abajo el <strong>WhatsApp Business Account ID</strong> (WABA ID, la cuenta que agrupa
+          uno o más números). Copialos tal cual figuran, sin espacios.
         </li>
         <li>
-          Para producción (que no se corte cada 24 hs) necesitás un token permanente: en{' '}
-          <strong>Configuración empresarial → Usuarios del sistema</strong>, creá un "System User",
-          asignale la App y generá un token con los permisos{' '}
+          <strong>Generá un Access Token permanente.</strong> El token que te da la pantalla de
+          prueba dura 24 hs y después el bot deja de responder. Para uno que no vence: andá a{' '}
+          <strong>Configuración de la empresa</strong> (ícono de engranaje, arriba a la izquierda,
+          fuera del panel de la App) → <strong>Usuarios → Usuarios del sistema</strong> → "Añadir" →
+          creá un usuario con rol <strong>Administrador</strong>. Entrá a ese usuario → "Añadir
+          activos" → asignale tu App con permiso "Control total". Después tocá{' '}
+          <strong>"Generar nuevo token"</strong>, elegí esa misma App, y marcá los permisos{' '}
           <code className="rounded bg-[#0d1117] px-1 py-0.5 text-[#e3c065]">whatsapp_business_messaging</code>{' '}
           y{' '}
           <code className="rounded bg-[#0d1117] px-1 py-0.5 text-[#e3c065]">whatsapp_business_management</code>.
-          Ese es el <strong>Access Token</strong>.
+          Ese token largo (empieza con "EAAG…") es el <strong>Access Token</strong> — copialo en el
+          momento, Meta no te lo vuelve a mostrar completo después.
         </li>
         <li>
-          Para usar tu propio número de WhatsApp (no el de prueba) necesitás verificar el negocio
-          ante Meta (Business Verification) y vincular el número real como WhatsApp Business
-          Account.
+          <strong>Pasá a tu número real (opcional, para producción).</strong> Mientras usás el
+          número de prueba, el bot solo le puede escribir a números que vos agregues a mano como
+          "destinatario de prueba" en esa misma pantalla. Para atender pacientes de verdad,
+          necesitás vincular tu número real: en{' '}
+          <strong>WhatsApp → Configuración de la API</strong>, "Agregar número de teléfono", y
+          seguí la verificación por SMS o llamada. Si es la primera vez que verificás el negocio
+          ante Meta (Business Verification), puede pedir datos legales del laboratorio (CUIT,
+          dirección) — tarda entre minutos y un par de días.
         </li>
         <li>
-          Elegí un <strong>Webhook Verify Token</strong> (cualquier texto que vos definas — pegalo
-          también acá abajo) y configurá el webhook en Meta apuntando a la URL de tu backend
-          seguida de <code className="rounded bg-[#0d1117] px-1 py-0.5 text-[#e3c065]">/api/webhooks/whatsapp</code>.
-          Suscribite al campo <strong>messages</strong>.
+          <strong>Definí el Webhook Verify Token.</strong> Es un texto cualquiera que vos inventás
+          (ej. <code className="rounded bg-[#0d1117] px-1 py-0.5 text-[#e3c065]">zeroauto-mi-laboratorio-2026</code>),
+          no lo genera Meta. Pegalo en el campo de acá abajo y también en Meta, en{' '}
+          <strong>WhatsApp → Configuración → Webhook → Editar</strong>: como URL de callback poné
+          la dirección de nuestro servidor terminada en{' '}
+          <code className="rounded bg-[#0d1117] px-1 py-0.5 text-[#e3c065]">/api/webhooks/whatsapp</code>,
+          y como "Verify Token" el mismo texto que elegiste. Guardá y suscribite al campo{' '}
+          <strong>messages</strong> (es el que avisa cuando llega un mensaje nuevo).
         </li>
-        <li>Pegá los 4 datos en el formulario, guardá, y probá con "Enviar mensaje de prueba".</li>
+        <li>
+          <strong>Completá el formulario acá abajo.</strong> Pegá los 4 datos (Phone Number ID,
+          WABA ID, Access Token, Webhook Verify Token), tocá "Guardar y conectar", y después "Enviar
+          mensaje de prueba" para confirmar que llega a un WhatsApp real.
+        </li>
       </ol>
+
       <p className="text-xs text-[#8b949e]">
         Este proceso se hace una única vez por laboratorio; después de guardado, el asistente queda
-        conectado hasta que lo desvincules.
+        conectado hasta que lo desvincules. Si en algún paso Meta muestra una pantalla distinta a
+        la descripta, es porque cambian el diseño seguido — los nombres de los menús
+        (Configuración de la API, Usuarios del sistema, Webhook) se mantienen aunque cambie el
+        acomodo visual. Ante cualquier duda, escribinos a{' '}
+        <a href="mailto:zeroautoapp@gmail.com" className="text-[#F8B500] underline">
+          zeroautoapp@gmail.com
+        </a>{' '}
+        y te ayudamos a conectarlo.
       </p>
     </>
   )

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Save, Upload, FileText, Trash2, Link as LinkIcon } from 'lucide-react'
+import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import Badge from '../components/ui/Badge.jsx'
 import Switch from '../components/ui/Switch.jsx'
 import Button from '../components/ui/Button.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
@@ -28,12 +29,17 @@ export default function LabSettings() {
   const [saving, setSaving] = useState(false)
   const [docs, setDocs] = useState([])
   const [docUploading, setDocUploading] = useState(false)
+  const [securityPhone, setSecurityPhone] = useState('')
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
-    Promise.all([getLabProfile(), getKnowledgeDocs()]).then(([profile, knowledgeDocs]) => {
-      setForm(profile)
-      setDocs(knowledgeDocs)
-    })
+    Promise.all([getLabProfile(), getKnowledgeDocs()])
+      .then(([profile, knowledgeDocs]) => {
+        setForm(profile)
+        setSecurityPhone(profile.securityPhone || '')
+        setDocs(knowledgeDocs)
+      })
+      .catch((err) => setLoadError(err.message || 'No se pudo cargar la configuración.'))
   }, [])
 
   function set(field, value) {
@@ -85,6 +91,14 @@ export default function LabSettings() {
 
   function handleRemoveDoc(id) {
     setDocs((prev) => prev.filter((doc) => doc.id !== id))
+  }
+
+  if (loadError) {
+    return (
+      <LabLayout title="Configuración" userLabel="Error">
+        <div className="flex h-64 items-center justify-center text-sm text-red-400">{loadError}</div>
+      </LabLayout>
+    )
   }
 
   if (!form) {
@@ -160,6 +174,40 @@ export default function LabSettings() {
                 className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
               />
             </div>
+          </div>
+        </Card>
+
+        <Card className="p-6 opacity-60">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-white">
+              <ShieldCheck size={16} className="text-[#F8B500]" />
+              Seguridad
+            </h2>
+            <Badge variant="neutral">Próximamente</Badge>
+          </div>
+          <p className="mt-1 text-xs text-[#8b949e]">
+            Vas a poder cargar un teléfono para recibir por SMS un código extra cada vez que
+            restablezcas la contraseña de esta cuenta (además del link que llega por email). Esta
+            función todavía no está disponible.
+          </p>
+
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="flex-1">
+              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">
+                Teléfono de seguridad (con código de país, ej. +5491122334455)
+              </label>
+              <input
+                type="text"
+                disabled
+                value={securityPhone}
+                onChange={(event) => setSecurityPhone(event.target.value)}
+                placeholder="Todavía no disponible"
+                className="w-full cursor-not-allowed rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none"
+              />
+            </div>
+            <Button type="button" variant="outline" disabled className="px-4 py-2.5 text-sm">
+              Guardar teléfono
+            </Button>
           </div>
         </Card>
 

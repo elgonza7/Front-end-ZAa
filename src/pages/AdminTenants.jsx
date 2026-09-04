@@ -69,12 +69,14 @@ export default function AdminTenants() {
   const [creating, setCreating] = useState(false)
   const [detailLab, setDetailLab] = useState(null)
   const [detailLoading, setDetailLoading] = useState(false)
+  const [createError, setCreateError] = useState('')
+  const [listError, setListError] = useState('')
 
   useEffect(() => {
-    getLabs().then((data) => {
-      setLabs(data)
-      setLoading(false)
-    })
+    getLabs()
+      .then((data) => setLabs(data))
+      .catch((err) => setListError(err.message || 'No se pudieron cargar los laboratorios.'))
+      .finally(() => setLoading(false))
   }, [])
 
   const filteredLabs = useMemo(() => {
@@ -87,32 +89,54 @@ export default function AdminTenants() {
 
   async function handleToggleSuspend(lab) {
     setBusyId(lab.id)
-    const updated = lab.botActive ? await suspendLab(lab.id) : await reactivateLab(lab.id)
-    setLabs((prev) =>
-      prev.map((item) => (item.id === lab.id ? { ...item, botActive: updated.botActive } : item)),
-    )
-    setBusyId(null)
+    try {
+      const updated = lab.botActive ? await suspendLab(lab.id) : await reactivateLab(lab.id)
+      setLabs((prev) =>
+        prev.map((item) => (item.id === lab.id ? { ...item, botActive: updated.botActive } : item)),
+      )
+    } catch (err) {
+      setListError(err.message || 'No se pudo actualizar el estado del laboratorio.')
+    } finally {
+      setBusyId(null)
+    }
   }
 
   async function handleViewDetail(lab) {
     setDetailLoading(true)
-    const detail = await getLabDetail(lab.id)
-    setDetailLab(detail)
-    setDetailLoading(false)
+    try {
+      const detail = await getLabDetail(lab.id)
+      setDetailLab(detail)
+    } catch (err) {
+      setListError(err.message || 'No se pudo cargar el detalle del laboratorio.')
+    } finally {
+      setDetailLoading(false)
+    }
   }
 
   async function handleCreate(event) {
     event.preventDefault()
     setCreating(true)
-    const newLab = await createLab(form)
-    setLabs((prev) => [newLab, ...prev])
-    setCreating(false)
-    setModalOpen(false)
-    setForm(EMPTY_FORM)
+    setCreateError('')
+    try {
+      const newLab = await createLab(form)
+      setLabs((prev) => [newLab, ...prev])
+      setModalOpen(false)
+      setForm(EMPTY_FORM)
+    } catch (err) {
+      setCreateError(err.message || 'No se pudo crear el laboratorio.')
+    } finally {
+      setCreating(false)
+    }
   }
 
   return (
     <AdminLayout title="Inquilinos" subtitle="Alta, baja y modificación de cuentas de laboratorios">
+      {listError && (
+        <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/5 px-4 py-3 text-sm text-red-400">
+          {listError}
+        </div>
+      )}
+
       <Card className="overflow-hidden">
         <div className="flex flex-col gap-3 border-b border-[#30363d] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full sm:max-w-xs">
@@ -125,7 +149,13 @@ export default function AdminTenants() {
               className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] py-2 pl-9 pr-3 text-sm text-white outline-none focus:border-[#F8B500]"
             />
           </div>
-          <Button className="shrink-0 px-3.5 py-2 text-sm" onClick={() => setModalOpen(true)}>
+          <Button
+            className="shrink-0 px-3.5 py-2 text-sm"
+            onClick={() => {
+              setCreateError('')
+              setModalOpen(true)
+            }}
+          >
             <Plus size={16} />
             Nuevo laboratorio
           </Button>
@@ -221,7 +251,9 @@ export default function AdminTenants() {
               {!loading && filteredLabs.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-6 py-10 text-center text-sm text-[#8b949e]">
-                    No se encontraron laboratorios para "{search}".
+                    {labs.length === 0
+                      ? 'Todavía no hay laboratorios cargados. Creá el primero con "Nuevo laboratorio".'
+                      : `No se encontraron laboratorios para "${search}".`}
                   </td>
                 </tr>
               )}
@@ -273,6 +305,13 @@ export default function AdminTenants() {
               <option>Premium</option>
             </select>
           </div>
+          <p className="text-xs text-[#8b949e]">
+            La cuenta arranca con la contraseña temporal <span className="font-mono text-[#e6e6e6]">123</span> y
+            el laboratorio va a tener que cambiarla apenas inicie sesión por primera vez.
+          </p>
+
+          {createError && <p className="text-sm text-red-400">{createError}</p>}
+
           <Button type="submit" disabled={creating} className="w-full py-2.5 text-sm">
             {creating ? 'Creando…' : 'Crear laboratorio'}
           </Button>

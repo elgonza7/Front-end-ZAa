@@ -6,7 +6,7 @@ import {
   mockFaqRanking,
 } from '../lib/mockData.js'
 
-const USE_MOCKS = true // flip to false once the /api/lab/* endpoints exist
+const USE_MOCKS = false // flip to false once the /api/lab/* endpoints exist
 
 // Mutable copy so edits made across Settings/WhatsApp/Flow pages persist for
 // the lifetime of the mock session instead of resetting on every fetch.

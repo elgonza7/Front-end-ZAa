@@ -27,22 +27,31 @@ export default function LabDashboard() {
   const [faqRanking, setFaqRanking] = useState([])
   const [handoffQueue, setHandoffQueue] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([getLabProfile(), getTokenUsageHistory(), getFaqRanking(), getHandoffQueue()]).then(
-      ([profileData, usageData, faqData, handoffData]) => {
+    Promise.all([getLabProfile(), getTokenUsageHistory(), getFaqRanking(), getHandoffQueue()])
+      .then(([profileData, usageData, faqData, handoffData]) => {
         setProfile(profileData)
         setUsageHistory(usageData)
         setFaqRanking(faqData)
         setHandoffQueue(handoffData)
-        setLoading(false)
-      },
-    )
+      })
+      .catch((err) => setError(err.message || 'No se pudo cargar el panel del laboratorio.'))
+      .finally(() => setLoading(false))
   }, [])
 
   async function handleToggleBot(next) {
     setProfile((prev) => ({ ...prev, botActive: next }))
     await toggleBot(next)
+  }
+
+  if (error) {
+    return (
+      <LabLayout title="Panel de control" userLabel="Error">
+        <div className="flex h-64 items-center justify-center text-sm text-red-400">{error}</div>
+      </LabLayout>
+    )
   }
 
   if (loading || !profile) {
@@ -138,6 +147,17 @@ export default function LabDashboard() {
             <p className="mt-2 text-xs text-[#8b949e]">
               Clientes atendidos: <span className="text-white">{profile.clientsAttended.toLocaleString()}</span>
             </p>
+            {profile.tokensUsed >= profile.tokensLimit ? (
+              <p className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+                Superaste el cupo de tu plan. El asistente sigue funcionando igual — el excedente se
+                cobra automáticamente a ${profile.overagePricePer1kTokensUSD} USD cada 1.000 tokens.
+              </p>
+            ) : (
+              <p className="mt-3 text-[11px] text-[#8b949e]">
+                Si te pasás del cupo, el asistente no se corta: el excedente se cobra aparte a $
+                {profile.overagePricePer1kTokensUSD} USD cada 1.000 tokens.
+              </p>
+            )}
           </Card>
         </div>
 
@@ -148,6 +168,11 @@ export default function LabDashboard() {
               <h2 className="text-sm font-semibold text-white">Consumo de tokens (últimos 7 días)</h2>
             </div>
             <div className="mt-4 h-64">
+              {usageHistory.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-center text-xs text-[#8b949e]">
+                  Todavía no hay datos disponibles — el bot no registró consumo de tokens.
+                </div>
+              ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={usageHistory} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid stroke="#30363d" strokeDasharray="3 3" vertical={false} />
@@ -164,11 +189,17 @@ export default function LabDashboard() {
                   />
                 </LineChart>
               </ResponsiveContainer>
+              )}
             </div>
           </Card>
 
           <Card className="p-6">
             <h2 className="text-sm font-semibold text-white">Preguntas más frecuentes</h2>
+            {faqRanking.length === 0 && (
+              <p className="mt-4 py-4 text-center text-xs text-[#8b949e]">
+                Todavía no hay datos disponibles — esperando las primeras conversaciones.
+              </p>
+            )}
             <ul className="mt-4 space-y-3">
               {faqRanking.map((faq, index) => (
                 <li key={faq.question} className="flex items-center justify-between gap-3">

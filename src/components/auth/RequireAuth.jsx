@@ -1,11 +1,13 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { getAuthToken, getAuthRole } from '../../api/client.js'
+import { getAuthToken, getAuthRole, getMustChangePassword } from '../../api/client.js'
 
 const HOME_BY_ROLE = { lab: '/dashboard', admin: '/admin' }
 
 // Protege un grupo de rutas: sin token, manda a /login; con token pero rol
 // equivocado (ej. un lab intentando entrar a /admin), manda a la home de su
-// propio rol en vez de dejarlo pasar.
+// propio rol en vez de dejarlo pasar; con una contraseña temporal todavía sin
+// cambiar, manda a /cambiar-password y no deja entrar a ninguna otra pantalla
+// hasta que la actualice.
 export default function RequireAuth({ role, children }) {
   const location = useLocation()
   const token = getAuthToken()
@@ -17,6 +19,10 @@ export default function RequireAuth({ role, children }) {
 
   if (role && currentRole !== role) {
     return <Navigate to={HOME_BY_ROLE[currentRole] ?? '/login'} replace />
+  }
+
+  if (getMustChangePassword() && location.pathname !== '/cambiar-password') {
+    return <Navigate to="/cambiar-password" replace />
   }
 
   return children
