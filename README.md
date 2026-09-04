@@ -171,4 +171,5 @@ un email que contiene "admin" simula el rol admin). Cuando el backend emita
 JWTs con un claim de rol, agregar un `RequireAuth`/`RequireRole` wrapper en
 `App.jsx` alrededor de `/dashboard` y `/admin` es el siguiente paso natural.
 #   F r o n t - e n d - Z A a  
+ #   Z e r o A u t o a p p _ B a c k e n d  
  
