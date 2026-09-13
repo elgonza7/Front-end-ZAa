@@ -22,8 +22,10 @@ export async function getPlatformBillingDestination() {
   return {
     ars: { alias: data.aliasArs, cvu: data.cvuArs },
     usd: { alias: data.aliasUsd, cbu: data.cbuUsd },
-    segundoLabDiscountPct: data.segundoLabDiscountPct,
-    tercerLabOMasDiscountPct: data.tercerLabOMasDiscountPct,
+    multiLabDiscount: [
+      { tier: '2° laboratorio del mismo dueño', discountPct: data.segundoLabDiscountPct },
+      { tier: '3° laboratorio o más del mismo dueño', discountPct: data.tercerLabOMasDiscountPct },
+    ],
   }
 }
 
