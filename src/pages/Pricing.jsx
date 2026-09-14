@@ -8,11 +8,13 @@ import Button from '../components/ui/Button.jsx'
 import { PLAN_PRICING } from '../lib/pricing.js'
 
 // Estimación para recomendar un plan según cuántos pacientes por día
-// escriben por WhatsApp: ~150 tokens promedio por conversación completa,
-// contactos/día × 30 días × 150 tokens, comparado contra el cupo de cada
-// plan. Es una guía, no una promesa exacta — el consumo real depende de
-// cuán largas son las conversaciones de cada laboratorio.
-const TOKENS_PER_CONTACT_ESTIMATE = 150
+// escriben por WhatsApp: ~7.500 tokens promedio por conversación completa
+// (el bot reenvía el prompt de sistema + historial reciente en cada una de
+// las ~5 respuestas típicas de una conversación), contactos/día × 30 días
+// × 7.500 tokens, comparado contra el cupo de cada plan. Es una guía, no
+// una promesa exacta — el consumo real depende de cuán largas son las
+// conversaciones de cada laboratorio.
+const TOKENS_PER_CONTACT_ESTIMATE = 7500
 const CALCULATOR_MAX_CONTACTS = 30
 
 function recommendPlan(dailyContacts) {
