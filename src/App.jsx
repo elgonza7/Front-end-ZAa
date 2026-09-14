@@ -18,6 +18,8 @@ import LabSettings from './pages/LabSettings.jsx'
 import HandoffInbox from './pages/HandoffInbox.jsx'
 import LabBilling from './pages/LabBilling.jsx'
 import LabHelpCenter from './pages/LabHelpCenter.jsx'
+import LabTutorials from './pages/LabTutorials.jsx'
+import LabConversations from './pages/LabConversations.jsx'
 import AdminPanel from './pages/AdminPanel.jsx'
 import AdminTenants from './pages/AdminTenants.jsx'
 import AdminMetrics from './pages/AdminMetrics.jsx'
@@ -46,6 +48,8 @@ export default function App() {
 
         <Route path="/dashboard" element={<RequireAuth role="lab"><LabDashboard /></RequireAuth>} />
         <Route path="/dashboard/whatsapp" element={<RequireAuth role="lab"><WhatsAppConnect /></RequireAuth>} />
+        <Route path="/dashboard/tutoriales" element={<RequireAuth role="lab"><LabTutorials /></RequireAuth>} />
+        <Route path="/dashboard/mensajes" element={<RequireAuth role="lab"><LabConversations /></RequireAuth>} />
         <Route path="/dashboard/flujo" element={<RequireAuth role="lab"><FlowBuilder /></RequireAuth>} />
         <Route path="/dashboard/configuracion" element={<RequireAuth role="lab"><LabSettings /></RequireAuth>} />
         <Route path="/dashboard/conversaciones" element={<RequireAuth role="lab"><HandoffInbox /></RequireAuth>} />

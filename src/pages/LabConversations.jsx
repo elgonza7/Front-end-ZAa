@@ -1,0 +1,134 @@
+import { useEffect, useState } from 'react'
+import { MessagesSquare, Bot, User, Headset, Inbox } from 'lucide-react'
+import LabLayout from '../components/layout/LabLayout.jsx'
+import Card from '../components/ui/Card.jsx'
+import HelpButton from '../components/ui/HelpButton.jsx'
+import { getConversations, getConversationMessages } from '../api/conversationsService.js'
+
+function ConversationsTutorial() {
+  return (
+    <p>
+      Acá ves, en orden, todo lo que tus pacientes le escribieron al asistente y todo lo que el
+      asistente les contestó — como si fuera una libreta de todas las charlas del WhatsApp,
+      aunque vos no tengas ese WhatsApp abierto en ningún celular. Elegí una charla de la lista de
+      la izquierda para leerla completa a la derecha. No hace falta hacer nada acá: es solo para
+      que puedas ver lo que está pasando.
+    </p>
+  )
+}
+
+function timeAgo(isoString) {
+  const minutes = Math.max(0, Math.round((Date.now() - new Date(isoString).getTime()) / 60000))
+  if (minutes < 1) return 'recién'
+  if (minutes < 60) return `hace ${minutes} min`
+  if (minutes < 24 * 60) return `hace ${Math.round(minutes / 60)} h`
+  return new Date(isoString).toLocaleDateString('es-AR')
+}
+
+const SENDER_STYLE = {
+  PATIENT: { align: 'justify-start', bubble: 'bg-[#0d1117] border border-[#30363d] text-[#e6e6e6]', icon: User, label: 'Paciente' },
+  BOT: { align: 'justify-end', bubble: 'bg-[#F8B500]/15 border border-[#F8B500]/30 text-white', icon: Bot, label: 'Asistente' },
+  HUMAN: { align: 'justify-end', bubble: 'bg-emerald-500/10 border border-emerald-500/30 text-white', icon: Headset, label: 'Persona del equipo' },
+}
+
+export default function LabConversations() {
+  const [conversations, setConversations] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [selectedId, setSelectedId] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [loadingMessages, setLoadingMessages] = useState(false)
+
+  useEffect(() => {
+    getConversations().then((data) => {
+      setConversations(data)
+      setLoading(false)
+      if (data.length > 0) setSelectedId(data[0].conversationId)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!selectedId) return
+    setLoadingMessages(true)
+    getConversationMessages(selectedId).then((data) => {
+      setMessages(data)
+      setLoadingMessages(false)
+    })
+  }, [selectedId])
+
+  return (
+    <LabLayout
+      title="Mensajes"
+      subtitle="Todas las charlas que tus pacientes tuvieron con el asistente por WhatsApp"
+      headerActions={
+        <HelpButton title="Cómo leer esta pantalla">
+          <ConversationsTutorial />
+        </HelpButton>
+      }
+    >
+      {loading ? (
+        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando…</div>
+      ) : conversations.length === 0 ? (
+        <Card className="flex flex-col items-center gap-3 p-12 text-center">
+          <Inbox size={32} className="text-[#8b949e]" />
+          <p className="text-sm text-white">Todavía no hay charlas registradas.</p>
+          <p className="text-xs text-[#8b949e]">
+            En cuanto un paciente le escriba a tu número de WhatsApp, la conversación va a
+            aparecer acá.
+          </p>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+          <div className="space-y-2 lg:col-span-1">
+            {conversations.map((conv) => (
+              <button
+                key={conv.conversationId}
+                type="button"
+                onClick={() => setSelectedId(conv.conversationId)}
+                className={`w-full rounded-xl border p-3.5 text-left transition ${
+                  selectedId === conv.conversationId
+                    ? 'border-[#F8B500] bg-[#F8B500]/5'
+                    : 'border-[#30363d] bg-[#161b22] hover:border-[#484f58]'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-white">
+                    <MessagesSquare size={13} className="text-[#F8B500]" /> {conv.conversationId}
+                  </p>
+                  <span className="shrink-0 text-[10px] text-[#8b949e]">{timeAgo(conv.lastMessageAt)}</span>
+                </div>
+                <p className="mt-1.5 truncate text-xs text-[#8b949e]">{conv.lastMessage}</p>
+                <p className="mt-1 text-[10px] text-[#8b949e]">{conv.messageCount} mensajes</p>
+              </button>
+            ))}
+          </div>
+
+          <Card className="flex flex-col p-5 lg:col-span-2">
+            {loadingMessages ? (
+              <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando…</div>
+            ) : (
+              <div className="flex max-h-[70vh] flex-col gap-3 overflow-y-auto pr-1">
+                {messages.map((msg, index) => {
+                  const style = SENDER_STYLE[msg.sender] ?? SENDER_STYLE.PATIENT
+                  const Icon = style.icon
+                  return (
+                    <div key={index} className={`flex ${style.align}`}>
+                      <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${style.bubble}`}>
+                        <p className="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-wide text-[#8b949e]">
+                          <Icon size={11} /> {style.label}
+                        </p>
+                        <p className="whitespace-pre-wrap">{msg.text}</p>
+                        <p className="mt-1 text-right text-[10px] text-[#8b949e]">
+                          {new Date(msg.createdAt).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </Card>
+        </div>
+      )}
+    </LabLayout>
+  )
+}
