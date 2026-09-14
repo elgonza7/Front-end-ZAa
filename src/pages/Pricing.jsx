@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, ArrowRight, CreditCard, Landmark, Calculator } from 'lucide-react'
+import { Check, ArrowRight, CreditCard, Landmark, Calculator, HelpCircle, Smartphone, Server } from 'lucide-react'
 import LandingNavbar from '../components/layout/LandingNavbar.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -92,6 +92,7 @@ const PLAN_FEATURES = {
     'Más tokens mensuales',
     'Métricas de preguntas frecuentes',
     'Atención humana con notificación por email',
+    'Elegís si mantenés tu WhatsApp Business (Coexistence)',
   ],
   Premium: [
     'Todo lo del plan Profesional',
@@ -99,6 +100,50 @@ const PLAN_FEATURES = {
     'Soporte prioritario',
     'Descuentos por laboratorio adicional del mismo dueño',
   ],
+}
+
+const PLANES_CON_COEXISTENCE = new Set(['Profesional', 'Premium'])
+
+function CoexistenceExplainer() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="mt-4 border-t border-[#30363d] pt-4">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1.5 text-xs font-semibold text-[#F8B500]"
+      >
+        <HelpCircle size={13} />
+        {open ? 'Ocultar explicación' : '¿Qué es Coexistence?'}
+      </button>
+
+      {open && (
+        <div className="mt-3 space-y-3">
+          <div className="rounded-lg border border-[#30363d] bg-[#0d1117] p-3">
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-white">
+              <Smartphone size={12} className="text-[#F8B500]" /> Con Coexistence
+            </p>
+            <p className="mt-1 text-[11px] leading-relaxed text-[#8b949e]">
+              Seguís usando tu WhatsApp Business de siempre, en tu celular, con todos tus chats y
+              contactos. El asistente de IA responde en paralelo, en el mismo número — no se borra
+              ni se pierde nada de lo que ya tenías.
+            </p>
+          </div>
+          <div className="rounded-lg border border-[#30363d] bg-[#0d1117] p-3">
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-white">
+              <Server size={12} className="text-[#F8B500]" /> Sin Coexistence (número dedicado)
+            </p>
+            <p className="mt-1 text-[11px] leading-relaxed text-[#8b949e]">
+              Ese número deja de funcionar como WhatsApp Business normal en un celular — pasa a
+              atenderse 100% a través de nuestra plataforma, como si fuera tu WhatsApp Business
+              pero manejado por el asistente. Ideal para un número nuevo, sin historia previa.
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function Pricing() {
@@ -150,6 +195,8 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
+
+              {PLANES_CON_COEXISTENCE.has(planName) && <CoexistenceExplainer />}
 
               <Button
                 as={Link}
