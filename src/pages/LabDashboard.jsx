@@ -43,9 +43,9 @@ const STATUS_STYLE = {
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-[#30363d] bg-[#161b22] px-3 py-2 text-xs text-white shadow-lg">
-      <p className="text-[#8b949e]">{label}</p>
-      <p className="font-semibold text-[#F8B500]">{payload[0].value} tokens</p>
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
+      <p className="text-[var(--muted)]">{label}</p>
+      <p className="font-semibold text-[var(--accent)]">{payload[0].value} tokens</p>
     </div>
   )
 }
@@ -88,7 +88,7 @@ export default function LabDashboard() {
   if (loading || !profile) {
     return (
       <LabLayout title="Panel de control" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">
+        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">
           Cargando panel del laboratorio…
         </div>
       </LabLayout>
@@ -113,8 +113,8 @@ export default function LabDashboard() {
             <Card className={`flex items-center gap-3.5 border p-4 ${style.border} ${style.bg}`}>
               <Icon size={26} className={`shrink-0 ${style.iconColor}`} />
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-white">{status.title}</p>
-                <p className="text-xs text-[#8b949e]">{status.detail}</p>
+                <p className="text-sm font-semibold text-[var(--text-strong)]">{status.title}</p>
+                <p className="text-xs text-[var(--muted)]">{status.detail}</p>
               </div>
               <Badge variant={style.badge} className="ml-auto shrink-0">
                 {status.level === 'success' ? 'OK' : status.level === 'warning' ? 'Atención' : 'Caído'}
@@ -124,21 +124,21 @@ export default function LabDashboard() {
         })()}
 
         {handoffQueue.length > 0 && (
-          <Card className="flex flex-col items-start gap-3 border-[#F8B500]/40 bg-gradient-to-r from-[#F8B500]/10 to-transparent p-4 sm:flex-row sm:items-center sm:justify-between">
+          <Card className="flex flex-col items-start gap-3 border-[var(--accent)]/40 bg-gradient-to-r from-[var(--accent)]/10 to-transparent p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <span className="relative flex h-10 w-10 shrink-0 items-center justify-center">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F8B500] opacity-40" />
-                <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#F8B500] to-[#e3c065] text-black">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-40" />
+                <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-soft)] text-black">
                   <Headset size={18} />
                 </span>
               </span>
               <div>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-[var(--text-strong)]">
                   {handoffQueue.length === 1
                     ? '1 paciente está esperando atención humana'
                     : `${handoffQueue.length} pacientes están esperando atención humana`}
                 </p>
-                <p className="text-xs text-[#8b949e]">El bot pausó las respuestas automáticas en esas conversaciones.</p>
+                <p className="text-xs text-[var(--muted)]">El bot pausó las respuestas automáticas en esas conversaciones.</p>
               </div>
             </div>
             <Button as={Link} to="/dashboard/conversaciones" className="shrink-0 px-4 py-2 text-xs">
@@ -152,14 +152,14 @@ export default function LabDashboard() {
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           <Card className="p-5">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-white">Asistente de WhatsApp</p>
+              <p className="text-sm font-semibold text-[var(--text-strong)]">Asistente de WhatsApp</p>
               <Switch
                 checked={profile.botActive}
                 onChange={handleToggleBot}
                 label="Activar asistente de WhatsApp"
               />
             </div>
-            <p className="mt-3 text-xs text-[#8b949e]">
+            <p className="mt-3 text-xs text-[var(--muted)]">
               {profile.botActive
                 ? 'El bot está respondiendo mensajes en tiempo real.'
                 : 'El bot está apagado. No se responderán nuevos mensajes.'}
@@ -170,14 +170,14 @@ export default function LabDashboard() {
           </Card>
 
           <Card className="p-5">
-            <p className="text-sm font-semibold text-white">Estado de pago</p>
+            <p className="text-sm font-semibold text-[var(--text-strong)]">Estado de pago</p>
             <div className="mt-3 flex items-center gap-2">
               <Badge variant={paymentVariant}>
                 {profile.paymentStatus === 'PAID' ? 'Pagado' : profile.paymentStatus === 'OVERDUE' ? 'Vencido' : 'Pendiente'}
               </Badge>
             </div>
-            <p className="mt-3 text-xs text-[#8b949e]">
-              Próximo vencimiento: <span className="text-white">{profile.nextDueDate}</span>
+            <p className="mt-3 text-xs text-[var(--muted)]">
+              Próximo vencimiento: <span className="text-[var(--text-strong)]">{profile.nextDueDate}</span>
             </p>
             <Button variant="outline" className="mt-4 w-full py-2 text-xs">
               Gestionar suscripción
@@ -186,18 +186,18 @@ export default function LabDashboard() {
 
           <Card className="p-5">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-white">Tokens usados este mes</p>
+              <p className="text-sm font-semibold text-[var(--text-strong)]">Tokens usados este mes</p>
               <Badge variant="gold">Plan {profile.planName}</Badge>
             </div>
-            <p className="mt-2 text-xl font-bold text-white">
+            <p className="mt-2 text-xl font-bold text-[var(--text-strong)]">
               {profile.tokensUsed.toLocaleString()}{' '}
-              <span className="text-sm font-normal text-[#8b949e]">
+              <span className="text-sm font-normal text-[var(--muted)]">
                 / {profile.tokensLimit.toLocaleString()} incluidos en tu plan
               </span>
             </p>
             <ProgressBar value={profile.tokensUsed} max={profile.tokensLimit} className="mt-3" />
-            <p className="mt-2 text-xs text-[#8b949e]">
-              Clientes atendidos: <span className="text-white">{profile.clientsAttended.toLocaleString()}</span>
+            <p className="mt-2 text-xs text-[var(--muted)]">
+              Clientes atendidos: <span className="text-[var(--text-strong)]">{profile.clientsAttended.toLocaleString()}</span>
             </p>
             {profile.tokensUsed >= profile.tokensLimit ? (
               <p className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
@@ -205,7 +205,7 @@ export default function LabDashboard() {
                 cobra automáticamente a ${profile.overagePricePer1kTokensUSD} USD cada 1.000 tokens.
               </p>
             ) : (
-              <p className="mt-3 text-[11px] text-[#8b949e]">
+              <p className="mt-3 text-[11px] text-[var(--muted)]">
                 Si te pasás del cupo, el asistente no se corta: el excedente se cobra aparte a $
                 {profile.overagePricePer1kTokensUSD} USD cada 1.000 tokens.
               </p>
@@ -217,26 +217,26 @@ export default function LabDashboard() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Card className="p-6 lg:col-span-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-white">Consumo de tokens (últimos 7 días)</h2>
+              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Consumo de tokens (últimos 7 días)</h2>
             </div>
             <div className="mt-4 h-64">
               {usageHistory.length === 0 ? (
-                <div className="flex h-full items-center justify-center text-center text-xs text-[#8b949e]">
+                <div className="flex h-full items-center justify-center text-center text-xs text-[var(--muted)]">
                   Todavía no hay datos disponibles — el bot no registró consumo de tokens.
                 </div>
               ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={usageHistory} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid stroke="#30363d" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="day" stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#30363d' }} />
+                  <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="day" stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--border)' }} />
                   <Line
                     type="monotone"
                     dataKey="tokens"
-                    stroke="#F8B500"
+                    stroke="var(--accent)"
                     strokeWidth={3}
-                    dot={{ fill: '#F8B500', r: 4 }}
+                    dot={{ fill: 'var(--accent)', r: 4 }}
                     activeDot={{ r: 6 }}
                   />
                 </LineChart>
@@ -246,9 +246,9 @@ export default function LabDashboard() {
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-sm font-semibold text-white">Preguntas más frecuentes</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Preguntas más frecuentes</h2>
             {faqRanking.length === 0 && (
-              <p className="mt-4 py-4 text-center text-xs text-[#8b949e]">
+              <p className="mt-4 py-4 text-center text-xs text-[var(--muted)]">
                 Todavía no hay datos disponibles — esperando las primeras conversaciones.
               </p>
             )}
@@ -256,12 +256,12 @@ export default function LabDashboard() {
               {faqRanking.map((faq, index) => (
                 <li key={faq.question} className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#0d1117] text-[10px] font-bold text-[#F8B500] border border-[#30363d]">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[var(--bg)] text-[10px] font-bold text-[var(--accent)] border border-[var(--border)]">
                       {index + 1}
                     </span>
-                    <span className="truncate text-sm text-[#e6e6e6]">{faq.question}</span>
+                    <span className="truncate text-sm text-[var(--text)]">{faq.question}</span>
                   </div>
-                  <span className="shrink-0 text-xs font-semibold text-[#8b949e]">{faq.count}</span>
+                  <span className="shrink-0 text-xs font-semibold text-[var(--muted)]">{faq.count}</span>
                 </li>
               ))}
             </ul>

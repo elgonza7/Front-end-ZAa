@@ -11,13 +11,13 @@ export default function Modal({ open, onClose, title, children }) {
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/70" onClick={onClose} aria-hidden="true" />
-      <div className="relative w-full max-w-lg rounded-2xl border border-[#30363d] bg-[#161b22] p-6 shadow-2xl">
+      <div className="relative w-full max-w-lg rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-2xl">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-white">{title}</h2>
+          <h2 className="text-base font-semibold text-[var(--text-strong)]">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#8b949e] hover:text-white"
+            className="text-[var(--muted)] hover:text-[var(--text-strong)]"
             aria-label="Cerrar"
           >
             <X size={18} />

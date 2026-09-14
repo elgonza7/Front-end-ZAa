@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+/* Sistema de colores: 1° (fondo), 2° (marca/dorado) y 3° (semáforo
+ * rojo/amarillo/verde, casi igual en los dos temas) — ver también Badge.jsx.
+ * Oscuro es el look de siempre y queda como default; claro se activa con
+ * [data-theme="light"] en <html> (ThemeToggle.jsx guarda la elección en
+ * localStorage, no sigue el tema del sistema operativo). */
+:root,
+:root[data-theme="dark"] {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --border-hover: #484f58;
+  --muted: #8b949e;
+  --text: #e6e6e6;
+  --text-strong: #ffffff;
+  --accent: #f8b500;
+  --accent-soft: #e3c065;
+  --logo-mark: #ffffff;
+}
+
+:root[data-theme="light"] {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --border: #d8dbe0;
+  --border-hover: #b6bac2;
+  --muted: #5b6270;
+  --text: #14161a;
+  --text-strong: #000000;
+  --accent: #9a6700;
+  --accent-soft: #7a5200;
+  --logo-mark: #000000;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -12,11 +44,12 @@ body,
 
 body {
   margin: 0;
-  background-color: #0d1117;
-  color: #ffffff;
+  background-color: var(--bg);
+  color: var(--text-strong);
   font-family: "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 ::-webkit-scrollbar {
@@ -25,16 +58,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0d1117;
+  background: var(--bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #30363d;
+  background: var(--border);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8b949e;
+  background: var(--muted);
 }
 
 @keyframes page-enter {

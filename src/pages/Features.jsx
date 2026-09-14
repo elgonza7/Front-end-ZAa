@@ -21,14 +21,14 @@ const MINI_CHART_DATA = [
 
 function PhoneFrame({ children }) {
   return (
-    <div className="mx-auto w-full max-w-xs rounded-[28px] border-4 border-[#30363d] bg-[#0d1117] p-3 shadow-2xl">
-      <div className="rounded-2xl bg-[#0d1117] p-3">
-        <div className="mb-3 flex items-center gap-2 border-b border-[#30363d] pb-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#F8B500] to-[#e3c065] text-xs font-bold text-black">
+    <div className="mx-auto w-full max-w-xs rounded-[28px] border-4 border-[var(--border)] bg-[var(--bg)] p-3 shadow-2xl">
+      <div className="rounded-2xl bg-[var(--bg)] p-3">
+        <div className="mb-3 flex items-center gap-2 border-b border-[var(--border)] pb-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-soft)] text-xs font-bold text-black">
             LA
           </div>
           <div>
-            <p className="text-xs font-semibold text-white">Laboratorio Ameghino</p>
+            <p className="text-xs font-semibold text-[var(--text-strong)]">Laboratorio Ameghino</p>
             <p className="text-[10px] text-emerald-400">en línea</p>
           </div>
         </div>
@@ -40,7 +40,7 @@ function PhoneFrame({ children }) {
 
 function BotBubble({ children }) {
   return (
-    <div className="max-w-[85%] rounded-xl rounded-tl-sm bg-[#161b22] px-3 py-2 text-xs text-[#e6e6e6]">
+    <div className="max-w-[85%] rounded-xl rounded-tl-sm bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text)]">
       {children}
     </div>
   )
@@ -48,7 +48,7 @@ function BotBubble({ children }) {
 
 function UserBubble({ children }) {
   return (
-    <div className="ml-auto max-w-[85%] rounded-xl rounded-tr-sm bg-gradient-to-r from-[#F8B500] to-[#e3c065] px-3 py-2 text-xs font-medium text-black">
+    <div className="ml-auto max-w-[85%] rounded-xl rounded-tr-sm bg-gradient-to-r from-[var(--accent)] to-[var(--accent-soft)] px-3 py-2 text-xs font-medium text-black">
       {children}
     </div>
   )
@@ -62,20 +62,20 @@ const FEATURES = [
       'Tokens consumidos, clientes atendidos y estado de pago, todo en una sola pantalla. Sabés exactamente cuánto está usando tu asistente y cuánto te queda del plan.',
     mockup: (
       <Card className="p-5">
-        <p className="text-xs font-semibold text-white">Consumo de tokens</p>
-        <p className="mt-1 text-lg font-bold text-white">
-          4.580 <span className="text-xs font-normal text-[#8b949e]">/ 10.000</span>
+        <p className="text-xs font-semibold text-[var(--text-strong)]">Consumo de tokens</p>
+        <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">
+          4.580 <span className="text-xs font-normal text-[var(--muted)]">/ 10.000</span>
         </p>
         <div className="mt-3 h-24">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={MINI_CHART_DATA}>
               <defs>
                 <linearGradient id="featGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#F8B500" stopOpacity={0.6} />
-                  <stop offset="100%" stopColor="#F8B500" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.6} />
+                  <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <Area type="monotone" dataKey="v" stroke="#F8B500" strokeWidth={2} fill="url(#featGradient)" />
+              <Area type="monotone" dataKey="v" stroke="var(--accent)" strokeWidth={2} fill="url(#featGradient)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -92,9 +92,9 @@ const FEATURES = [
     description:
       'Armá el árbol de respuestas de tu asistente sin escribir una línea de código: cada botón que ve el paciente es una rama que podés editar, anidar o borrar. Viene precargado con las indicaciones típicas de un laboratorio.',
     mockup: (
-      <Card className="p-5 font-mono text-xs text-[#8b949e]">
-        <p className="text-white">💬 Hola, ¿en qué puedo ayudarte?</p>
-        <div className="ml-3 mt-2 border-l-2 border-[#30363d] pl-3">
+      <Card className="p-5 font-mono text-xs text-[var(--muted)]">
+        <p className="text-[var(--text-strong)]">💬 Hola, ¿en qué puedo ayudarte?</p>
+        <div className="ml-3 mt-2 border-l-2 border-[var(--border)] pl-3">
           <p>├─ 📅 Sacar turno</p>
           <p className="ml-3">│ ├─ 🌅 Turno mañana</p>
           <p className="ml-3">│ └─ 🌙 Turno tarde</p>
@@ -134,9 +134,9 @@ const FEATURES = [
           <BotBubble>Perfecto, un miembro del equipo va a tomar tu conversación en breve.</BotBubble>
         </PhoneFrame>
         <Card className="mx-auto flex max-w-xs items-center gap-3 p-3">
-          <Bell size={18} className="shrink-0 text-[#F8B500]" />
-          <p className="text-xs text-white">
-            Nueva conversación esperando atención humana <span className="text-[#8b949e]">· hace 1 min</span>
+          <Bell size={18} className="shrink-0 text-[var(--accent)]" />
+          <p className="text-xs text-[var(--text-strong)]">
+            Nueva conversación esperando atención humana <span className="text-[var(--muted)]">· hace 1 min</span>
           </p>
         </Card>
       </div>
@@ -146,14 +146,14 @@ const FEATURES = [
 
 export default function Features() {
   return (
-    <div className="min-h-screen bg-[#0d1117]">
+    <div className="min-h-screen bg-[var(--bg)]">
       <LandingNavbar />
 
       <section className="mx-auto max-w-3xl px-6 pb-12 pt-20 text-center">
-        <h1 className="text-3xl font-extrabold text-white sm:text-4xl">
+        <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">
           Todo lo que necesitás para atender a tus pacientes por WhatsApp
         </h1>
-        <p className="mt-4 text-base text-[#8b949e]">
+        <p className="mt-4 text-base text-[var(--muted)]">
           ZeroAutoapp no es solo un chatbot: es el panel completo para configurarlo, medirlo y
           mantenerlo bajo control.
         </p>
@@ -163,11 +163,11 @@ export default function Features() {
         {FEATURES.map(({ icon: Icon, title, description, mockup }, index) => {
           const textBlock = (
             <div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#30363d] bg-[#161b22] text-[#F8B500]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--accent)]">
                 <Icon size={20} />
               </div>
-              <h2 className="mt-4 text-2xl font-bold text-white">{title}</h2>
-              <p className="mt-3 text-sm text-[#8b949e]">{description}</p>
+              <h2 className="mt-4 text-2xl font-bold text-[var(--text-strong)]">{title}</h2>
+              <p className="mt-3 text-sm text-[var(--muted)]">{description}</p>
             </div>
           )
           const mockupBlock = <div>{mockup}</div>

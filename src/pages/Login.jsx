@@ -28,39 +28,39 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0d1117] px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-6">
       <Card className="w-full max-w-sm p-8">
         <div className="flex justify-center">
           <Logo size={44} />
         </div>
 
-        <h1 className="mt-6 text-center text-xl font-bold text-white">Iniciar sesión</h1>
-        <p className="mt-1 text-center text-sm text-[#8b949e]">
+        <h1 className="mt-6 text-center text-xl font-bold text-[var(--text-strong)]">Iniciar sesión</h1>
+        <p className="mt-1 text-center text-sm text-[var(--muted)]">
           Accedé al panel de tu laboratorio o al panel administrativo.
         </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Email</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="laboratorio@ejemplo.com"
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none focus:border-[var(--accent)]"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Contraseña</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Contraseña</label>
             <input
               type="password"
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none focus:border-[var(--accent)]"
             />
           </div>
 
@@ -73,13 +73,13 @@ export default function Login() {
 
           <Link
             to="/olvide-password"
-            className="block text-center text-xs text-[#8b949e] hover:text-white"
+            className="block text-center text-xs text-[var(--muted)] hover:text-[var(--text-strong)]"
           >
             ¿Olvidaste tu contraseña?
           </Link>
         </form>
 
-        <Link to="/" className="mt-6 block text-center text-xs text-[#8b949e] hover:text-white">
+        <Link to="/" className="mt-6 block text-center text-xs text-[var(--muted)] hover:text-[var(--text-strong)]">
           ← Volver al inicio
         </Link>
       </Card>

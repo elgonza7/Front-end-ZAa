@@ -18,13 +18,13 @@ import AdminLayout from '../components/layout/AdminLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import { getMetricsHistory, getGlobalMetrics } from '../api/adminService.js'
 
-const PLAN_COLORS = ['#F8B500', '#34d399', '#60a5fa']
+const PLAN_COLORS = ['var(--accent)', '#34d399', '#60a5fa']
 
 function TokenTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-[#30363d] bg-[#161b22] px-3 py-2 text-xs text-white shadow-lg">
-      <p className="text-[#8b949e]">{label}</p>
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
+      <p className="text-[var(--muted)]">{label}</p>
       <p className="font-semibold text-emerald-400">{payload[0].value.toLocaleString('es-AR')} tokens</p>
     </div>
   )
@@ -33,16 +33,16 @@ function TokenTooltip({ active, payload, label }) {
 function RevenueTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-[#30363d] bg-[#161b22] px-3 py-2 text-xs text-white shadow-lg">
-      <p className="text-[#8b949e]">{label}</p>
-      <p className="font-semibold text-[#F8B500]">${payload[0].value.toLocaleString('es-AR')}</p>
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
+      <p className="text-[var(--muted)]">{label}</p>
+      <p className="font-semibold text-[var(--accent)]">${payload[0].value.toLocaleString('es-AR')}</p>
     </div>
   )
 }
 
 function EmptyChart({ label }) {
   return (
-    <div className="flex h-full items-center justify-center text-center text-xs text-[#8b949e]">
+    <div className="flex h-full items-center justify-center text-center text-xs text-[var(--muted)]">
       Todavía no hay datos disponibles{label ? ` de ${label}` : ''}.
     </div>
   )
@@ -73,7 +73,7 @@ export default function AdminMetrics() {
   if (!history || !metrics) {
     return (
       <AdminLayout title="Métricas" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando métricas…</div>
+        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando métricas…</div>
       </AdminLayout>
     )
   }
@@ -85,27 +85,27 @@ export default function AdminMetrics() {
       <div className="space-y-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card className="p-4">
-            <p className="text-xs text-[#8b949e]">Laboratorios activos</p>
-            <p className="mt-1.5 text-xl font-bold text-white">
-              {metrics.activeLabs} <span className="text-sm font-normal text-[#8b949e]">/ {metrics.totalLabs}</span>
+            <p className="text-xs text-[var(--muted)]">Laboratorios activos</p>
+            <p className="mt-1.5 text-xl font-bold text-[var(--text-strong)]">
+              {metrics.activeLabs} <span className="text-sm font-normal text-[var(--muted)]">/ {metrics.totalLabs}</span>
             </p>
           </Card>
           <Card className="p-4">
-            <p className="text-xs text-[#8b949e]">Ingresos este mes</p>
-            <p className="mt-1.5 text-xl font-bold text-white">${metrics.monthlyRevenueUSD.toLocaleString('es-AR')}</p>
+            <p className="text-xs text-[var(--muted)]">Ingresos este mes</p>
+            <p className="mt-1.5 text-xl font-bold text-[var(--text-strong)]">${metrics.monthlyRevenueUSD.toLocaleString('es-AR')}</p>
           </Card>
           <Card className="p-4">
-            <p className="text-xs text-[#8b949e]">Costo estimado de Gemini</p>
-            <p className="mt-1.5 text-xl font-bold text-[#e6e6e6]">
+            <p className="text-xs text-[var(--muted)]">Costo estimado de Gemini</p>
+            <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
               ${metrics.estimatedGeminiCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
-            <p className="mt-1 text-[10px] text-[#8b949e]">
+            <p className="mt-1 text-[10px] text-[var(--muted)]">
               Estimado sobre {metrics.totalTokensConsumed.toLocaleString('es-AR')} tokens — no es la
               factura real de Google, es una guía.
             </p>
           </Card>
           <Card className="p-4">
-            <p className="text-xs text-[#8b949e]">Margen neto estimado</p>
+            <p className="text-xs text-[var(--muted)]">Margen neto estimado</p>
             <p className={`mt-1.5 text-xl font-bold ${netMargin >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               ${netMargin.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
@@ -114,9 +114,9 @@ export default function AdminMetrics() {
 
         <Card className="p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-base font-bold text-[#F8B500]">Consumición de Tokens</h2>
-            <span className="text-sm text-[#8b949e]">
-              Cantidad de Respuestas: <span className="font-semibold text-white">{history.responseCount.toLocaleString('es-AR')}</span>
+            <h2 className="text-base font-bold text-[var(--accent)]">Consumición de Tokens</h2>
+            <span className="text-sm text-[var(--muted)]">
+              Cantidad de Respuestas: <span className="font-semibold text-[var(--text-strong)]">{history.responseCount.toLocaleString('es-AR')}</span>
             </span>
           </div>
 
@@ -132,16 +132,16 @@ export default function AdminMetrics() {
                     <stop offset="100%" stopColor="#22c55e" stopOpacity={0.04} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#30363d" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="month" stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} />
+                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="month" stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis
-                  stroke="#8b949e"
+                  stroke="var(--muted)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => value.toLocaleString('es-AR')}
                 />
-                <Tooltip content={<TokenTooltip />} cursor={{ stroke: '#30363d' }} />
+                <Tooltip content={<TokenTooltip />} cursor={{ stroke: 'var(--border)' }} />
                 <Area
                   type="monotone"
                   dataKey="tokens"
@@ -159,23 +159,23 @@ export default function AdminMetrics() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Card className="p-6 lg:col-span-2">
-            <h2 className="text-sm font-semibold text-white">Ingresos mensuales (USD)</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Ingresos mensuales (USD)</h2>
             <div className="mt-4 h-64">
               {history.revenueHistory.length === 0 ? (
                 <EmptyChart label="ingresos" />
               ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={history.revenueHistory} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
-                  <CartesianGrid stroke="#30363d" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="month" stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#8b949e" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip content={<RevenueTooltip />} cursor={{ stroke: '#30363d' }} />
+                  <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="month" stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip content={<RevenueTooltip />} cursor={{ stroke: 'var(--border)' }} />
                   <Line
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#F8B500"
+                    stroke="var(--accent)"
                     strokeWidth={3}
-                    dot={{ fill: '#F8B500', r: 4 }}
+                    dot={{ fill: 'var(--accent)', r: 4 }}
                     activeDot={{ r: 6 }}
                   />
                 </LineChart>
@@ -185,7 +185,7 @@ export default function AdminMetrics() {
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-sm font-semibold text-white">Distribución de planes</h2>
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Distribución de planes</h2>
             <div className="mt-4 h-64">
               {history.planDistribution.length === 0 ? (
                 <EmptyChart label="planes contratados" />
@@ -201,18 +201,18 @@ export default function AdminMetrics() {
                     paddingAngle={3}
                   >
                     {history.planDistribution.map((entry, index) => (
-                      <Cell key={entry.plan} fill={PLAN_COLORS[index % PLAN_COLORS.length]} stroke="#161b22" />
+                      <Cell key={entry.plan} fill={PLAN_COLORS[index % PLAN_COLORS.length]} stroke="var(--surface)" />
                     ))}
                   </Pie>
                   <Legend
                     verticalAlign="bottom"
                     iconType="circle"
-                    formatter={(value) => <span className="text-xs text-[#8b949e]">{value}</span>}
+                    formatter={(value) => <span className="text-xs text-[var(--muted)]">{value}</span>}
                   />
                   <Tooltip
                     contentStyle={{
-                      background: '#161b22',
-                      border: '1px solid #30363d',
+                      background: 'var(--surface)',
+                      border: '1px solid var(--border)',
                       borderRadius: 8,
                       fontSize: 12,
                     }}

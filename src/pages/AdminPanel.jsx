@@ -55,8 +55,8 @@ export default function AdminPanel() {
         </div>
 
         <Card className="overflow-hidden">
-          <div className="flex items-center justify-between border-b border-[#30363d] px-6 py-4">
-            <h2 className="text-sm font-semibold text-white">Laboratorios recientes</h2>
+          <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Laboratorios recientes</h2>
             <Button as={Link} to="/admin/inquilinos" variant="outline" className="px-3 py-1.5 text-xs">
               Ver todos los inquilinos
               <ArrowRight size={14} />
@@ -66,7 +66,7 @@ export default function AdminPanel() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
-                <tr className="border-b border-[#30363d] text-xs uppercase tracking-wide text-[#8b949e]">
+                <tr className="border-b border-[var(--border)] text-xs uppercase tracking-wide text-[var(--muted)]">
                   <th className="px-6 py-3 font-medium">Nombre del Lab</th>
                   <th className="px-6 py-3 font-medium">Estado del Bot</th>
                   <th className="px-6 py-3 font-medium">Último Pago</th>
@@ -76,9 +76,9 @@ export default function AdminPanel() {
               <tbody>
                 {loading &&
                   Array.from({ length: 4 }).map((_, i) => (
-                    <tr key={i} className="border-b border-[#30363d]/60">
+                    <tr key={i} className="border-b border-[var(--border)]/60">
                       <td colSpan={4} className="px-6 py-4">
-                        <div className="h-4 w-full animate-pulse rounded bg-[#0d1117]" />
+                        <div className="h-4 w-full animate-pulse rounded bg-[var(--bg)]" />
                       </td>
                     </tr>
                   ))}
@@ -87,27 +87,27 @@ export default function AdminPanel() {
                   labs.map((lab) => {
                     const status = STATUS_LABEL[lab.status] ?? STATUS_LABEL.PENDING
                     return (
-                      <tr key={lab.id} className="border-b border-[#30363d]/60 last:border-0 hover:bg-[#0d1117]/40">
-                        <td className="px-6 py-4 font-medium text-white">{lab.name}</td>
+                      <tr key={lab.id} className="border-b border-[var(--border)]/60 last:border-0 hover:bg-[var(--bg)]/40">
+                        <td className="px-6 py-4 font-medium text-[var(--text-strong)]">{lab.name}</td>
                         <td className="px-6 py-4">
                           <Badge variant={lab.botActive ? 'success' : 'neutral'}>
                             {lab.botActive ? 'ON' : 'OFF'}
                           </Badge>
                         </td>
-                        <td className="px-6 py-4 text-[#e6e6e6]">
+                        <td className="px-6 py-4 text-[var(--text)]">
                           {lab.lastPayment}
                           <Badge variant={status.variant} className="ml-2">
                             {status.text}
                           </Badge>
                         </td>
-                        <td className="px-6 py-4 text-[#e6e6e6]">{lab.tokensConsumed.toLocaleString()}</td>
+                        <td className="px-6 py-4 text-[var(--text)]">{lab.tokensConsumed.toLocaleString()}</td>
                       </tr>
                     )
                   })}
 
                 {!loading && labs.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-6 py-10 text-center text-sm text-[#8b949e]">
+                    <td colSpan={4} className="px-6 py-10 text-center text-sm text-[var(--muted)]">
                       Todavía no hay datos disponibles — no cargaste ningún laboratorio.
                     </td>
                   </tr>

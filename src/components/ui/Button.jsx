@@ -1,9 +1,9 @@
 const VARIANTS = {
   primary:
-    'bg-gradient-to-r from-[#F8B500] to-[#FCEABB] text-black font-semibold hover:brightness-105',
+    'bg-gradient-to-r from-[var(--accent)] to-[#FCEABB] text-black font-semibold hover:brightness-105',
   outline:
-    'border border-[#30363d] text-white hover:border-[#F8B500] hover:text-[#F8B500] bg-transparent',
-  ghost: 'text-[#8b949e] hover:text-white bg-transparent',
+    'border border-[var(--border)] text-[var(--text-strong)] hover:border-[var(--accent)] hover:text-[var(--accent)] bg-transparent',
+  ghost: 'text-[var(--muted)] hover:text-[var(--text-strong)] bg-transparent',
   danger: 'bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25',
 }
 

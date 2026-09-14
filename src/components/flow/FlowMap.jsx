@@ -89,7 +89,7 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
   const hoveredBox = boxes.find((box) => box.id === hoveredId)
 
   return (
-    <div className="relative overflow-auto rounded-2xl border border-[#30363d] bg-[#0d1117] p-6">
+    <div className="relative overflow-auto rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6">
       <div className="relative" style={{ width: width + 40, height: height + BOX_HEIGHT + 20 }}>
         <svg className="absolute left-0 top-0" width={width + 40} height={height + BOX_HEIGHT + 20}>
           {edges.map((edge, index) => {
@@ -103,7 +103,7 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
                 key={index}
                 d={`M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`}
                 fill="none"
-                stroke="#30363d"
+                stroke="var(--border)"
                 strokeWidth={2}
               />
             )
@@ -126,14 +126,14 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
               onBlur={() => setHoveredId((prev) => (prev === box.id ? null : prev))}
               className={`absolute flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs shadow-sm transition-colors ${
                 isHandoff
-                  ? 'cursor-default border-[#F8B500]/30 bg-[#F8B500]/5 text-[#e3c065]'
+                  ? 'cursor-default border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent-soft)]'
                   : isSelected
-                    ? 'border-[#F8B500] bg-[#F8B500]/10 text-white'
-                    : 'border-[#30363d] bg-[#161b22] text-[#e6e6e6] hover:border-[#F8B500]/60'
+                    ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--text-strong)]'
+                    : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--accent)]/60'
               }`}
               style={{ left: box.depth * COL_WIDTH, top: box.y, width: BOX_WIDTH, minHeight: BOX_HEIGHT }}
             >
-              {isHandoff ? <Headset size={14} className="shrink-0" /> : <MessageSquare size={14} className="shrink-0 text-[#F8B500]" />}
+              {isHandoff ? <Headset size={14} className="shrink-0" /> : <MessageSquare size={14} className="shrink-0 text-[var(--accent)]" />}
               <span className="line-clamp-2 leading-snug">{box.label}</span>
             </button>
           )
@@ -141,7 +141,7 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
 
         {hoveredBox && (
           <div
-            className="pointer-events-none absolute z-30 w-64 rounded-lg border border-[#30363d] bg-[#161b22] p-3 text-xs leading-relaxed text-[#e6e6e6] shadow-2xl"
+            className="pointer-events-none absolute z-30 w-64 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-xs leading-relaxed text-[var(--text)] shadow-2xl"
             style={{ left: hoveredBox.depth * COL_WIDTH, top: hoveredBox.y + BOX_HEIGHT + 6 }}
           >
             {previewText(hoveredBox)}

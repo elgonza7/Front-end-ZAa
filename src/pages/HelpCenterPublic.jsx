@@ -9,28 +9,28 @@ const SUPPORT_EMAIL = 'zeroautoapp@gmail.com'
 
 export default function HelpCenterPublic() {
   return (
-    <div className="min-h-screen bg-[#0d1117]">
+    <div className="min-h-screen bg-[var(--bg)]">
       <LandingNavbar />
 
       <section className="mx-auto max-w-2xl px-6 pb-24 pt-20 text-center">
-        <h1 className="text-3xl font-extrabold text-white sm:text-4xl">Centro de Ayuda</h1>
-        <p className="mt-4 text-base text-[#8b949e]">
+        <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">Centro de Ayuda</h1>
+        <p className="mt-4 text-base text-[var(--muted)]">
           ¿Tenés dudas sobre cómo funciona ZeroAutoapp o necesitás soporte técnico? Escribinos.
         </p>
 
         <Card className="mt-8 p-6 text-left">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#30363d] bg-[#0d1117] text-[#F8B500]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
               <Mail size={18} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Contacto técnico</p>
-              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-sm text-[#F8B500] hover:underline">
+              <p className="text-sm font-semibold text-[var(--text-strong)]">Contacto técnico</p>
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-sm text-[var(--accent)] hover:underline">
                 {SUPPORT_EMAIL}
               </a>
             </div>
           </div>
-          <p className="mt-4 text-xs text-[#8b949e]">
+          <p className="mt-4 text-xs text-[var(--muted)]">
             Respondemos en horario comercial de San Juan, Argentina. Para reportar un problema
             puntual o dejar una sugerencia sobre tu cuenta, si ya sos cliente, hacelo desde el{' '}
             <strong>Centro de Ayuda</strong> dentro de tu panel — así queda asociado a tu
@@ -42,9 +42,9 @@ export default function HelpCenterPublic() {
           </Button>
         </Card>
 
-        <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[#8b949e]">
+        <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[var(--muted)]">
           ¿Ya sos cliente?
-          <Link to="/login" className="inline-flex items-center gap-1 text-[#F8B500] hover:underline">
+          <Link to="/login" className="inline-flex items-center gap-1 text-[var(--accent)] hover:underline">
             <LogIn size={14} />
             Iniciar sesión
           </Link>

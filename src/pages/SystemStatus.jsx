@@ -20,14 +20,14 @@ export default function SystemStatus() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0d1117]">
+    <div className="min-h-screen bg-[var(--bg)]">
       <LandingNavbar />
 
       <section className="mx-auto max-w-2xl px-6 pb-24 pt-20">
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-white sm:text-4xl">Estado del sistema</h1>
+          <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">Estado del sistema</h1>
           {status && (
-            <p className="mt-4 inline-flex items-center gap-2 text-sm text-[#8b949e]">
+            <p className="mt-4 inline-flex items-center gap-2 text-sm text-[var(--muted)]">
               {(() => {
                 const meta = STATUS_META[status.overall]
                 const Icon = meta.icon
@@ -43,12 +43,12 @@ export default function SystemStatus() {
         </div>
 
         {status && (
-          <Card className="mt-8 divide-y divide-[#30363d] overflow-hidden">
+          <Card className="mt-8 divide-y divide-[var(--border)] overflow-hidden">
             {status.components.map((component) => {
               const meta = STATUS_META[component.status]
               return (
                 <div key={component.name} className="flex items-center justify-between px-5 py-4">
-                  <p className="text-sm text-white">{component.name}</p>
+                  <p className="text-sm text-[var(--text-strong)]">{component.name}</p>
                   <Badge variant={meta.variant}>{meta.text}</Badge>
                 </div>
               )
@@ -57,7 +57,7 @@ export default function SystemStatus() {
         )}
 
         {status && (
-          <p className="mt-4 text-center text-xs text-[#8b949e]">
+          <p className="mt-4 text-center text-xs text-[var(--muted)]">
             Última actualización: {new Date(status.updatedAt).toLocaleString('es-AR')}
           </p>
         )}

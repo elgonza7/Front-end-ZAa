@@ -33,26 +33,26 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0d1117] px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-6">
       <Card className="w-full max-w-sm p-8">
         <div className="flex justify-center">
           <Logo size={44} />
         </div>
 
-        <h1 className="mt-6 text-center text-xl font-bold text-white">Elegir nueva contraseña</h1>
+        <h1 className="mt-6 text-center text-xl font-bold text-[var(--text-strong)]">Elegir nueva contraseña</h1>
 
         {!token ? (
           <p className="mt-4 text-center text-sm text-red-400">
             Este link no es válido. Pedí uno nuevo desde "¿Olvidaste tu contraseña?".
           </p>
         ) : done ? (
-          <p className="mt-4 text-center text-sm text-[#8b949e]">
+          <p className="mt-4 text-center text-sm text-[var(--muted)]">
             Contraseña actualizada. Te llevamos al login…
           </p>
         ) : (
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Nueva contraseña</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nueva contraseña</label>
               <input
                 type="password"
                 required
@@ -60,12 +60,12 @@ export default function ResetPassword() {
                 value={newPassword}
                 onChange={(event) => setNewPassword(event.target.value)}
                 placeholder="Mínimo 8 caracteres"
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none focus:border-[#F8B500]"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none focus:border-[var(--accent)]"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
                 Código por SMS (si cargaste un teléfono de seguridad)
               </label>
               <input
@@ -73,7 +73,7 @@ export default function ResetPassword() {
                 value={smsCode}
                 onChange={(event) => setSmsCode(event.target.value)}
                 placeholder="6 dígitos"
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none focus:border-[#F8B500]"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none focus:border-[var(--accent)]"
               />
             </div>
 
@@ -86,7 +86,7 @@ export default function ResetPassword() {
           </form>
         )}
 
-        <Link to="/login" className="mt-6 block text-center text-xs text-[#8b949e] hover:text-white">
+        <Link to="/login" className="mt-6 block text-center text-xs text-[var(--muted)] hover:text-[var(--text-strong)]">
           ← Volver a iniciar sesión
         </Link>
       </Card>

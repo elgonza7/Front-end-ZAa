@@ -14,13 +14,13 @@ export default function InfoTooltip({ text }) {
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
         onClick={() => setOpen((prev) => !prev)}
-        className="text-[#8b949e] hover:text-[#F8B500]"
+        className="text-[var(--muted)] hover:text-[var(--accent)]"
         aria-label="Más información"
       >
         <Info size={14} />
       </button>
       {open && (
-        <span className="absolute left-1/2 top-full z-20 mt-2 w-56 -translate-x-1/2 rounded-lg border border-[#30363d] bg-[#161b22] p-2.5 text-xs leading-relaxed text-[#e6e6e6] shadow-xl">
+        <span className="absolute left-1/2 top-full z-20 mt-2 w-56 -translate-x-1/2 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-2.5 text-xs leading-relaxed text-[var(--text)] shadow-xl">
           {text}
         </span>
       )}

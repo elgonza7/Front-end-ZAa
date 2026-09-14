@@ -14,7 +14,7 @@ export default function Sidebar({ items, open, onClose }) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-[#30363d] bg-[#161b22] transition-transform duration-200 lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-[var(--border)] bg-[var(--surface)] transition-transform duration-200 lg:static lg:translate-x-0 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -25,7 +25,7 @@ export default function Sidebar({ items, open, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="text-[#8b949e] hover:text-white lg:hidden"
+            className="text-[var(--muted)] hover:text-[var(--text-strong)] lg:hidden"
             aria-label="Cerrar menú"
           >
             <X size={20} />
@@ -41,8 +41,8 @@ export default function Sidebar({ items, open, onClose }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-gradient-to-r from-[#F8B500]/20 to-transparent text-[#F8B500] border border-[#F8B500]/30'
-                    : 'text-[#8b949e] hover:bg-[#0d1117] hover:text-white border border-transparent'
+                    ? 'bg-gradient-to-r from-[var(--accent)]/20 to-transparent text-[var(--accent)] border border-[var(--accent)]/30'
+                    : 'text-[var(--muted)] hover:bg-[var(--bg)] hover:text-[var(--text-strong)] border border-transparent'
                 }`
               }
             >
@@ -51,7 +51,7 @@ export default function Sidebar({ items, open, onClose }) {
               {!!badge && (
                 <span className="relative flex h-5 min-w-5 shrink-0 items-center justify-center">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                  <span className="relative flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white">
+                  <span className="relative flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-[var(--text-strong)]">
                     {badge}
                   </span>
                 </span>
@@ -60,11 +60,11 @@ export default function Sidebar({ items, open, onClose }) {
           ))}
         </nav>
 
-        <div className="border-t border-[#30363d] px-5 py-4">
-          <Link to="/legal#terminos" className="text-xs text-[#8b949e] transition-colors hover:text-white">
+        <div className="border-t border-[var(--border)] px-5 py-4">
+          <Link to="/legal#terminos" className="text-xs text-[var(--muted)] transition-colors hover:text-[var(--text-strong)]">
             Términos y condiciones
           </Link>
-          <p className="mt-2 text-xs text-[#8b949e]">© {new Date().getFullYear()} ZeroAutoapp</p>
+          <p className="mt-2 text-xs text-[var(--muted)]">© {new Date().getFullYear()} ZeroAutoapp</p>
         </div>
       </aside>
     </>

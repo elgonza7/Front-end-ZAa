@@ -89,7 +89,7 @@ export default function FlowBuilder() {
   if (loading || !tree) {
     return (
       <LabLayout title="Flujo de conversación" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando flujo…</div>
+        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando flujo…</div>
       </LabLayout>
     )
   }
@@ -106,8 +106,8 @@ export default function FlowBuilder() {
     >
       <div className="space-y-5">
         <Card className="flex items-start gap-3 p-4">
-          <Info size={16} className="mt-0.5 shrink-0 text-[#F8B500]" />
-          <p className="text-xs text-[#8b949e]">
+          <Info size={16} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+          <p className="text-xs text-[var(--muted)]">
             Pasá el mouse sobre una caja para ver un preview del mensaje y hacé click para
             editarla. Podés anidar tantos niveles como necesites (por ejemplo Obras Sociales →
             Obra Social Provincia → instrucciones puntuales). La rama especial "Hablar con un
@@ -124,7 +124,7 @@ export default function FlowBuilder() {
             {saving ? 'Guardando…' : 'Guardar flujo'}
           </Button>
           {savedAt && !saving && (
-            <span className="text-xs text-[#8b949e]">Guardado a las {savedAt.toLocaleTimeString()}</span>
+            <span className="text-xs text-[var(--muted)]">Guardado a las {savedAt.toLocaleTimeString()}</span>
           )}
         </div>
       </div>

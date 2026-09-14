@@ -2,8 +2,8 @@ const VARIANTS = {
   success: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
   danger: 'bg-red-500/15 text-red-400 border-red-500/30',
   warning: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-  gold: 'bg-[#F8B500]/15 text-[#F8B500] border-[#F8B500]/30',
-  neutral: 'bg-[#30363d]/40 text-[#8b949e] border-[#30363d]',
+  gold: 'bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/30',
+  neutral: 'bg-[var(--border)]/40 text-[var(--muted)] border-[var(--border)]',
 }
 
 export default function Badge({ children, variant = 'neutral', className = '' }) {

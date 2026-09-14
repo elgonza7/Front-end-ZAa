@@ -43,7 +43,7 @@ function TrendBadge({ usageHistory }) {
     )
   }
   return (
-    <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#8b949e]">
+    <span className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--muted)]">
       <Minus size={13} /> estable
     </span>
   )
@@ -52,9 +52,9 @@ function TrendBadge({ usageHistory }) {
 function DetailTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-[#30363d] bg-[#161b22] px-3 py-2 text-xs text-white shadow-lg">
-      <p className="text-[#8b949e]">{label}</p>
-      <p className="font-semibold text-[#F8B500]">{payload[0].value.toLocaleString('es-AR')} tokens</p>
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
+      <p className="text-[var(--muted)]">{label}</p>
+      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} tokens</p>
     </div>
   )
 }
@@ -150,15 +150,15 @@ export default function AdminTenants() {
       )}
 
       <Card className="overflow-hidden">
-        <div className="flex flex-col gap-3 border-b border-[#30363d] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-b border-[var(--border)] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full sm:max-w-xs">
-            <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#8b949e]" />
+            <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
             <input
               type="text"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Buscar por nombre o email…"
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] py-2 pl-9 pr-3 text-sm text-white outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] py-2 pl-9 pr-3 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
             />
           </div>
           <Button
@@ -176,7 +176,7 @@ export default function AdminTenants() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[980px] text-left text-sm">
             <thead>
-              <tr className="border-b border-[#30363d] text-xs uppercase tracking-wide text-[#8b949e]">
+              <tr className="border-b border-[var(--border)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <th className="px-6 py-3 font-medium">Laboratorio</th>
                 <th className="px-6 py-3 font-medium">Contacto</th>
                 <th className="px-6 py-3 font-medium">Plan</th>
@@ -189,9 +189,9 @@ export default function AdminTenants() {
             <tbody>
               {loading &&
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-[#30363d]/60">
+                  <tr key={i} className="border-b border-[var(--border)]/60">
                     <td colSpan={7} className="px-6 py-4">
-                      <div className="h-4 w-full animate-pulse rounded bg-[#0d1117]" />
+                      <div className="h-4 w-full animate-pulse rounded bg-[var(--bg)]" />
                     </td>
                   </tr>
                 ))}
@@ -200,10 +200,10 @@ export default function AdminTenants() {
                 filteredLabs.map((lab) => {
                   const status = STATUS_LABEL[lab.status] ?? STATUS_LABEL.PENDING
                   return (
-                    <tr key={lab.id} className="border-b border-[#30363d]/60 last:border-0 hover:bg-[#0d1117]/40">
-                      <td className="px-6 py-4 font-medium text-white">{lab.name}</td>
-                      <td className="px-6 py-4 text-[#8b949e]">
-                        <p className="text-[#e6e6e6]">{lab.email}</p>
+                    <tr key={lab.id} className="border-b border-[var(--border)]/60 last:border-0 hover:bg-[var(--bg)]/40">
+                      <td className="px-6 py-4 font-medium text-[var(--text-strong)]">{lab.name}</td>
+                      <td className="px-6 py-4 text-[var(--muted)]">
+                        <p className="text-[var(--text)]">{lab.email}</p>
                         <p className="text-xs">{lab.phone}</p>
                       </td>
                       <td className="px-6 py-4">
@@ -214,20 +214,20 @@ export default function AdminTenants() {
                           {lab.botActive ? 'ON' : 'OFF'}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 text-[#e6e6e6]">
+                      <td className="px-6 py-4 text-[var(--text)]">
                         {lab.lastPayment}
                         <Badge variant={status.variant} className="ml-2">
                           {status.text}
                         </Badge>
                         {lab.pendingTransfer && (
-                          <span className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-[#F8B500]">
+                          <span className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-[var(--accent)]">
                             <Send size={11} />
                             Transferencia sin verificar
                           </span>
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-[#e6e6e6]">{lab.tokensConsumed.toLocaleString()} tokens</p>
+                        <p className="text-[var(--text)]">{lab.tokensConsumed.toLocaleString()} tokens</p>
                         <TrendBadge usageHistory={lab.usageHistory} />
                       </td>
                       <td className="px-6 py-4">
@@ -272,7 +272,7 @@ export default function AdminTenants() {
 
               {!loading && filteredLabs.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-sm text-[#8b949e]">
+                  <td colSpan={7} className="px-6 py-10 text-center text-sm text-[var(--muted)]">
                     {labs.length === 0
                       ? 'Todavía no hay laboratorios cargados. Creá el primero con "Nuevo laboratorio".'
                       : `No se encontraron laboratorios para "${search}".`}
@@ -287,48 +287,48 @@ export default function AdminTenants() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Nuevo laboratorio">
         <form className="space-y-4" onSubmit={handleCreate}>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Nombre</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre</label>
             <input
               required
               type="text"
               value={form.name}
               onChange={(event) => setForm({ ...form, name: event.target.value })}
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Email</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Email</label>
             <input
               required
               type="email"
               value={form.email}
               onChange={(event) => setForm({ ...form, email: event.target.value })}
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Teléfono</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono</label>
             <input
               type="text"
               value={form.phone}
               onChange={(event) => setForm({ ...form, phone: event.target.value })}
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Plan</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Plan</label>
             <select
               value={form.plan}
               onChange={(event) => setForm({ ...form, plan: event.target.value })}
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
             >
               <option>Básico</option>
               <option>Profesional</option>
               <option>Premium</option>
             </select>
           </div>
-          <p className="text-xs text-[#8b949e]">
-            La cuenta arranca con la contraseña temporal <span className="font-mono text-[#e6e6e6]">123</span> y
+          <p className="text-xs text-[var(--muted)]">
+            La cuenta arranca con la contraseña temporal <span className="font-mono text-[var(--text)]">123</span> y
             el laboratorio va a tener que cambiarla apenas inicie sesión por primera vez.
           </p>
 
@@ -360,10 +360,10 @@ export default function AdminTenants() {
             </div>
 
             {detailLab.pendingTransfer && (
-              <div className="flex items-center justify-between rounded-xl border border-[#F8B500]/30 bg-[#F8B500]/5 px-3.5 py-2.5">
+              <div className="flex items-center justify-between rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-3.5 py-2.5">
                 <div>
-                  <p className="text-sm text-white">Transferencia reportada por el laboratorio</p>
-                  <p className="text-xs text-[#8b949e]">
+                  <p className="text-sm text-[var(--text-strong)]">Transferencia reportada por el laboratorio</p>
+                  <p className="text-xs text-[var(--muted)]">
                     Ref. "{detailLab.pendingTransfer.reference}" ·{' '}
                     {new Date(detailLab.pendingTransfer.reportedAt).toLocaleString('es-AR')}
                   </p>
@@ -372,39 +372,39 @@ export default function AdminTenants() {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-3 text-xs text-[#8b949e]">
+            <div className="grid grid-cols-2 gap-3 text-xs text-[var(--muted)]">
               <p>
-                Email: <span className="text-[#e6e6e6]">{detailLab.email}</span>
+                Email: <span className="text-[var(--text)]">{detailLab.email}</span>
               </p>
               <p>
-                Teléfono: <span className="text-[#e6e6e6]">{detailLab.phone}</span>
+                Teléfono: <span className="text-[var(--text)]">{detailLab.phone}</span>
               </p>
               <p>
-                Cliente desde: <span className="text-[#e6e6e6]">{detailLab.createdAt}</span>
+                Cliente desde: <span className="text-[var(--text)]">{detailLab.createdAt}</span>
               </p>
               <p>
                 Última actividad:{' '}
-                <span className="text-[#e6e6e6]">
+                <span className="text-[var(--text)]">
                   {detailLab.lastActivityAt ? new Date(detailLab.lastActivityAt).toLocaleString('es-AR') : '—'}
                 </span>
               </p>
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-medium text-[#8b949e]">Tokens consumidos — últimos 6 meses</p>
+              <p className="mb-2 text-xs font-medium text-[var(--muted)]">Tokens consumidos — últimos 6 meses</p>
               <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={detailLab.usageHistory} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid stroke="#30363d" strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="month" stroke="#8b949e" fontSize={11} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#8b949e" fontSize={11} tickLine={false} axisLine={false} />
-                    <Tooltip content={<DetailTooltip />} cursor={{ stroke: '#30363d' }} />
+                    <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="month" stroke="var(--muted)" fontSize={11} tickLine={false} axisLine={false} />
+                    <YAxis stroke="var(--muted)" fontSize={11} tickLine={false} axisLine={false} />
+                    <Tooltip content={<DetailTooltip />} cursor={{ stroke: 'var(--border)' }} />
                     <Line
                       type="monotone"
                       dataKey="tokens"
-                      stroke="#F8B500"
+                      stroke="var(--accent)"
                       strokeWidth={3}
-                      dot={{ fill: '#F8B500', r: 3 }}
+                      dot={{ fill: 'var(--accent)', r: 3 }}
                       activeDot={{ r: 5 }}
                     />
                   </LineChart>

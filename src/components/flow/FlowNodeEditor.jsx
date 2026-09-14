@@ -66,7 +66,7 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
   return (
     <Card className="p-4">
       {label && (
-        <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-[#e3c065]">
+        <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-[var(--accent-soft)]">
           <MessageSquare size={13} />
           {label}
         </div>
@@ -79,7 +79,7 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
           onChange={(event) => onChange({ ...node, text: event.target.value })}
           rows={4}
           placeholder="Texto que enviará el bot en este paso…"
-          className="w-full resize-y overflow-hidden rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+          className="w-full resize-y overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
           style={{ minHeight: 110 }}
         />
       </div>
@@ -109,16 +109,16 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
       </div>
 
       {node.options.length > 0 && (
-        <div className="mt-4 space-y-2 border-l-2 border-[#30363d] pl-4">
+        <div className="mt-4 space-y-2 border-l-2 border-[var(--border)] pl-4">
           {node.options.map((option) => (
             <div
               key={option.id}
-              className="flex items-center gap-2 rounded-xl border border-[#30363d] bg-[#0d1117] px-3 py-2"
+              className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2"
             >
               {option.isHandoff ? (
-                <Headset size={16} className="shrink-0 text-[#F8B500]" />
+                <Headset size={16} className="shrink-0 text-[var(--accent)]" />
               ) : (
-                <MessageSquare size={16} className="shrink-0 text-[#8b949e]" />
+                <MessageSquare size={16} className="shrink-0 text-[var(--muted)]" />
               )}
 
               <input
@@ -126,7 +126,7 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
                 value={option.label}
                 onChange={(event) => updateOption(option.id, { label: event.target.value })}
                 placeholder="Texto del botón"
-                className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-[#8b949e]/60"
+                className="min-w-0 flex-1 bg-transparent text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60"
               />
 
               {option.isHandoff && <Badge variant="gold">Atención humana</Badge>}
@@ -135,7 +135,7 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
                 <button
                   type="button"
                   onClick={() => onOpenChild?.(option.id)}
-                  className="shrink-0 text-[#8b949e] hover:text-[#F8B500]"
+                  className="shrink-0 text-[var(--muted)] hover:text-[var(--accent)]"
                   aria-label="Abrir esta rama"
                   title="Editar esta rama"
                 >
@@ -146,7 +146,7 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
               <button
                 type="button"
                 onClick={() => removeBranch(option.id)}
-                className="shrink-0 text-[#8b949e] hover:text-red-400"
+                className="shrink-0 text-[var(--muted)] hover:text-red-400"
                 aria-label="Eliminar rama"
               >
                 <Trash2 size={15} />

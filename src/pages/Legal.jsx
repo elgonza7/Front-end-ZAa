@@ -7,14 +7,14 @@ import Card from '../components/ui/Card.jsx'
 function Section({ id, title, children }) {
   return (
     <Card id={id} className="scroll-mt-24 p-6">
-      <h2 className="text-lg font-bold text-[#F8B500]">{title}</h2>
-      <div className="mt-4 space-y-4 text-sm leading-relaxed text-[#e6e6e6]">{children}</div>
+      <h2 className="text-lg font-bold text-[var(--accent)]">{title}</h2>
+      <div className="mt-4 space-y-4 text-sm leading-relaxed text-[var(--text)]">{children}</div>
     </Card>
   )
 }
 
 function SubHeading({ children }) {
-  return <h3 className="text-sm font-semibold text-white">{children}</h3>
+  return <h3 className="text-sm font-semibold text-[var(--text-strong)]">{children}</h3>
 }
 
 export default function Legal() {
@@ -27,13 +27,13 @@ export default function Legal() {
   }, [location.hash])
 
   return (
-    <div className="min-h-screen bg-[#0d1117]">
+    <div className="min-h-screen bg-[var(--bg)]">
       <LandingNavbar />
 
       <section className="mx-auto max-w-3xl px-6 pb-8 pt-20 text-center">
-        <h1 className="text-3xl font-extrabold text-white sm:text-4xl">Términos, Condiciones y Privacidad</h1>
-        <p className="mt-3 text-sm text-[#8b949e]">Versión 3.0 — Última actualización: 25 de agosto de 2026</p>
-        <p className="mt-4 text-sm text-[#8b949e]">
+        <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">Términos, Condiciones y Privacidad</h1>
+        <p className="mt-3 text-sm text-[var(--muted)]">Versión 3.0 — Última actualización: 25 de agosto de 2026</p>
+        <p className="mt-4 text-sm text-[var(--muted)]">
           Este documento constituye un contrato legalmente vinculante entre ZeroAutoapp (domiciliado
           en San Juan, Provincia de San Juan, Argentina) y el "Cliente" (laboratorio clínico, centro
           de salud o entidad contratante). Al registrarse, acceder a la plataforma, abonar la

@@ -9,8 +9,8 @@ export default function Switch({ checked, onChange, disabled = false, label }) {
       onClick={() => onChange?.(!checked)}
       className={`relative inline-flex h-7 w-14 shrink-0 items-center rounded-full border transition-colors duration-200 ${
         checked
-          ? 'border-[#F8B500] bg-gradient-to-r from-[#F8B500] to-[#e3c065]'
-          : 'border-[#30363d] bg-[#0d1117]'
+          ? 'border-[var(--accent)] bg-gradient-to-r from-[var(--accent)] to-[var(--accent-soft)]'
+          : 'border-[var(--border)] bg-[var(--bg)]'
       } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
     >
       <span

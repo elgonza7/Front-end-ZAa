@@ -31,16 +31,16 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.error) {
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#0d1117] px-6 text-center">
-          <p className="text-lg font-semibold text-white">Ocurrió un error inesperado.</p>
-          <p className="max-w-sm text-sm text-[#8b949e]">
+        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--bg)] px-6 text-center">
+          <p className="text-lg font-semibold text-[var(--text-strong)]">Ocurrió un error inesperado.</p>
+          <p className="max-w-sm text-sm text-[var(--muted)]">
             Algo falló al mostrar esta pantalla. Recargá la página; si el problema sigue,
             avisale al equipo de soporte.
           </p>
           <button
             type="button"
             onClick={() => window.location.assign(safeHomePath())}
-            className="rounded-xl bg-[#F8B500] px-4 py-2 text-sm font-semibold text-[#0d1117]"
+            className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--bg)]"
           >
             Volver al inicio
           </button>

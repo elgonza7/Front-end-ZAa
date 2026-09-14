@@ -104,7 +104,7 @@ export default function LabSettings() {
   if (!form) {
     return (
       <LabLayout title="Configuración" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando…</div>
+        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
       </LabLayout>
     )
   }
@@ -113,8 +113,8 @@ export default function LabSettings() {
     <LabLayout title="Configuración" subtitle="Marca, reglas del asistente y base de conocimiento">
       <form onSubmit={handleSave} className="space-y-6">
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-white">Marca y datos del laboratorio</h2>
-          <p className="mt-1 text-xs text-[#8b949e]">
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Marca y datos del laboratorio</h2>
+          <p className="mt-1 text-xs text-[var(--muted)]">
             El logo y el banner son opcionales — se muestran en el panel y en el enlace de resultados.
           </p>
 
@@ -139,39 +139,39 @@ export default function LabSettings() {
 
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Nombre del laboratorio</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre del laboratorio</label>
               <input
                 type="text"
                 value={form.businessName}
                 onChange={(event) => set('businessName', event.target.value)}
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Titular / Responsable</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Titular / Responsable</label>
               <input
                 type="text"
                 value={form.ownerName}
                 onChange={(event) => set('ownerName', event.target.value)}
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Dirección</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Dirección</label>
               <input
                 type="text"
                 value={form.address}
                 onChange={(event) => set('address', event.target.value)}
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Teléfono de contacto</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono de contacto</label>
               <input
                 type="text"
                 value={form.contactPhone}
                 onChange={(event) => set('contactPhone', event.target.value)}
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
               />
             </div>
           </div>
@@ -179,13 +179,13 @@ export default function LabSettings() {
 
         <Card className="p-6 opacity-60">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-white">
-              <ShieldCheck size={16} className="text-[#F8B500]" />
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
+              <ShieldCheck size={16} className="text-[var(--accent)]" />
               Seguridad
             </h2>
             <Badge variant="neutral">Próximamente</Badge>
           </div>
-          <p className="mt-1 text-xs text-[#8b949e]">
+          <p className="mt-1 text-xs text-[var(--muted)]">
             Vas a poder cargar un teléfono para recibir por SMS un código extra cada vez que
             restablezcas la contraseña de esta cuenta (además del link que llega por email). Esta
             función todavía no está disponible.
@@ -193,7 +193,7 @@ export default function LabSettings() {
 
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="flex-1">
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
                 Teléfono de seguridad (con código de país, ej. +5491122334455)
               </label>
               <input
@@ -202,7 +202,7 @@ export default function LabSettings() {
                 value={securityPhone}
                 onChange={(event) => setSecurityPhone(event.target.value)}
                 placeholder="Todavía no disponible"
-                className="w-full cursor-not-allowed rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none"
+                className="w-full cursor-not-allowed rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none"
               />
             </div>
             <Button type="button" variant="outline" disabled className="px-4 py-2.5 text-sm">
@@ -212,24 +212,24 @@ export default function LabSettings() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-white">Reglas del asistente</h2>
-          <p className="mt-1 text-xs text-[#8b949e]">
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Reglas del asistente</h2>
+          <p className="mt-1 text-xs text-[var(--muted)]">
             Estas opciones habilitan o quitan ramas enteras del flujo de conversación.
           </p>
 
           <div className="mt-4 space-y-4">
-            <div className="flex items-center justify-between rounded-xl border border-[#30363d] bg-[#0d1117] px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3">
               <div>
-                <p className="text-sm text-white">Este laboratorio maneja turnos</p>
-                <p className="text-xs text-[#8b949e]">Muestra u oculta la rama "Sacar turno" en el flujo.</p>
+                <p className="text-sm text-[var(--text-strong)]">Este laboratorio maneja turnos</p>
+                <p className="text-xs text-[var(--muted)]">Muestra u oculta la rama "Sacar turno" en el flujo.</p>
               </div>
               <Switch checked={form.handlesAppointments} onChange={(v) => set('handlesAppointments', v)} />
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border border-[#30363d] bg-[#0d1117] px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3">
               <div>
-                <p className="text-sm text-white">Permitir atención humana</p>
-                <p className="text-xs text-[#8b949e]">
+                <p className="text-sm text-[var(--text-strong)]">Permitir atención humana</p>
+                <p className="text-xs text-[var(--muted)]">
                   Habilita la rama "Hablar con un humano": pausa las respuestas automáticas y avisa
                   al laboratorio.
                 </p>
@@ -238,11 +238,11 @@ export default function LabSettings() {
             </div>
 
             {form.handlesHumanHandoff && (
-              <div className="rounded-xl border border-[#30363d] bg-[#0d1117] px-4 py-3">
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white">Avisarme por email</p>
-                    <p className="text-xs text-[#8b949e]">
+                    <p className="text-sm text-[var(--text-strong)]">Avisarme por email</p>
+                    <p className="text-xs text-[var(--muted)]">
                       Además del aviso en el panel, recibí un email cada vez que un paciente pida
                       hablar con un humano.
                     </p>
@@ -255,7 +255,7 @@ export default function LabSettings() {
                     value={form.handoffNotifyEmailAddress}
                     onChange={(event) => set('handoffNotifyEmailAddress', event.target.value)}
                     placeholder="email@tulaboratorio.com"
-                    className="mt-3 w-full rounded-xl border border-[#30363d] bg-[#161b22] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                    className="mt-3 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
                   />
                 )}
               </div>
@@ -264,8 +264,8 @@ export default function LabSettings() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-white">Entrega de resultados</h2>
-          <p className="mt-1 text-xs text-[#8b949e]">
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Entrega de resultados</h2>
+          <p className="mt-1 text-xs text-[var(--muted)]">
             El bot adapta el mensaje de "Ver resultados" según cómo trabaje tu laboratorio.
           </p>
 
@@ -275,8 +275,8 @@ export default function LabSettings() {
                 key={method.value}
                 className={`flex cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition-colors ${
                   form.resultsDeliveryMethod === method.value
-                    ? 'border-[#F8B500]/40 bg-[#F8B500]/5'
-                    : 'border-[#30363d] bg-[#0d1117]'
+                    ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5'
+                    : 'border-[var(--border)] bg-[var(--bg)]'
                 }`}
               >
                 <input
@@ -286,19 +286,19 @@ export default function LabSettings() {
                   checked={form.resultsDeliveryMethod === method.value}
                   onChange={() => set('resultsDeliveryMethod', method.value)}
                 />
-                <span className="text-sm text-white">{method.label}</span>
+                <span className="text-sm text-[var(--text-strong)]">{method.label}</span>
               </label>
             ))}
           </div>
 
           {form.resultsDeliveryMethod === 'PORTAL' && (
             <div className="mt-4">
-              <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">URL del portal de resultados</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">URL del portal de resultados</label>
               <input
                 type="text"
                 value={form.resultsPortalUrl}
                 onChange={(event) => set('resultsPortalUrl', event.target.value)}
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
               />
             </div>
           )}
@@ -312,7 +312,7 @@ export default function LabSettings() {
 
       <Card className="mt-6 p-6">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold text-white">Base de conocimiento</h2>
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Base de conocimiento</h2>
           <HelpButton title="Cómo funciona la Base de conocimiento" label="¿Cómo funciona?">
             <p>
               Los PDF que subís acá (cartillas de obras sociales, requisitos de estudios, horarios
@@ -327,18 +327,18 @@ export default function LabSettings() {
               flujo de conversación: ese botón solo corrige ortografía y prolija el mensaje puntual
               que estás escribiendo en ese momento — no lee ni usa estos PDF.
             </p>
-            <p className="text-xs text-[#8b949e]">
+            <p className="text-xs text-[var(--muted)]">
               En resumen: la Base de conocimiento le da información al bot; "Mejorar con IA" te
               ayuda a redactar mejor un mensaje.
             </p>
           </HelpButton>
         </div>
-        <p className="mt-1 text-xs text-[#8b949e]">
+        <p className="mt-1 text-xs text-[var(--muted)]">
           Subí cartillas médicas en PDF para que la IA responda con tu información.
         </p>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[#30363d] px-4 py-3 text-sm text-[#8b949e] transition-colors hover:border-[#F8B500] hover:text-[#F8B500]">
+          <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--border)] px-4 py-3 text-sm text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
             <Upload size={16} />
             {docUploading ? 'Subiendo…' : 'Subir cartilla médica PDF'}
             <input type="file" accept="application/pdf" className="hidden" onChange={handleDocUpload} />
@@ -353,13 +353,13 @@ export default function LabSettings() {
           {docs.map((doc) => (
             <li
               key={doc.id}
-              className="flex items-center justify-between rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5"
+              className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5"
             >
               <div className="flex min-w-0 items-center gap-2.5">
-                <FileText size={16} className="shrink-0 text-[#F8B500]" />
+                <FileText size={16} className="shrink-0 text-[var(--accent)]" />
                 <div className="min-w-0">
-                  <p className="truncate text-sm text-white">{doc.name}</p>
-                  <p className="text-[11px] text-[#8b949e]">
+                  <p className="truncate text-sm text-[var(--text-strong)]">{doc.name}</p>
+                  <p className="text-[11px] text-[var(--muted)]">
                     {doc.size} · {doc.uploadedAt}
                   </p>
                 </div>
@@ -367,7 +367,7 @@ export default function LabSettings() {
               <button
                 type="button"
                 onClick={() => handleRemoveDoc(doc.id)}
-                className="shrink-0 text-[#8b949e] hover:text-red-400"
+                className="shrink-0 text-[var(--muted)] hover:text-red-400"
                 aria-label={`Eliminar ${doc.name}`}
               >
                 <Trash2 size={16} />
@@ -375,7 +375,7 @@ export default function LabSettings() {
             </li>
           ))}
           {docs.length === 0 && (
-            <p className="py-4 text-center text-xs text-[#8b949e]">Todavía no subiste documentos.</p>
+            <p className="py-4 text-center text-xs text-[var(--muted)]">Todavía no subiste documentos.</p>
           )}
         </ul>
       </Card>

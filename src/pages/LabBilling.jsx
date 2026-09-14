@@ -68,15 +68,15 @@ function CopyField({ label, value }) {
   }
 
   return (
-    <div className="flex items-center justify-between rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5">
+    <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5">
       <div className="min-w-0">
-        <p className="text-[11px] text-[#8b949e]">{label}</p>
-        <p className="truncate text-sm text-white">{value}</p>
+        <p className="text-[11px] text-[var(--muted)]">{label}</p>
+        <p className="truncate text-sm text-[var(--text-strong)]">{value}</p>
       </div>
       <button
         type="button"
         onClick={handleCopy}
-        className="ml-3 shrink-0 text-[#8b949e] hover:text-[#F8B500]"
+        className="ml-3 shrink-0 text-[var(--muted)] hover:text-[var(--accent)]"
         aria-label={`Copiar ${label}`}
       >
         {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
@@ -138,7 +138,7 @@ export default function LabBilling() {
   if (!billing || !destination) {
     return (
       <LabLayout title="Facturación" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando…</div>
+        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
       </LabLayout>
     )
   }
@@ -159,9 +159,9 @@ export default function LabBilling() {
       <div className="space-y-6">
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           <Card className="p-5">
-            <p className="text-sm font-semibold text-white">Tu plan</p>
-            <p className="mt-2 text-xl font-bold text-white">{billing.plan}</p>
-            <p className="mt-1 text-xs text-[#8b949e]">{BILLING_TYPE_LABEL[billing.billingType]}</p>
+            <p className="text-sm font-semibold text-[var(--text-strong)]">Tu plan</p>
+            <p className="mt-2 text-xl font-bold text-[var(--text-strong)]">{billing.plan}</p>
+            <p className="mt-1 text-xs text-[var(--muted)]">{BILLING_TYPE_LABEL[billing.billingType]}</p>
             {billing.discountPct > 0 && (
               <Badge variant="gold" className="mt-2">
                 {billing.discountPct}% de descuento aplicado
@@ -170,31 +170,31 @@ export default function LabBilling() {
           </Card>
 
           <Card className="p-5">
-            <p className="text-sm font-semibold text-white">Monto a pagar</p>
-            <p className="mt-2 text-xl font-bold text-white">
+            <p className="text-sm font-semibold text-[var(--text-strong)]">Monto a pagar</p>
+            <p className="mt-2 text-xl font-bold text-[var(--text-strong)]">
               ${finalAmount}
-              <span className="text-sm font-normal text-[#8b949e]"> USD / mes</span>
+              <span className="text-sm font-normal text-[var(--muted)]"> USD / mes</span>
             </p>
             {billing.discountPct > 0 && (
-              <p className="mt-1 text-xs text-[#8b949e] line-through">${billing.basePriceUSD} USD</p>
+              <p className="mt-1 text-xs text-[var(--muted)] line-through">${billing.basePriceUSD} USD</p>
             )}
           </Card>
 
           <Card className="p-5">
-            <p className="text-sm font-semibold text-white">Estado</p>
+            <p className="text-sm font-semibold text-[var(--text-strong)]">Estado</p>
             <div className="mt-2">
               <Badge variant={status.variant}>{status.text}</Badge>
             </div>
-            <p className="mt-2 text-xs text-[#8b949e]">
-              Próximo vencimiento: <span className="text-white">{billing.nextDueDate}</span>
+            <p className="mt-2 text-xs text-[var(--muted)]">
+              Próximo vencimiento: <span className="text-[var(--text-strong)]">{billing.nextDueDate}</span>
             </p>
           </Card>
         </div>
 
         <Card className="flex items-center justify-between p-4">
           <div>
-            <p className="text-sm text-white">Cuota de habilitación (pago único)</p>
-            <p className="text-xs text-[#8b949e]">Activó tu cuenta y tu número de WhatsApp al contratar.</p>
+            <p className="text-sm text-[var(--text-strong)]">Cuota de habilitación (pago único)</p>
+            <p className="text-xs text-[var(--muted)]">Activó tu cuenta y tu número de WhatsApp al contratar.</p>
           </div>
           <Badge variant={billing.setupFeeStatus === 'PAID' ? 'success' : 'warning'}>
             {billing.setupFeeStatus === 'PAID' ? `Pagada · ${billing.setupFeePaidAt}` : 'Pendiente'}
@@ -204,11 +204,11 @@ export default function LabBilling() {
         <Card className="p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="flex items-center gap-2 text-sm font-semibold text-white">
-                <RefreshCw size={15} className="text-[#F8B500]" />
+              <p className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
+                <RefreshCw size={15} className="text-[var(--accent)]" />
                 Cobro automático
               </p>
-              <p className="mt-1 text-xs text-[#8b949e]">
+              <p className="mt-1 text-xs text-[var(--muted)]">
                 {billing.autoRenew
                   ? `Se renueva solo cada mes. Sin compromiso: podés cancelar cuando quieras.`
                   : billing.cancelAtPeriodEnd
@@ -216,9 +216,9 @@ export default function LabBilling() {
                     : 'La renovación automática está apagada.'}
               </p>
               {billing.autoRenew && (
-                <p className="mt-1 text-[11px] text-[#8b949e]">
+                <p className="mt-1 text-[11px] text-[var(--muted)]">
                   Fecha límite para cancelar sin que se cobre el próximo período:{' '}
-                  <span className="text-white">{billing.renewalCutoffDate}</span>.
+                  <span className="text-[var(--text-strong)]">{billing.renewalCutoffDate}</span>.
                 </p>
               )}
             </div>
@@ -232,8 +232,8 @@ export default function LabBilling() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-white">Cómo pagar</h2>
-          <p className="mt-1 text-xs text-[#8b949e]">
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Cómo pagar</h2>
+          <p className="mt-1 text-xs text-[var(--muted)]">
             Pagá con Mercado Pago (débito automático, recomendado) o por transferencia a las cuentas
             de ZeroAutoapp.
           </p>
@@ -247,14 +247,14 @@ export default function LabBilling() {
 
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <p className="mb-2 text-xs font-medium text-[#8b949e]">Transferencia en pesos (ARS)</p>
+              <p className="mb-2 text-xs font-medium text-[var(--muted)]">Transferencia en pesos (ARS)</p>
               <div className="space-y-2">
                 <CopyField label="Alias" value={destination.ars.alias} />
                 <CopyField label="CVU" value={destination.ars.cvu} />
               </div>
             </div>
             <div>
-              <p className="mb-2 text-xs font-medium text-[#8b949e]">Transferencia en dólares (USD)</p>
+              <p className="mb-2 text-xs font-medium text-[var(--muted)]">Transferencia en dólares (USD)</p>
               <div className="space-y-2">
                 <CopyField label="Alias" value={destination.usd.alias} />
                 <CopyField label="CBU" value={destination.usd.cbu} />
@@ -262,12 +262,12 @@ export default function LabBilling() {
             </div>
           </div>
 
-          <div className="mt-5 border-t border-[#30363d] pt-5">
+          <div className="mt-5 border-t border-[var(--border)] pt-5">
             {billing.pendingTransfer ? (
-              <div className="flex items-center justify-between rounded-xl border border-[#F8B500]/30 bg-[#F8B500]/5 px-3.5 py-2.5">
+              <div className="flex items-center justify-between rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-3.5 py-2.5">
                 <div>
-                  <p className="text-sm text-white">Transferencia reportada</p>
-                  <p className="text-xs text-[#8b949e]">
+                  <p className="text-sm text-[var(--text-strong)]">Transferencia reportada</p>
+                  <p className="text-xs text-[var(--muted)]">
                     Ref. "{billing.pendingTransfer.reference}" — la vamos a acreditar y actualizar tu
                     estado.
                   </p>
@@ -281,7 +281,7 @@ export default function LabBilling() {
                   value={transferReference}
                   onChange={(event) => setTransferReference(event.target.value)}
                   placeholder="Número de operación o comprobante"
-                  className="min-w-0 flex-1 rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none placeholder:text-[#8b949e]/60 focus:border-[#F8B500]"
+                  className="min-w-0 flex-1 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)]"
                 />
                 <Button
                   type="submit"
@@ -294,7 +294,7 @@ export default function LabBilling() {
                 </Button>
               </form>
             )}
-            <p className="mt-3 text-[11px] text-[#8b949e]">
+            <p className="mt-3 text-[11px] text-[var(--muted)]">
               Ya no hace falta avisar por otro medio: al transferir, cargá acá el número de operación
               y queda registrado en el sistema para que lo verifiquemos.
             </p>
@@ -302,46 +302,46 @@ export default function LabBilling() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-white">Planes y precios</h2>
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Planes y precios</h2>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
             {Object.entries(PLAN_PRICING).map(([planName, plan]) => (
               <div
                 key={planName}
                 className={`rounded-xl border px-4 py-4 ${
-                  planName === billing.plan ? 'border-[#F8B500]/40 bg-[#F8B500]/5' : 'border-[#30363d] bg-[#0d1117]'
+                  planName === billing.plan ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5' : 'border-[var(--border)] bg-[var(--bg)]'
                 }`}
               >
-                <p className="text-sm font-semibold text-white">{planName}</p>
-                <p className="mt-1 text-lg font-bold text-white">
-                  ${plan.priceUSD} <span className="text-xs font-normal text-[#8b949e]">USD/mes</span>
+                <p className="text-sm font-semibold text-[var(--text-strong)]">{planName}</p>
+                <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">
+                  ${plan.priceUSD} <span className="text-xs font-normal text-[var(--muted)]">USD/mes</span>
                 </p>
-                <p className="mt-1 text-xs text-[#8b949e]">{plan.tokensLimit.toLocaleString()} tokens/mes</p>
+                <p className="mt-1 text-xs text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} tokens/mes</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-4 space-y-1.5 border-t border-[#30363d] pt-4">
-            <p className="text-xs font-medium text-[#8b949e]">Descuento por laboratorio adicional del mismo dueño:</p>
+          <div className="mt-4 space-y-1.5 border-t border-[var(--border)] pt-4">
+            <p className="text-xs font-medium text-[var(--muted)]">Descuento por laboratorio adicional del mismo dueño:</p>
             {destination.multiLabDiscount.map((tier) => (
-              <p key={tier.tier} className="text-xs text-[#e6e6e6]">
-                {tier.tier}: <span className="text-[#F8B500]">{tier.discountPct}% off</span>
+              <p key={tier.tier} className="text-xs text-[var(--text)]">
+                {tier.tier}: <span className="text-[var(--accent)]">{tier.discountPct}% off</span>
               </p>
             ))}
-            <p className="pt-1 text-[11px] text-[#8b949e]">
+            <p className="pt-1 text-[11px] text-[var(--muted)]">
               ¿Tenés más de un laboratorio? Escribinos para que apliquemos el descuento correspondiente.
             </p>
           </div>
         </Card>
 
         <Card className="overflow-hidden">
-          <div className="flex items-center gap-2 border-b border-[#30363d] px-6 py-4">
-            <Receipt size={16} className="text-[#F8B500]" />
-            <h2 className="text-sm font-semibold text-white">Historial de pagos</h2>
+          <div className="flex items-center gap-2 border-b border-[var(--border)] px-6 py-4">
+            <Receipt size={16} className="text-[var(--accent)]" />
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Historial de pagos</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[420px] text-left text-sm">
               <thead>
-                <tr className="border-b border-[#30363d] text-xs uppercase tracking-wide text-[#8b949e]">
+                <tr className="border-b border-[var(--border)] text-xs uppercase tracking-wide text-[var(--muted)]">
                   <th className="px-6 py-3 font-medium">Período</th>
                   <th className="px-6 py-3 font-medium">Monto</th>
                   <th className="px-6 py-3 font-medium">Estado</th>
@@ -350,15 +350,15 @@ export default function LabBilling() {
               </thead>
               <tbody>
                 {billing.history.map((invoice) => (
-                  <tr key={invoice.id} className="border-b border-[#30363d]/60 last:border-0">
-                    <td className="px-6 py-3 text-white">{invoice.period}</td>
-                    <td className="px-6 py-3 text-[#e6e6e6]">${invoice.amountUSD} USD</td>
+                  <tr key={invoice.id} className="border-b border-[var(--border)]/60 last:border-0">
+                    <td className="px-6 py-3 text-[var(--text-strong)]">{invoice.period}</td>
+                    <td className="px-6 py-3 text-[var(--text)]">${invoice.amountUSD} USD</td>
                     <td className="px-6 py-3">
                       <Badge variant={STATUS_LABEL[invoice.status]?.variant ?? 'neutral'}>
                         {STATUS_LABEL[invoice.status]?.text ?? invoice.status}
                       </Badge>
                     </td>
-                    <td className="px-6 py-3 text-[#e6e6e6]">{invoice.paidAt}</td>
+                    <td className="px-6 py-3 text-[var(--text)]">{invoice.paidAt}</td>
                   </tr>
                 ))}
               </tbody>

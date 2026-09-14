@@ -26,9 +26,9 @@ function timeAgo(isoString) {
 }
 
 const SENDER_STYLE = {
-  PATIENT: { align: 'justify-start', bubble: 'bg-[#0d1117] border border-[#30363d] text-[#e6e6e6]', icon: User, label: 'Paciente' },
-  BOT: { align: 'justify-end', bubble: 'bg-[#F8B500]/15 border border-[#F8B500]/30 text-white', icon: Bot, label: 'Asistente' },
-  HUMAN: { align: 'justify-end', bubble: 'bg-emerald-500/10 border border-emerald-500/30 text-white', icon: Headset, label: 'Persona del equipo' },
+  PATIENT: { align: 'justify-start', bubble: 'bg-[var(--bg)] border border-[var(--border)] text-[var(--text)]', icon: User, label: 'Paciente' },
+  BOT: { align: 'justify-end', bubble: 'bg-[var(--accent)]/15 border border-[var(--accent)]/30 text-[var(--text-strong)]', icon: Bot, label: 'Asistente' },
+  HUMAN: { align: 'justify-end', bubble: 'bg-emerald-500/10 border border-emerald-500/30 text-[var(--text-strong)]', icon: Headset, label: 'Persona del equipo' },
 }
 
 export default function LabConversations() {
@@ -66,12 +66,12 @@ export default function LabConversations() {
       }
     >
       {loading ? (
-        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando…</div>
+        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
       ) : conversations.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
-          <Inbox size={32} className="text-[#8b949e]" />
-          <p className="text-sm text-white">Todavía no hay charlas registradas.</p>
-          <p className="text-xs text-[#8b949e]">
+          <Inbox size={32} className="text-[var(--muted)]" />
+          <p className="text-sm text-[var(--text-strong)]">Todavía no hay charlas registradas.</p>
+          <p className="text-xs text-[var(--muted)]">
             En cuanto un paciente le escriba a tu número de WhatsApp, la conversación va a
             aparecer acá.
           </p>
@@ -86,25 +86,25 @@ export default function LabConversations() {
                 onClick={() => setSelectedId(conv.conversationId)}
                 className={`w-full rounded-xl border p-3.5 text-left transition ${
                   selectedId === conv.conversationId
-                    ? 'border-[#F8B500] bg-[#F8B500]/5'
-                    : 'border-[#30363d] bg-[#161b22] hover:border-[#484f58]'
+                    ? 'border-[var(--accent)] bg-[var(--accent)]/5'
+                    : 'border-[var(--border)] bg-[var(--surface)] hover:border-[var(--border-hover)]'
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <p className="flex items-center gap-1.5 text-sm font-semibold text-white">
-                    <MessagesSquare size={13} className="text-[#F8B500]" /> {conv.conversationId}
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-[var(--text-strong)]">
+                    <MessagesSquare size={13} className="text-[var(--accent)]" /> {conv.conversationId}
                   </p>
-                  <span className="shrink-0 text-[10px] text-[#8b949e]">{timeAgo(conv.lastMessageAt)}</span>
+                  <span className="shrink-0 text-[10px] text-[var(--muted)]">{timeAgo(conv.lastMessageAt)}</span>
                 </div>
-                <p className="mt-1.5 truncate text-xs text-[#8b949e]">{conv.lastMessage}</p>
-                <p className="mt-1 text-[10px] text-[#8b949e]">{conv.messageCount} mensajes</p>
+                <p className="mt-1.5 truncate text-xs text-[var(--muted)]">{conv.lastMessage}</p>
+                <p className="mt-1 text-[10px] text-[var(--muted)]">{conv.messageCount} mensajes</p>
               </button>
             ))}
           </div>
 
           <Card className="flex flex-col p-5 lg:col-span-2">
             {loadingMessages ? (
-              <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando…</div>
+              <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
             ) : (
               <div className="flex max-h-[70vh] flex-col gap-3 overflow-y-auto pr-1">
                 {messages.map((msg, index) => {
@@ -113,11 +113,11 @@ export default function LabConversations() {
                   return (
                     <div key={index} className={`flex ${style.align}`}>
                       <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${style.bubble}`}>
-                        <p className="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-wide text-[#8b949e]">
+                        <p className="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-wide text-[var(--muted)]">
                           <Icon size={11} /> {style.label}
                         </p>
                         <p className="whitespace-pre-wrap">{msg.text}</p>
-                        <p className="mt-1 text-right text-[10px] text-[#8b949e]">
+                        <p className="mt-1 text-right text-[10px] text-[var(--muted)]">
                           {new Date(msg.createdAt).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>

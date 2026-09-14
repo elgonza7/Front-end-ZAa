@@ -35,7 +35,7 @@ export default function ChangePassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0d1117] px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-6">
       <Card className="w-full max-w-sm p-8">
         <div className="flex justify-center">
           <Logo size={44} />
@@ -43,16 +43,16 @@ export default function ChangePassword() {
 
         <div className="mt-6 flex items-center justify-center gap-2 text-amber-400">
           <ShieldAlert size={18} />
-          <h1 className="text-center text-xl font-bold text-white">Actualizá tu contraseña</h1>
+          <h1 className="text-center text-xl font-bold text-[var(--text-strong)]">Actualizá tu contraseña</h1>
         </div>
-        <p className="mt-2 text-center text-sm text-[#8b949e]">
+        <p className="mt-2 text-center text-sm text-[var(--muted)]">
           Tu cuenta todavía tiene la contraseña temporal que te asignó el administrador — es
           insegura porque cualquiera podría adivinarla. Elegí una nueva antes de continuar.
         </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Nueva contraseña</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nueva contraseña</label>
             <input
               type="password"
               required
@@ -60,12 +60,12 @@ export default function ChangePassword() {
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
               placeholder="Mínimo 8 caracteres"
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none focus:border-[var(--accent)]"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Confirmar contraseña</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Confirmar contraseña</label>
             <input
               type="password"
               required
@@ -73,7 +73,7 @@ export default function ChangePassword() {
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
               placeholder="Repetí la contraseña"
-              className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none focus:border-[#F8B500]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none focus:border-[var(--accent)]"
             />
           </div>
 

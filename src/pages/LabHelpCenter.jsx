@@ -84,7 +84,7 @@ function TutorialAccordion() {
   const [openIndex, setOpenIndex] = useState(0)
 
   return (
-    <div className="divide-y divide-[#30363d]">
+    <div className="divide-y divide-[var(--border)]">
       {TUTORIAL_ITEMS.map((item, index) => {
         const isOpen = openIndex === index
         return (
@@ -94,13 +94,13 @@ function TutorialAccordion() {
               onClick={() => setOpenIndex(isOpen ? -1 : index)}
               className="flex w-full items-center justify-between gap-3 py-3.5 text-left"
             >
-              <span className="text-sm font-medium text-white">{item.question}</span>
+              <span className="text-sm font-medium text-[var(--text-strong)]">{item.question}</span>
               <ChevronDown
                 size={16}
-                className={`shrink-0 text-[#8b949e] transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                className={`shrink-0 text-[var(--muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`}
               />
             </button>
-            {isOpen && <p className="pb-4 text-sm text-[#8b949e]">{item.answer}</p>}
+            {isOpen && <p className="pb-4 text-sm text-[var(--muted)]">{item.answer}</p>}
           </div>
         )
       })}
@@ -138,12 +138,12 @@ export default function LabHelpCenter() {
     <LabLayout title="Centro de Ayuda" subtitle="Contactanos o dejanos tu feedback sobre la plataforma">
       <Card className="mb-6 p-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#30363d] bg-[#0d1117] text-[#F8B500]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
             <GraduationCap size={18} />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-white">Guía rápida: cómo funciona todo esto</h2>
-            <p className="text-xs text-[#8b949e]">
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Guía rápida: cómo funciona todo esto</h2>
+            <p className="text-xs text-[var(--muted)]">
               Explicado en criollo, sin tecnicismos — pensado para alguien que nunca usó esta plataforma.
             </p>
           </div>
@@ -156,17 +156,17 @@ export default function LabHelpCenter() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="p-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#30363d] bg-[#0d1117] text-[#F8B500]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
               <Mail size={18} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Contacto directo</p>
-              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-sm text-[#F8B500] hover:underline">
+              <p className="text-sm font-semibold text-[var(--text-strong)]">Contacto directo</p>
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-sm text-[var(--accent)] hover:underline">
                 {SUPPORT_EMAIL}
               </a>
             </div>
           </div>
-          <p className="mt-4 text-xs text-[#8b949e]">
+          <p className="mt-4 text-xs text-[var(--muted)]">
             Para algo urgente escribinos directamente por email. Para reportar un problema puntual
             o dejar una sugerencia sobre la plataforma, usá el formulario — queda registrado y el
             equipo de ZeroAutoapp le hace seguimiento.
@@ -174,13 +174,13 @@ export default function LabHelpCenter() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-white">Enviar feedback</h2>
-          <p className="mt-1 text-xs text-[#8b949e]">Contanos qué encontraste o qué te gustaría que agreguemos.</p>
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Enviar feedback</h2>
+          <p className="mt-1 text-xs text-[var(--muted)]">Contanos qué encontraste o qué te gustaría que agreguemos.</p>
 
           {sent ? (
             <div className="mt-6 flex flex-col items-center gap-2 py-6 text-center">
               <CheckCircle2 size={28} className="text-emerald-400" />
-              <p className="text-sm text-white">¡Gracias! Ya lo recibimos.</p>
+              <p className="text-sm text-[var(--text-strong)]">¡Gracias! Ya lo recibimos.</p>
               <Button variant="outline" className="mt-2 px-4 py-2 text-xs" onClick={() => setSent(false)}>
                 Enviar otro mensaje
               </Button>
@@ -188,11 +188,11 @@ export default function LabHelpCenter() {
           ) : (
             <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Categoría</label>
+                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Categoría</label>
                 <select
                   value={category}
                   onChange={(event) => setCategory(event.target.value)}
-                  className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c.value} value={c.value}>
@@ -202,23 +202,23 @@ export default function LabHelpCenter() {
                 </select>
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Asunto</label>
+                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Asunto</label>
                 <input
                   required
                   type="text"
                   value={subject}
                   onChange={(event) => setSubject(event.target.value)}
-                  className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Mensaje</label>
+                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Mensaje</label>
                 <textarea
                   required
                   rows={4}
                   value={message}
                   onChange={(event) => setMessage(event.target.value)}
-                  className="w-full resize-none rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white outline-none focus:border-[#F8B500]"
+                  className="w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
                 />
               </div>
               <Button type="submit" disabled={sending} className="px-4 py-2.5 text-sm">

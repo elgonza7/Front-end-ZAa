@@ -27,35 +27,35 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0d1117] px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-6">
       <Card className="w-full max-w-sm p-8">
         <div className="flex justify-center">
           <Logo size={44} />
         </div>
 
-        <h1 className="mt-6 text-center text-xl font-bold text-white">Recuperar contraseña</h1>
+        <h1 className="mt-6 text-center text-xl font-bold text-[var(--text-strong)]">Recuperar contraseña</h1>
 
         {sent ? (
-          <p className="mt-4 text-center text-sm text-[#8b949e]">
+          <p className="mt-4 text-center text-sm text-[var(--muted)]">
             Si el email existe, te mandamos un link para restablecer la contraseña (y un
             código por SMS si tenés un teléfono de seguridad cargado). Revisá tu correo.
           </p>
         ) : (
           <>
-            <p className="mt-1 text-center text-sm text-[#8b949e]">
+            <p className="mt-1 text-center text-sm text-[var(--muted)]">
               Ingresá tu email y te mandamos un link para elegir una nueva contraseña.
             </p>
 
             <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[#8b949e]">Email</label>
+                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Email</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="laboratorio@ejemplo.com"
-                  className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#8b949e]/60 outline-none focus:border-[#F8B500]"
+                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] placeholder:text-[var(--muted)]/60 outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
@@ -69,7 +69,7 @@ export default function ForgotPassword() {
           </>
         )}
 
-        <Link to="/login" className="mt-6 block text-center text-xs text-[#8b949e] hover:text-white">
+        <Link to="/login" className="mt-6 block text-center text-xs text-[var(--muted)] hover:text-[var(--text-strong)]">
           ← Volver a iniciar sesión
         </Link>
       </Card>

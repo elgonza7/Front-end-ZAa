@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { UserCircle2 } from 'lucide-react'
 import Logo from '../ui/Logo.jsx'
 import Button from '../ui/Button.jsx'
+import ThemeToggle from '../ui/ThemeToggle.jsx'
 
 const NAV_LINKS = [
   { label: 'Características', to: '/caracteristicas' },
@@ -10,7 +11,7 @@ const NAV_LINKS = [
 
 export default function LandingNavbar() {
   return (
-    <header className="sticky top-0 z-20 border-b border-[#30363d] bg-[#0d1117]/90 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-[var(--border)] bg-[var(--bg)]/90 backdrop-blur">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link to="/">
           <Logo />
@@ -21,17 +22,20 @@ export default function LandingNavbar() {
             <Link
               key={link.to}
               to={link.to}
-              className="text-sm text-[#8b949e] transition-colors hover:text-white"
+              className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--text-strong)]"
             >
               {link.label}
             </Link>
           ))}
         </div>
 
-        <Button as={Link} to="/login" variant="outline" className="!px-3.5">
-          <UserCircle2 size={18} />
-          Sign In
-        </Button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Button as={Link} to="/login" variant="outline" className="!px-3.5">
+            <UserCircle2 size={18} />
+            Sign In
+          </Button>
+        </div>
       </nav>
     </header>
   )

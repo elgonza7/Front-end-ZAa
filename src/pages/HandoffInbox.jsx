@@ -37,12 +37,12 @@ export default function HandoffInbox() {
       subtitle="Pacientes que pidieron hablar con una persona — el bot dejó de responderles automáticamente"
     >
       {loading ? (
-        <div className="flex h-64 items-center justify-center text-sm text-[#8b949e]">Cargando…</div>
+        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
       ) : queue.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
           <CheckCircle2 size={32} className="text-emerald-400" />
-          <p className="text-sm text-white">No hay conversaciones esperando atención humana.</p>
-          <p className="text-xs text-[#8b949e]">
+          <p className="text-sm text-[var(--text-strong)]">No hay conversaciones esperando atención humana.</p>
+          <p className="text-xs text-[var(--muted)]">
             Cuando un paciente elija "Hablar con un humano" en el flujo, aparecerá acá.
           </p>
         </Card>
@@ -51,16 +51,16 @@ export default function HandoffInbox() {
           {queue.map((conv) => (
             <Card key={conv.id} className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#30363d] bg-[#0d1117] text-[#F8B500]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
                   <Headset size={18} />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">{conv.patientName}</p>
-                  <p className="mt-0.5 flex items-center gap-1.5 text-xs text-[#8b949e]">
+                  <p className="text-sm font-semibold text-[var(--text-strong)]">{conv.patientName}</p>
+                  <p className="mt-0.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
                     <Phone size={12} /> {conv.phone}
                   </p>
-                  <p className="mt-1.5 max-w-xl text-sm text-[#e6e6e6]">"{conv.lastMessage}"</p>
-                  <p className="mt-1 text-[11px] text-[#8b949e]">Esperando {timeAgo(conv.waitingSince)}</p>
+                  <p className="mt-1.5 max-w-xl text-sm text-[var(--text)]">"{conv.lastMessage}"</p>
+                  <p className="mt-1 text-[11px] text-[var(--muted)]">Esperando {timeAgo(conv.waitingSince)}</p>
                 </div>
               </div>
 
