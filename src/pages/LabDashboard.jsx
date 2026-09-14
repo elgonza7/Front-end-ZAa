@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { Headset, ArrowRight } from 'lucide-react'
+import { Headset, ArrowRight, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -10,6 +10,35 @@ import ProgressBar from '../components/ui/ProgressBar.jsx'
 import Button from '../components/ui/Button.jsx'
 import { getLabProfile, toggleBot, getTokenUsageHistory, getFaqRanking } from '../api/labService.js'
 import { getHandoffQueue } from '../api/handoffService.js'
+import { getConnection } from '../api/whatsappService.js'
+
+// Semáforo de estado general: un vistazo, sin tener que interpretar nada.
+// Rojo = el asistente no puede atender pacientes ahora mismo. Amarillo =
+// funciona, pero hay algo para revisar pronto. Verde = todo en orden.
+function computeOverallStatus({ profile, connected }) {
+  if (!connected) {
+    return { level: 'danger', title: 'El asistente no puede responder', detail: 'Todavía no conectaste tu número de WhatsApp.', icon: XCircle }
+  }
+  if (profile.paymentStatus === 'OVERDUE') {
+    return { level: 'danger', title: 'El asistente no puede responder', detail: 'Tu suscripción está vencida — regularizala desde Facturación.', icon: XCircle }
+  }
+  if (!profile.botActive) {
+    return { level: 'warning', title: 'El asistente está pausado', detail: 'Lo apagaste vos desde este panel — los pacientes no reciben respuesta automática.', icon: AlertTriangle }
+  }
+  if (profile.paymentStatus === 'PENDING') {
+    return { level: 'warning', title: 'Funcionando, con un pendiente', detail: 'Tenés un pago pendiente de confirmación en Facturación.', icon: AlertTriangle }
+  }
+  if (profile.tokensUsed >= profile.tokensLimit) {
+    return { level: 'warning', title: 'Funcionando, pasaste tu cupo', detail: 'El asistente sigue respondiendo — el excedente se cobra aparte.', icon: AlertTriangle }
+  }
+  return { level: 'success', title: 'Todo funcionando correctamente', detail: 'Tu asistente está conectado y respondiendo a tus pacientes.', icon: CheckCircle2 }
+}
+
+const STATUS_STYLE = {
+  success: { badge: 'success', border: 'border-emerald-500/30', bg: 'bg-emerald-500/5', iconColor: 'text-emerald-400' },
+  warning: { badge: 'warning', border: 'border-amber-500/30', bg: 'bg-amber-500/5', iconColor: 'text-amber-400' },
+  danger: { badge: 'danger', border: 'border-red-500/30', bg: 'bg-red-500/5', iconColor: 'text-red-400' },
+}
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -26,16 +55,18 @@ export default function LabDashboard() {
   const [usageHistory, setUsageHistory] = useState([])
   const [faqRanking, setFaqRanking] = useState([])
   const [handoffQueue, setHandoffQueue] = useState([])
+  const [whatsappConnected, setWhatsappConnected] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([getLabProfile(), getTokenUsageHistory(), getFaqRanking(), getHandoffQueue()])
-      .then(([profileData, usageData, faqData, handoffData]) => {
+    Promise.all([getLabProfile(), getTokenUsageHistory(), getFaqRanking(), getHandoffQueue(), getConnection()])
+      .then(([profileData, usageData, faqData, handoffData, connectionData]) => {
         setProfile(profileData)
         setUsageHistory(usageData)
         setFaqRanking(faqData)
         setHandoffQueue(handoffData)
+        setWhatsappConnected(connectionData.connected)
       })
       .catch((err) => setError(err.message || 'No se pudo cargar el panel del laboratorio.'))
       .finally(() => setLoading(false))
@@ -74,6 +105,24 @@ export default function LabDashboard() {
       userLabel={profile.name}
     >
       <div className="space-y-6">
+        {(() => {
+          const status = computeOverallStatus({ profile, connected: whatsappConnected })
+          const style = STATUS_STYLE[status.level]
+          const Icon = status.icon
+          return (
+            <Card className={`flex items-center gap-3.5 border p-4 ${style.border} ${style.bg}`}>
+              <Icon size={26} className={`shrink-0 ${style.iconColor}`} />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white">{status.title}</p>
+                <p className="text-xs text-[#8b949e]">{status.detail}</p>
+              </div>
+              <Badge variant={style.badge} className="ml-auto shrink-0">
+                {status.level === 'success' ? 'OK' : status.level === 'warning' ? 'Atención' : 'Caído'}
+              </Badge>
+            </Card>
+          )
+        })()}
+
         {handoffQueue.length > 0 && (
           <Card className="flex flex-col items-start gap-3 border-[#F8B500]/40 bg-gradient-to-r from-[#F8B500]/10 to-transparent p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">

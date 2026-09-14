@@ -28,6 +28,22 @@ function WhatsappTutorial({ coexistenceAvailable }) {
         </p>
       )}
 
+      <div className="rounded-xl border border-[#F8B500]/30 bg-[#F8B500]/5 p-4">
+        <p className="text-sm font-semibold text-white">¿Preferís que lo hagamos nosotros?</p>
+        <p className="mt-1.5">
+          Los pasos de abajo (Meta for Developers, Business Manager, tokens) son los más técnicos
+          de toda la app. Si no te sentís cómodo haciéndolos vos, mandanos el número de WhatsApp
+          que vas a usar y nosotros nos encargamos de toda esta parte por vos — no hace falta que
+          entiendas nada de esto.
+        </p>
+        <a
+          href="mailto:zeroautoapp@gmail.com?subject=Quiero%20que%20conecten%20mi%20WhatsApp&body=Hola%2C%20quiero%20usar%20el%20n%C3%BAmero%3A%20%5Btu%20n%C3%BAmero%20de%20WhatsApp%20ac%C3%A1%5D"
+          className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F8B500] underline"
+        >
+          Pedir que lo conecten por mí →
+        </a>
+      </div>
+
       <div>
         <p className="text-sm font-semibold text-white">Antes de empezar, necesitás:</p>
         <ul className="mt-2 list-disc space-y-1.5 pl-5">
