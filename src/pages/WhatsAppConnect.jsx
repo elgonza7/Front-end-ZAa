@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, XCircle, Send, Unlink, Save, Phone } from 'lucide-react'
+import { CheckCircle2, XCircle, Send, Unlink, Save, Phone, Smartphone, Server, Lock } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -7,7 +8,7 @@ import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import { getConnection, saveConnection, testConnection, disconnect } from '../api/whatsappService.js'
 
-function WhatsappTutorial() {
+function WhatsappTutorial({ coexistenceAvailable }) {
   return (
     <>
       <p>
@@ -16,6 +17,16 @@ function WhatsappTutorial() {
         de programación: es completar formularios en su sitio. Se configura <strong>una sola vez</strong>{' '}
         y de ahí en más el asistente queda funcionando solo.
       </p>
+
+      {coexistenceAvailable && (
+        <p>
+          Tu plan te deja elegir cómo conectar el número: <strong>Número nuevo</strong> (más
+          simple, para un número sin WhatsApp Business previo) o <strong>Coexistence</strong>{' '}
+          (si ya usás WhatsApp Business en ese número desde hace tiempo y no querés perder nada).
+          Elegís cuál usar en el panel de abajo, antes de completar el formulario — cada uno tiene
+          su propia explicación ahí.
+        </p>
+      )}
 
       <div>
         <p className="text-sm font-semibold text-white">Antes de empezar, necesitás:</p>
@@ -132,6 +143,7 @@ const QUALITY_LABEL = {
 export default function WhatsAppConnect() {
   const [connection, setConnection] = useState(null)
   const [form, setForm] = useState({ phoneNumberId: '', wabaId: '', accessToken: '', webhookVerifyToken: '' })
+  const [connectionType, setConnectionType] = useState('MANUAL')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [testResult, setTestResult] = useState(null)
@@ -146,6 +158,7 @@ export default function WhatsAppConnect() {
         accessToken: data.accessToken || '',
         webhookVerifyToken: data.webhookVerifyToken || '',
       })
+      setConnectionType(data.connectionType || 'MANUAL')
       setLoading(false)
     })
   }, [])
@@ -153,7 +166,7 @@ export default function WhatsAppConnect() {
   async function handleSave(event) {
     event.preventDefault()
     setSaving(true)
-    const updated = await saveConnection(form)
+    const updated = await saveConnection({ ...form, connectionType })
     setConnection(updated)
     setSaving(false)
   }
@@ -187,10 +200,77 @@ export default function WhatsAppConnect() {
       subtitle="Vinculá tu número con la API de WhatsApp Cloud (Meta) para que el asistente pueda responder"
       headerActions={
         <HelpButton title="Cómo obtener tus credenciales de WhatsApp Cloud API">
-          <WhatsappTutorial />
+          <WhatsappTutorial coexistenceAvailable={connection.coexistenceAvailableForPlan} />
         </HelpButton>
       }
     >
+      {connection.coexistenceAvailableForPlan ? (
+        <Card className="mb-6 p-5">
+          <p className="text-sm font-semibold text-white">¿Cómo querés conectar tu WhatsApp?</p>
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => setConnectionType('MANUAL')}
+              className={`rounded-xl border p-4 text-left transition ${
+                connectionType === 'MANUAL'
+                  ? 'border-[#F8B500] bg-[#F8B500]/5'
+                  : 'border-[#30363d] bg-[#0d1117] hover:border-[#484f58]'
+              }`}
+            >
+              <div className="flex items-center gap-2 text-sm font-semibold text-white">
+                <Server size={15} className="text-[#F8B500]" /> Número nuevo
+              </div>
+              <p className="mt-1.5 text-xs text-[#8b949e]">
+                El número queda dedicado 100% al asistente. Es la forma más simple: no dependés de
+                tener el celular con batería o conectado. Ideal si todavía no usás WhatsApp
+                Business en ese número.
+              </p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setConnectionType('COEXISTENCE')}
+              className={`rounded-xl border p-4 text-left transition ${
+                connectionType === 'COEXISTENCE'
+                  ? 'border-[#F8B500] bg-[#F8B500]/5'
+                  : 'border-[#30363d] bg-[#0d1117] hover:border-[#484f58]'
+              }`}
+            >
+              <div className="flex items-center gap-2 text-sm font-semibold text-white">
+                <Smartphone size={15} className="text-[#F8B500]" /> Mantener mi WhatsApp Business
+              </div>
+              <p className="mt-1.5 text-xs text-[#8b949e]">
+                Seguís usando la app de WhatsApp Business en tu celular como siempre —chats,
+                grupos, historial— mientras el asistente responde en paralelo por el mismo número.
+                No se borra nada.
+              </p>
+            </button>
+          </div>
+
+          {connectionType === 'COEXISTENCE' && (
+            <div className="mt-4 rounded-xl border border-[#F8B500]/30 bg-[#F8B500]/5 p-4 text-xs text-[#e6e6e6]">
+              <p className="flex items-center gap-1.5 font-semibold text-white">
+                <Lock size={13} className="text-[#F8B500]" /> Cosas para saber antes de elegir esto
+              </p>
+              <ul className="mt-2 list-disc space-y-1 pl-4 text-[#8b949e]">
+                <li>Alguien tiene que abrir la app de WhatsApp Business en el celular al menos una vez cada 14 días — si nadie la abre, WhatsApp pausa el asistente hasta que se vuelva a abrir.</li>
+                <li>Los grupos y las llamadas siguen funcionando solo desde el celular, no pasan por el asistente.</li>
+                <li>Algunas funciones del celular se desactivan mientras esté activo (mensajes que se autodestruyen, ubicación en vivo, listas de difusión clásicas).</li>
+              </ul>
+            </div>
+          )}
+        </Card>
+      ) : (
+        <Card className="mb-6 flex items-center justify-between gap-4 p-4">
+          <p className="text-xs text-[#8b949e]">
+            ¿Tu laboratorio ya usa WhatsApp Business y no querés perder los chats? Con los planes
+            Profesional o Premium podés mantenerlo funcionando junto con el asistente.
+          </p>
+          <Link to="/dashboard/facturacion" className="shrink-0 text-xs font-semibold text-[#F8B500] hover:underline">
+            Ver planes →
+          </Link>
+        </Card>
+      )}
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-1">
           <div className="flex items-center gap-3">
