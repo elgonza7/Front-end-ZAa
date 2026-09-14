@@ -56,10 +56,17 @@ export function clearAuthSession() {
 export async function apiFetch(path, options = {}) {
   const token = getAuthToken()
 
+  // Si el body es FormData (subida de archivos), el navegador tiene que
+  // poner su propio Content-Type con el boundary del multipart — si
+  // forzamos "application/json" acá, el backend recibe application/json
+  // con un body que no lo es y responde 415. Pasar headers:{} desde el
+  // caller no alcanza para evitar esto porque igual heredaba el default.
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
