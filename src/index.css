@@ -22,8 +22,11 @@
 :root[data-theme="light"] {
   --bg: #f4f5f7;
   --surface: #ffffff;
-  --border: #d8dbe0;
-  --border-hover: #b6bac2;
+  /* Un poco más oscuros que un gris "de catálogo" para que las secciones se
+   * noten separadas — con #f4f5f7 de fondo y blanco de superficie, un borde
+   * demasiado claro se pierde y todo se ve "extremadamente blanco". */
+  --border: #c4c9d1;
+  --border-hover: #9aa0aa;
   --muted: #5b6270;
   --text: #14161a;
   --text-strong: #000000;
