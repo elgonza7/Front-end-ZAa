@@ -167,6 +167,7 @@ export default function WhatsAppConnect() {
   const [testing, setTesting] = useState(false)
   const [businessProfile, setBusinessProfile] = useState(null)
   const [addressCopied, setAddressCopied] = useState(false)
+  const [saveConfirmed, setSaveConfirmed] = useState(false)
 
   useEffect(() => {
     getConnection().then((data) => {
@@ -197,9 +198,12 @@ export default function WhatsAppConnect() {
   async function handleSave(event) {
     event.preventDefault()
     setSaving(true)
+    setSaveConfirmed(false)
     const updated = await saveConnection({ ...form, connectionType })
     setConnection(updated)
     setSaving(false)
+    setSaveConfirmed(true)
+    setTimeout(() => setSaveConfirmed(false), 4000)
   }
 
   async function handleTest() {
@@ -415,10 +419,17 @@ export default function WhatsAppConnect() {
               </p>
             </div>
 
-            <Button type="submit" disabled={saving} className="px-4 py-2.5 text-sm">
-              <Save size={16} />
-              {saving ? 'Guardando…' : 'Guardar y conectar'}
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button type="submit" disabled={saving} className="px-4 py-2.5 text-sm">
+                <Save size={16} />
+                {saving ? 'Guardando…' : 'Guardar y conectar'}
+              </Button>
+              {saveConfirmed && (
+                <p className="flex items-center gap-1.5 text-sm font-medium text-emerald-400">
+                  <CheckCircle2 size={16} /> Se guardó toda la información correctamente
+                </p>
+              )}
+            </div>
           </form>
         </Card>
       </div>
