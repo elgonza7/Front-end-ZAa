@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Search, Plus, Ban, PlayCircle, Eye, ArrowUpRight, ArrowDownRight, Minus, Send } from 'lucide-react'
+import { Search, Plus, Ban, PlayCircle, Eye, ArrowUpRight, ArrowDownRight, Minus, Send, Gift } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import AdminLayout from '../components/layout/AdminLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import Modal from '../components/ui/Modal.jsx'
-import { getLabs, createLab, suspendLab, reactivateLab, getLabDetail } from '../api/adminService.js'
+import { getLabs, createLab, suspendLab, reactivateLab, getLabDetail, grantFreeMonth } from '../api/adminService.js'
 
 const STATUS_LABEL = {
   PAID: { text: 'Pagado', variant: 'success' },
@@ -96,6 +96,18 @@ export default function AdminTenants() {
       )
     } catch (err) {
       setListError(err.message || 'No se pudo actualizar el estado del laboratorio.')
+    } finally {
+      setBusyId(null)
+    }
+  }
+
+  async function handleFreeMonth(lab) {
+    setBusyId(lab.id)
+    try {
+      await grantFreeMonth(lab.id)
+      setLabs((prev) => prev.map((item) => (item.id === lab.id ? { ...item, status: 'PAID' } : item)))
+    } catch (err) {
+      setListError(err.message || 'No se pudo otorgar el mes gratis.')
     } finally {
       setBusyId(null)
     }
@@ -241,6 +253,16 @@ export default function AdminTenants() {
                               : lab.botActive
                                 ? 'Suspender'
                                 : 'Reactivar'}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="justify-center px-3 py-1.5 text-xs"
+                            disabled={busyId === lab.id}
+                            onClick={() => handleFreeMonth(lab)}
+                            title="Marca el período actual como pagado sin cobrar nada — para testers o cortesías"
+                          >
+                            <Gift size={14} />
+                            Mes gratis
                           </Button>
                         </div>
                       </td>

@@ -78,9 +78,40 @@ export default function AdminMetrics() {
     )
   }
 
+  const netMargin = metrics.monthlyRevenueUSD - metrics.estimatedGeminiCostUSD
+
   return (
     <AdminLayout title="Métricas" subtitle="Consumo, ingresos y distribución de planes de toda la plataforma">
       <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card className="p-4">
+            <p className="text-xs text-[#8b949e]">Laboratorios activos</p>
+            <p className="mt-1.5 text-xl font-bold text-white">
+              {metrics.activeLabs} <span className="text-sm font-normal text-[#8b949e]">/ {metrics.totalLabs}</span>
+            </p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-xs text-[#8b949e]">Ingresos este mes</p>
+            <p className="mt-1.5 text-xl font-bold text-white">${metrics.monthlyRevenueUSD.toLocaleString('es-AR')}</p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-xs text-[#8b949e]">Costo estimado de Gemini</p>
+            <p className="mt-1.5 text-xl font-bold text-[#e6e6e6]">
+              ${metrics.estimatedGeminiCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+            </p>
+            <p className="mt-1 text-[10px] text-[#8b949e]">
+              Estimado sobre {metrics.totalTokensConsumed.toLocaleString('es-AR')} tokens — no es la
+              factura real de Google, es una guía.
+            </p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-xs text-[#8b949e]">Margen neto estimado</p>
+            <p className={`mt-1.5 text-xl font-bold ${netMargin >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+              ${netMargin.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+            </p>
+          </Card>
+        </div>
+
         <Card className="p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-base font-bold text-[#F8B500]">Consumición de Tokens</h2>

@@ -173,7 +173,15 @@ export default function Pricing() {
                   MÁS ELEGIDO
                 </span>
               )}
+              {planName === 'Básico' && (
+                <span className="mb-3 inline-flex w-fit items-center rounded-full border border-[#30363d] bg-[#0d1117] px-2.5 py-1 text-[11px] font-semibold text-[#8b949e]">
+                  Recomendado para laboratorio nuevo
+                </span>
+              )}
               <h2 className="text-lg font-bold text-white">{planName}</h2>
+              {planName === 'Básico' && (
+                <p className="mt-0.5 text-[11px] text-[#8b949e]">Sin Coexistence — número dedicado al asistente</p>
+              )}
 
               <div className="mt-3">
                 <p className="text-3xl font-extrabold text-white">

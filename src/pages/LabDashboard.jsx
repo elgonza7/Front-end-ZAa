@@ -185,11 +185,14 @@ export default function LabDashboard() {
           </Card>
 
           <Card className="p-5">
-            <p className="text-sm font-semibold text-white">Tokens restantes</p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-white">Tokens usados este mes</p>
+              <Badge variant="gold">Plan {profile.planName}</Badge>
+            </div>
             <p className="mt-2 text-xl font-bold text-white">
               {profile.tokensUsed.toLocaleString()}{' '}
               <span className="text-sm font-normal text-[#8b949e]">
-                / {profile.tokensLimit.toLocaleString()}
+                / {profile.tokensLimit.toLocaleString()} incluidos en tu plan
               </span>
             </p>
             <ProgressBar value={profile.tokensUsed} max={profile.tokensLimit} className="mt-3" />

@@ -100,3 +100,14 @@ export async function updateLab(labId, payload) {
   }
   return apiFetch(`/admin/labs/${labId}`, { method: 'PATCH', body: JSON.stringify(payload) })
 }
+
+// POST /api/admin/labs/{id}/free-month -> marca el período actual (cuota +
+// habilitación) como pagado sin pasar por Mercado Pago/transferencia, y
+// empuja 30 días el próximo vencimiento. Para testers o cortesías puntuales.
+export async function grantFreeMonth(labId) {
+  if (USE_MOCKS) {
+    tenantsState = tenantsState.map((lab) => (lab.id === labId ? { ...lab, status: 'PAID' } : lab))
+    return mockDelay(tenantsState.find((lab) => lab.id === labId), 400)
+  }
+  return apiFetch(`/admin/labs/${labId}/free-month`, { method: 'POST' })
+}
