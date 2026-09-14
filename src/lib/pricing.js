@@ -12,12 +12,11 @@
 // (~7.500 tokens/conversación). Con precio de Gemini 3.6 Flash (~$2.10 por
 // millón de tokens, tarifa post-2027) el costo real por conversación es de
 // ~1,6 centavos de dólar — el margen sigue siendo amplio con estos cupos.
-// Premium: 8.5M en vez de 4.8M por el mismo precio — decisión consciente de
-// devolver el margen extra (a costo real, servir a un cliente con el cupo
-// lleno sale ~USD 18/mes contra los USD 90 que paga, ~80% de margen) como
-// más cupo en vez de bajar el precio.
+// Cupos ajustados con la calculadora de rentabilidad (margen ~75-85% sobre
+// el costo real de Gemini, cupo lleno, antes de infraestructura) —
+// devolvemos el margen extra como más cupo en vez de bajar precios.
 export const PLAN_PRICING = {
-  Básico: { setupFeeUSD: 70, priceUSD: 35, tokensLimit: 1_200_000 },
-  Profesional: { setupFeeUSD: 100, priceUSD: 65, tokensLimit: 2_800_000 },
-  Premium: { setupFeeUSD: 125, priceUSD: 90, tokensLimit: 8_500_000 },
+  Básico: { setupFeeUSD: 70, priceUSD: 35, tokensLimit: 2_200_000 },
+  Profesional: { setupFeeUSD: 100, priceUSD: 65, tokensLimit: 4_100_000 },
+  Premium: { setupFeeUSD: 125, priceUSD: 90, tokensLimit: 9_500_000 },
 }
