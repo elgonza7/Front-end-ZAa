@@ -40,3 +40,13 @@ export async function disconnect() {
   }
   return apiFetch('/lab/whatsapp', { method: 'DELETE' })
 }
+
+// GET /api/lab/whatsapp/business-profile -> perfil cargado del lado de Meta
+// (About, descripción, dirección, email, sitios web, categoría) — de solo
+// lectura, para mostrarlo como referencia sin pisar nada de Configuración.
+export async function getBusinessProfile() {
+  if (USE_MOCKS) {
+    return mockDelay({ about: null, description: null, address: null, email: null, websites: [], vertical: null })
+  }
+  return apiFetch('/lab/whatsapp/business-profile')
+}

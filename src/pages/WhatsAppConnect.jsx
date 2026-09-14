@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, XCircle, Send, Unlink, Save, Phone, Smartphone, Server, Lock } from 'lucide-react'
+import { CheckCircle2, XCircle, Send, Unlink, Save, Phone, Smartphone, Server, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
-import { getConnection, saveConnection, testConnection, disconnect } from '../api/whatsappService.js'
+import { getConnection, saveConnection, testConnection, disconnect, getBusinessProfile } from '../api/whatsappService.js'
+import { updateLabSettings } from '../api/labService.js'
 
 function WhatsappTutorial({ coexistenceAvailable }) {
   return (
@@ -164,6 +165,8 @@ export default function WhatsAppConnect() {
   const [saving, setSaving] = useState(false)
   const [testResult, setTestResult] = useState(null)
   const [testing, setTesting] = useState(false)
+  const [businessProfile, setBusinessProfile] = useState(null)
+  const [addressCopied, setAddressCopied] = useState(false)
 
   useEffect(() => {
     getConnection().then((data) => {
@@ -176,8 +179,20 @@ export default function WhatsAppConnect() {
       })
       setConnectionType(data.connectionType || 'MANUAL')
       setLoading(false)
+
+      // El perfil solo existe del lado de Meta si hay un número conectado —
+      // si falla (ej. token vencido), no rompemos la pantalla por esto.
+      if (data.connected) {
+        getBusinessProfile().then(setBusinessProfile).catch(() => setBusinessProfile(null))
+      }
     })
   }, [])
+
+  async function handleUseAddress() {
+    if (!businessProfile?.address) return
+    await updateLabSettings({ address: businessProfile.address })
+    setAddressCopied(true)
+  }
 
   async function handleSave(event) {
     event.preventDefault()
@@ -407,6 +422,88 @@ export default function WhatsAppConnect() {
           </form>
         </Card>
       </div>
+
+      {connection.connected && businessProfile && (
+        <Card className="mt-6 p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Perfil de WhatsApp Business</h2>
+              <p className="mt-1 text-xs text-[var(--muted)]">
+                Esto ya está cargado del lado de Meta (lo ven tus pacientes cuando tocan el nombre
+                del chat) — es de solo lectura acá, para que lo tengas de referencia sin entrar a
+                Meta.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {businessProfile.vertical && (
+              <div className="flex items-start gap-2.5 text-sm">
+                <Tag size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+                <div>
+                  <p className="text-[11px] text-[var(--muted)]">Categoría</p>
+                  <p className="text-[var(--text-strong)]">{businessProfile.vertical}</p>
+                </div>
+              </div>
+            )}
+            {businessProfile.email && (
+              <div className="flex items-start gap-2.5 text-sm">
+                <Mail size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+                <div>
+                  <p className="text-[11px] text-[var(--muted)]">Email</p>
+                  <p className="text-[var(--text-strong)]">{businessProfile.email}</p>
+                </div>
+              </div>
+            )}
+            {businessProfile.websites?.length > 0 && (
+              <div className="flex items-start gap-2.5 text-sm">
+                <Globe size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+                <div>
+                  <p className="text-[11px] text-[var(--muted)]">Sitio web</p>
+                  <p className="text-[var(--text-strong)]">{businessProfile.websites.join(', ')}</p>
+                </div>
+              </div>
+            )}
+            {businessProfile.description && (
+              <div className="flex items-start gap-2.5 text-sm">
+                <Building2 size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+                <div>
+                  <p className="text-[11px] text-[var(--muted)]">Descripción</p>
+                  <p className="text-[var(--text-strong)]">{businessProfile.description}</p>
+                </div>
+              </div>
+            )}
+            {businessProfile.address && (
+              <div className="flex items-start justify-between gap-3 sm:col-span-2">
+                <div className="flex items-start gap-2.5 text-sm">
+                  <MapPin size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+                  <div>
+                    <p className="text-[11px] text-[var(--muted)]">Dirección</p>
+                    <p className="text-[var(--text-strong)]">{businessProfile.address}</p>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="shrink-0 px-3 py-1.5 text-xs"
+                  onClick={handleUseAddress}
+                  disabled={addressCopied}
+                >
+                  <ArrowDownToLine size={13} />
+                  {addressCopied ? 'Copiada a Configuración' : 'Usar en Configuración'}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {!businessProfile.vertical && !businessProfile.email && !businessProfile.address && !businessProfile.description && (
+            <p className="mt-3 text-xs text-[var(--muted)]">
+              Todavía no cargaste nada de esto en el perfil de WhatsApp Business (Meta → Administrador
+              de WhatsApp → Números de teléfono → Perfil).
+            </p>
+          )}
+        </Card>
+      )}
     </LabLayout>
   )
 }
