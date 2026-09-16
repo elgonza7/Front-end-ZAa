@@ -110,6 +110,12 @@ export async function apiFetch(path, options = {}) {
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
+    // Nunca reusar una respuesta cacheada por el navegador: la URL de un GET
+    // (ej. /lab/me) es la misma para cualquier cuenta, y el caché HTTP no
+    // distingue por el header Authorization — sin esto, cambiar de cuenta en
+    // la misma pestaña podía mostrar datos de la sesión anterior hasta que
+    // algo forzara un refetch real.
+    cache: 'no-store',
     headers: {
       ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

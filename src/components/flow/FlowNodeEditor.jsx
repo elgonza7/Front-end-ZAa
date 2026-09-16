@@ -35,7 +35,18 @@ export default function FlowNodeEditor({
   onDeleteSelf,
 }) {
   const [improving, setImproving] = useState(false)
+  const [lastTokensConsumed, setLastTokensConsumed] = useState(null)
   const textareaRef = useRef(null)
+
+  // Si cambiás de rama sin volver a tocar "Mejorar con IA", el conteo de
+  // tokens de la rama anterior no tiene sentido acá — se limpia sola.
+  // Ajustar estado durante el render (no en un efecto aparte) es el patrón
+  // recomendado por React para "resetear al cambiar una prop".
+  const [lastNodeId, setLastNodeId] = useState(node.id)
+  if (node.id !== lastNodeId) {
+    setLastNodeId(node.id)
+    setLastTokensConsumed(null)
+  }
 
   // Auto-crece con el contenido para ver el mensaje completo sin scroll
   // interno — el textarea nunca se achica de menos de ~110px (rows=4).
@@ -70,8 +81,9 @@ export default function FlowNodeEditor({
     if (!node.text.trim()) return
     setImproving(true)
     try {
-      const { text } = await improveMessage(node.text)
+      const { text, tokensConsumed } = await improveMessage(node.text)
       onChange({ ...node, text })
+      setLastTokensConsumed(tokensConsumed ?? null)
     } finally {
       setImproving(false)
     }
@@ -133,7 +145,12 @@ export default function FlowNodeEditor({
           <Sparkles size={13} />
           {improving ? 'Mejorando…' : 'Mejorar con IA'}
         </Button>
-        <InfoTooltip text='Corrige ortografía y prolija el tono de este mensaje con IA (Gemini), sin cambiar su significado. No reemplaza tu revisión — siempre podés editar el resultado.' />
+        <InfoTooltip text='Corrige ortografía y prolija el tono de este mensaje con IA (Gemini), sin cambiar su significado, y lo acorta para que consuma menos tokens sin perder información esencial. No reemplaza tu revisión — siempre podés editar el resultado.' />
+        {lastTokensConsumed !== null && (
+          <span className="text-xs text-[var(--muted)]">
+            Esta corrección consumió <span className="text-[var(--text-strong)]">{lastTokensConsumed.toLocaleString()} tokens</span>
+          </span>
+        )}
       </div>
 
       <div className="mt-3">

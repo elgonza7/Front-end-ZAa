@@ -63,6 +63,7 @@ export default function LabSettings() {
       ownerName: form.ownerName,
       address: form.address,
       contactPhone: form.contactPhone,
+      whatsappAbout: form.whatsappAbout,
       handlesAppointments: form.handlesAppointments,
       handlesHumanHandoff: form.handlesHumanHandoff,
       handoffNotifyEmail: form.handoffNotifyEmail,
@@ -168,6 +169,25 @@ export default function LabSettings() {
                 onChange={(event) => set('contactPhone', event.target.value)}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
               />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+                Descripción para WhatsApp (se ve en "Info. del contacto")
+              </label>
+              <input
+                type="text"
+                maxLength={139}
+                value={form.whatsappAbout ?? ''}
+                onChange={(event) => set('whatsappAbout', event.target.value)}
+                placeholder='Ej: "Laboratorio de análisis clínicos — turnos y resultados por WhatsApp"'
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)]"
+              />
+              <p className="mt-1.5 text-[11px] text-[var(--muted)]">
+                Al guardar, esto (junto con Dirección y Nombre del laboratorio) se actualiza automáticamente
+                en el perfil real de WhatsApp Business — se aplica cuando ya conectaste tu número. El
+                nombre grande que se ve arriba del todo en WhatsApp ("verified name") no se puede cambiar
+                desde acá: eso depende de una verificación de negocio en Meta Business Manager.
+              </p>
             </div>
           </div>
         </Card>
