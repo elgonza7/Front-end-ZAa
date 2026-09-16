@@ -78,12 +78,10 @@ export default function AdminMetrics() {
     )
   }
 
-  const netMargin = metrics.monthlyRevenueUSD - metrics.estimatedGeminiCostUSD
-
   return (
     <AdminLayout title="Métricas" subtitle="Consumo, ingresos y distribución de planes de toda la plataforma">
       <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <Card className="p-4">
             <p className="text-xs text-[var(--muted)]">Laboratorios activos</p>
             <p className="mt-1.5 text-xl font-bold text-[var(--text-strong)]">
@@ -105,10 +103,18 @@ export default function AdminMetrics() {
             </p>
           </Card>
           <Card className="p-4">
-            <p className="text-xs text-[var(--muted)]">Margen neto estimado</p>
-            <p className={`mt-1.5 text-xl font-bold ${netMargin >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-              ${netMargin.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+            <p className="text-xs text-[var(--muted)]">Costos fijos (Render + dominio)</p>
+            <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
+              ${metrics.fixedInfraCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
+            <p className="mt-1 text-[10px] text-[var(--muted)]">Por mes, sin importar el uso — ajustable en el código.</p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-xs text-[var(--muted)]">Ganancia neta estimada</p>
+            <p className={`mt-1.5 text-xl font-bold ${metrics.estimatedNetProfitUSD >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+              ${metrics.estimatedNetProfitUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+            </p>
+            <p className="mt-1 text-[10px] text-[var(--muted)]">Ingresos − Gemini estimado − costos fijos.</p>
           </Card>
         </div>
 

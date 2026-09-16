@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Headset, Phone, CheckCircle2 } from 'lucide-react'
+import { Headset, Phone, CheckCircle2, FileText, IdCard } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import { getHandoffQueue, claimConversation } from '../api/handoffService.js'
 
@@ -34,45 +35,58 @@ export default function HandoffInbox() {
   return (
     <LabLayout
       title="Atención humana"
-      subtitle="Pacientes que pidieron hablar con una persona — el bot dejó de responderles automáticamente"
+      subtitle="Pacientes que necesitan que alguien del equipo haga algo — hablarles, o enviarles su resultado"
     >
       {loading ? (
         <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
       ) : queue.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
           <CheckCircle2 size={32} className="text-emerald-400" />
-          <p className="text-sm text-[var(--text-strong)]">No hay conversaciones esperando atención humana.</p>
+          <p className="text-sm text-[var(--text-strong)]">No hay nada pendiente de atención humana.</p>
           <p className="text-xs text-[var(--muted)]">
-            Cuando un paciente elija "Hablar con un humano" en el flujo, aparecerá acá.
+            Cuando un paciente pida hablar con una persona, o pida su resultado, aparecerá acá.
           </p>
         </Card>
       ) : (
         <div className="space-y-3">
-          {queue.map((conv) => (
-            <Card key={conv.id} className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
-                  <Headset size={18} />
+          {queue.map((conv) => {
+            const isResultsRequest = conv.reason === 'ResultsRequest'
+            return (
+              <Card key={conv.id} className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
+                    {isResultsRequest ? <FileText size={18} /> : <Headset size={18} />}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-semibold text-[var(--text-strong)]">{conv.patientName}</p>
+                      <Badge variant={isResultsRequest ? 'gold' : 'neutral'}>
+                        {isResultsRequest ? 'Pidió su resultado' : 'Pidió hablar con alguien'}
+                      </Badge>
+                    </div>
+                    <p className="mt-0.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
+                      <Phone size={12} /> {conv.phone}
+                    </p>
+                    {isResultsRequest && conv.dni && (
+                      <p className="mt-0.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
+                        <IdCard size={12} /> DNI {conv.dni}
+                      </p>
+                    )}
+                    <p className="mt-1.5 max-w-xl text-sm text-[var(--text)]">"{conv.lastMessage}"</p>
+                    <p className="mt-1 text-[11px] text-[var(--muted)]">Esperando {timeAgo(conv.waitingSince)}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-[var(--text-strong)]">{conv.patientName}</p>
-                  <p className="mt-0.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
-                    <Phone size={12} /> {conv.phone}
-                  </p>
-                  <p className="mt-1.5 max-w-xl text-sm text-[var(--text)]">"{conv.lastMessage}"</p>
-                  <p className="mt-1 text-[11px] text-[var(--muted)]">Esperando {timeAgo(conv.waitingSince)}</p>
-                </div>
-              </div>
 
-              <Button
-                className="shrink-0 px-4 py-2 text-xs"
-                disabled={claimingId === conv.id}
-                onClick={() => handleClaim(conv.id)}
-              >
-                {claimingId === conv.id ? 'Tomando…' : 'Tomar conversación'}
-              </Button>
-            </Card>
-          ))}
+                <Button
+                  className="shrink-0 px-4 py-2 text-xs"
+                  disabled={claimingId === conv.id}
+                  onClick={() => handleClaim(conv.id)}
+                >
+                  {claimingId === conv.id ? 'Tomando…' : isResultsRequest ? 'Ya se lo envié' : 'Tomar conversación'}
+                </Button>
+              </Card>
+            )
+          })}
         </div>
       )}
     </LabLayout>

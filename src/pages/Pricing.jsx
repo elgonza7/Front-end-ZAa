@@ -81,8 +81,7 @@ function PlanCalculator() {
 
 const PLAN_FEATURES = {
   Básico: [
-    '1 número de WhatsApp',
-    'Elegís si mantenés tu WhatsApp Business (Coexistence)',
+    '1 número de WhatsApp (conexión dedicada, 100% asistente)',
     'Flujo de conversación completo',
     'Corrección de mensajes con IA (motor conversacional + Gemini)',
     'Base de conocimiento (PDF)',
@@ -93,6 +92,7 @@ const PLAN_FEATURES = {
     'Más interacciones mensuales',
     'Métricas de preguntas frecuentes',
     'Atención humana con notificación por email',
+    'Elegís si mantenés tu WhatsApp Business (Coexistence)',
   ],
   Premium: [
     'Todo lo del plan Profesional',
@@ -102,12 +102,14 @@ const PLAN_FEATURES = {
   ],
 }
 
-// Coexistence no depende del plan — es una elección técnica al conectar el
-// número (ver WhatsAppConnect.jsx): se puede usar en cualquier plan. Se
-// explica en los 3 para que se entienda desde antes de contratar,
-// especialmente en Básico, donde un laboratorio sin otro sistema para
-// avisar resultados lo necesita para poder enviar el PDF a mano.
-const PLANES_CON_COEXISTENCE = new Set(['Básico', 'Profesional', 'Premium'])
+// Coexistence SÍ depende del plan (a diferencia de lo que decía antes este
+// comentario) — el backend lo bloquea para Básico en WhatsappService.cs a
+// propósito: sin la app de WhatsApp Business abierta en un celular cada
+// tanto, Meta pausa la API a los 14 días, y es un riesgo operativo que no
+// tiene sentido meterle a un laboratorio recién arrancando. Si en algún
+// momento se decide abrirlo también en Básico, hay que tocar
+// PlanesConCoexistence en WhatsappService.cs además de esto.
+const PLANES_CON_COEXISTENCE = new Set(['Profesional', 'Premium'])
 
 function CoexistenceExplainer() {
   const [open, setOpen] = useState(false)

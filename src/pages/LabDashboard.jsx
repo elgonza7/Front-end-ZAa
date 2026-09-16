@@ -123,30 +123,40 @@ export default function LabDashboard() {
           )
         })()}
 
-        {handoffQueue.length > 0 && (
-          <Card className="flex flex-col items-start gap-3 border-[var(--accent)]/40 bg-gradient-to-r from-[var(--accent)]/10 to-transparent p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-40" />
-                <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-soft)] text-black">
-                  <Headset size={18} />
+        {handoffQueue.length > 0 && (() => {
+          const humanCount = handoffQueue.filter((t) => t.reason !== 'ResultsRequest').length
+          const resultsCount = handoffQueue.length - humanCount
+          const parts = []
+          if (humanCount > 0) parts.push(humanCount === 1 ? '1 paciente pidió hablar con alguien' : `${humanCount} pacientes pidieron hablar con alguien`)
+          if (resultsCount > 0) parts.push(resultsCount === 1 ? '1 paciente espera que le envíes su resultado' : `${resultsCount} pacientes esperan que les envíes su resultado`)
+
+          return (
+            <Card className="flex flex-col items-start gap-3 border-[var(--accent)]/40 bg-gradient-to-r from-[var(--accent)]/10 to-transparent p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-10 w-10 shrink-0 items-center justify-center">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-40" />
+                  <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-soft)] text-black">
+                    <Headset size={18} />
+                  </span>
                 </span>
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-[var(--text-strong)]">
-                  {handoffQueue.length === 1
-                    ? '1 paciente está esperando atención humana'
-                    : `${handoffQueue.length} pacientes están esperando atención humana`}
-                </p>
-                <p className="text-xs text-[var(--muted)]">El bot pausó las respuestas automáticas en esas conversaciones.</p>
+                <div>
+                  <p className="text-sm font-semibold text-[var(--text-strong)]">{parts.join(' — ')}</p>
+                  <p className="text-xs text-[var(--muted)]">
+                    {humanCount > 0 && resultsCount > 0
+                      ? 'El bot pausó las conversaciones de handoff; las de resultados siguen respondiéndose solas.'
+                      : humanCount > 0
+                        ? 'El bot pausó las respuestas automáticas en esas conversaciones.'
+                        : 'El bot les sigue respondiendo normal mientras les enviás el resultado.'}
+                  </p>
+                </div>
               </div>
-            </div>
-            <Button as={Link} to="/dashboard/conversaciones" className="shrink-0 px-4 py-2 text-xs">
-              Ver conversaciones
-              <ArrowRight size={14} />
-            </Button>
-          </Card>
-        )}
+              <Button as={Link} to="/dashboard/conversaciones" className="shrink-0 px-4 py-2 text-xs">
+                Ver atención humana
+                <ArrowRight size={14} />
+              </Button>
+            </Card>
+          )
+        })()}
 
         {/* KPIs */}
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
@@ -199,6 +209,23 @@ export default function LabDashboard() {
             <p className="mt-2 text-xs text-[var(--muted)]">
               Clientes atendidos: <span className="text-[var(--text-strong)]">{profile.clientsAttended.toLocaleString()}</span>
             </p>
+            {profile.averageTokensPerInteraction > 0 && (
+              <p className="mt-1 text-xs text-[var(--muted)]">
+                Cada interacción te consume en promedio{' '}
+                <span className="text-[var(--text-strong)]">
+                  ~{profile.averageTokensPerInteraction.toLocaleString()} tokens
+                </span>{' '}
+                este mes
+                {profile.tokensUsed < profile.tokensLimit && (
+                  <>
+                    {' '}— con ese promedio te quedan ~
+                    {Math.floor((profile.tokensLimit - profile.tokensUsed) / profile.averageTokensPerInteraction).toLocaleString()}{' '}
+                    interacciones más en tu cupo
+                  </>
+                )}
+                .
+              </p>
+            )}
             {profile.tokensUsed >= profile.tokensLimit ? (
               <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
                 <p>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Save, Info } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -53,18 +53,34 @@ function FlowTutorial() {
           alguien del laboratorio la tome.
         </li>
       </ol>
-      <p>No te olvides de tocar <strong>Guardar flujo</strong> al terminar.</p>
+      <p>
+        Los cambios se <strong>guardan solos</strong> un rato y medio después de la última edición
+        — no hace falta acordarse de tocar "Guardar flujo", aunque también podés hacerlo para
+        confirmar al toque.
+      </p>
     </>
   )
 }
+
+// Cuánto esperar sin más cambios antes de guardar solo — ni tan corto que
+// dispare una request por cada tecla, ni tan largo que se sienta que "no
+// guardó". Se resetea con cada cambio nuevo (debounce), no dispara una vez
+// por cambio.
+const AUTOSAVE_DELAY_MS = 1500
 
 export default function FlowBuilder() {
   const [tree, setTree] = useState(null)
   const [allowHandoff, setAllowHandoff] = useState(true)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [autoSaving, setAutoSaving] = useState(false)
   const [savedAt, setSavedAt] = useState(null)
   const [selectedPath, setSelectedPath] = useState(null)
+
+  // Arranca en true para no disparar un guardado apenas termina de cargar el
+  // flujo inicial (ese setTree no es una edición del usuario) — se consume
+  // una sola vez, en el primer cambio de "tree" que ya no sea null.
+  const skipNextAutosave = useRef(true)
 
   useEffect(() => {
     Promise.all([getFlow(), getLabProfile()]).then(([flow, profile]) => {
@@ -74,9 +90,38 @@ export default function FlowBuilder() {
     })
   }, [])
 
+  // Guardado automático: para que un cambio nunca se pierda por olvidarse de
+  // tocar "Guardar flujo" (algo que pasaba seguido) — no reemplaza el botón,
+  // que sigue sirviendo para confirmar al toque antes de salir.
+  useEffect(() => {
+    if (!tree) return
+    if (skipNextAutosave.current) {
+      skipNextAutosave.current = false
+      return
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setAutoSaving(true)
+      try {
+        // No se pisa "tree" con la respuesta acá: el árbol local ya es la
+        // fuente de verdad mientras se edita, y reasignarlo dispararía este
+        // mismo efecto de nuevo con una referencia nueva (loop infinito).
+        await saveFlow(tree)
+        setSavedAt(new Date())
+      } finally {
+        setAutoSaving(false)
+      }
+    }, AUTOSAVE_DELAY_MS)
+
+    return () => clearTimeout(timeoutId)
+  }, [tree])
+
   async function handleSave() {
     setSaving(true)
     const saved = await saveFlow(tree)
+    // Ya se guardó recién — que el efecto de autosave no dispare otro guardado
+    // redundante solo porque "tree" cambió de referencia al reasignarlo.
+    skipNextAutosave.current = true
     setTree(saved)
     setSavedAt(new Date())
     setSaving(false)
@@ -132,7 +177,10 @@ export default function FlowBuilder() {
             <Save size={16} />
             {saving ? 'Guardando…' : 'Guardar flujo'}
           </Button>
-          {savedAt && !saving && (
+          {autoSaving && !saving && (
+            <span className="text-xs text-[var(--muted)]">Guardando automáticamente…</span>
+          )}
+          {savedAt && !saving && !autoSaving && (
             <span className="text-xs text-[var(--muted)]">Guardado a las {savedAt.toLocaleTimeString()}</span>
           )}
         </div>
