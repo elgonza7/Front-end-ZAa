@@ -228,6 +228,9 @@ export default function AdminTenants() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-[var(--text)]">{lab.tokensConsumed.toLocaleString()} interacciones</p>
+                        {lab.averageTokensPerInteraction > 0 && (
+                          <p className="text-[11px] text-[var(--muted)]">~{lab.averageTokensPerInteraction.toLocaleString()} tokens/interacción</p>
+                        )}
                         <TrendBadge usageHistory={lab.usageHistory} />
                       </td>
                       <td className="px-6 py-4">
