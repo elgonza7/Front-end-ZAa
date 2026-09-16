@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { CheckCircle2, XCircle, Send, Unlink, Save, Phone, Smartphone, Server, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -239,8 +238,7 @@ export default function WhatsAppConnect() {
         </HelpButton>
       }
     >
-      {connection.coexistenceAvailableForPlan ? (
-        <Card className="mb-6 p-5">
+      <Card className="mb-6 p-5">
           <p className="text-sm font-semibold text-[var(--text-strong)]">¿Cómo querés conectar tu WhatsApp?</p>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
@@ -293,18 +291,7 @@ export default function WhatsAppConnect() {
               </ul>
             </div>
           )}
-        </Card>
-      ) : (
-        <Card className="mb-6 flex items-center justify-between gap-4 p-4">
-          <p className="text-xs text-[var(--muted)]">
-            ¿Tu laboratorio ya usa WhatsApp Business y no querés perder los chats? Con los planes
-            Profesional o Premium podés mantenerlo funcionando junto con el asistente.
-          </p>
-          <Link to="/dashboard/facturacion" className="shrink-0 text-xs font-semibold text-[var(--accent)] hover:underline">
-            Ver planes →
-          </Link>
-        </Card>
-      )}
+      </Card>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-1">
