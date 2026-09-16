@@ -5,8 +5,10 @@ import './index.css'
 import App from './App.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { initTheme } from './lib/theme.js'
+import { initCrossTabAuthSync } from './api/client.js'
 
 initTheme()
+initCrossTabAuthSync()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

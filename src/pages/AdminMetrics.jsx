@@ -25,7 +25,7 @@ function TokenTooltip({ active, payload, label }) {
   return (
     <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
       <p className="text-[var(--muted)]">{label}</p>
-      <p className="font-semibold text-emerald-400">{payload[0].value.toLocaleString('es-AR')} tokens</p>
+      <p className="font-semibold text-emerald-400">{payload[0].value.toLocaleString('es-AR')} interacciones</p>
     </div>
   )
 }
@@ -114,7 +114,7 @@ export default function AdminMetrics() {
 
         <Card className="p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-base font-bold text-[var(--accent)]">Consumición de Tokens</h2>
+            <h2 className="text-base font-bold text-[var(--accent)]">Interacciones de la plataforma</h2>
             <span className="text-sm text-[var(--muted)]">
               Cantidad de Respuestas: <span className="font-semibold text-[var(--text-strong)]">{history.responseCount.toLocaleString('es-AR')}</span>
             </span>
@@ -122,7 +122,7 @@ export default function AdminMetrics() {
 
           <div className="mt-4 h-80">
             {history.tokenHistory.length === 0 ? (
-              <EmptyChart label="consumo de tokens" />
+              <EmptyChart label="interacciones" />
             ) : (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={history.tokenHistory} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>

@@ -5,6 +5,7 @@ import Login from './pages/Login.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import ChangePassword from './pages/ChangePassword.jsx'
+import LabOnboarding from './pages/LabOnboarding.jsx'
 import Features from './pages/Features.jsx'
 import Pricing from './pages/Pricing.jsx'
 import Changelog from './pages/Changelog.jsx'
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/olvide-password" element={<ForgotPassword />} />
         <Route path="/restablecer-password" element={<ResetPassword />} />
         <Route path="/cambiar-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
+        <Route path="/configuracion-inicial" element={<RequireAuth role="lab"><LabOnboarding /></RequireAuth>} />
         <Route path="/caracteristicas" element={<Features />} />
         <Route path="/precios" element={<Pricing />} />
         <Route path="/actualizaciones" element={<Changelog />} />

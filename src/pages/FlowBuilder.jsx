@@ -6,7 +6,7 @@ import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import FlowMap from '../components/flow/FlowMap.jsx'
 import FlowNodePanel from '../components/flow/FlowNodePanel.jsx'
-import { getNodeAtPath, getOptionLabelAtPath, updateNodeAtPath } from '../components/flow/flowTree.js'
+import { getNodeAtPath, getOptionLabelAtPath, updateNodeAtPath, renameOptionAtPath, deleteOptionAtPath } from '../components/flow/flowTree.js'
 import { getFlow, saveFlow } from '../api/flowService.js'
 import { getLabProfile } from '../api/labService.js'
 
@@ -86,6 +86,15 @@ export default function FlowBuilder() {
     setTree((prev) => updateNodeAtPath(prev, selectedPath, () => patchedNode))
   }
 
+  function handleRenameSelected(newLabel) {
+    setTree((prev) => renameOptionAtPath(prev, selectedPath, newLabel))
+  }
+
+  function handleDeleteSelected() {
+    setTree((prev) => deleteOptionAtPath(prev, selectedPath))
+    setSelectedPath(null)
+  }
+
   if (loading || !tree) {
     return (
       <LabLayout title="Flujo de conversación" userLabel="Cargando…">
@@ -137,6 +146,9 @@ export default function FlowBuilder() {
           onChange={handleChangeSelectedNode}
           onOpenChild={(optionId) => setSelectedPath([...selectedPath, optionId])}
           onClose={() => setSelectedPath(null)}
+          currentLabel={selectedPath.length === 0 ? undefined : getOptionLabelAtPath(tree, selectedPath)}
+          onRenameSelf={selectedPath.length === 0 ? undefined : handleRenameSelected}
+          onDeleteSelf={selectedPath.length === 0 ? undefined : handleDeleteSelected}
         />
       )}
     </LabLayout>

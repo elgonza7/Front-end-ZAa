@@ -65,15 +65,15 @@ function PlanCalculator() {
         <p className="text-xs text-[var(--muted)]">Plan recomendado</p>
         <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">{recommended}</p>
         <p className="mt-1 text-xs text-[var(--muted)]">
-          Con ~{estimatedTokens.toLocaleString()} tokens estimados por mes, entra dentro del cupo
-          de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} tokens de {recommended}.
+          Con ~{estimatedTokens.toLocaleString()} interacciones estimadas por mes, entra dentro del
+          cupo de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} interacciones de {recommended}.
         </p>
       </div>
 
       <p className="mt-3 text-[11px] text-[var(--muted)]">
         Es una estimación (varía según cuán largas sean las conversaciones). Si en algún mes te
         pasás del cupo de tu plan, el asistente no se corta — el excedente se cobra aparte, a un
-        precio por cada 1.000 tokens extra.
+        precio por cada 1.000 interacciones extra.
       </p>
     </Card>
   )
@@ -82,6 +82,7 @@ function PlanCalculator() {
 const PLAN_FEATURES = {
   Básico: [
     '1 número de WhatsApp',
+    'Elegís si mantenés tu WhatsApp Business (Coexistence)',
     'Flujo de conversación completo',
     'Corrección de mensajes con IA (motor conversacional + Gemini)',
     'Base de conocimiento (PDF)',
@@ -89,20 +90,24 @@ const PLAN_FEATURES = {
   ],
   Profesional: [
     'Todo lo del plan Básico',
-    'Más tokens mensuales',
+    'Más interacciones mensuales',
     'Métricas de preguntas frecuentes',
     'Atención humana con notificación por email',
-    'Elegís si mantenés tu WhatsApp Business (Coexistence)',
   ],
   Premium: [
     'Todo lo del plan Profesional',
-    'Mayor volumen de tokens',
+    'Mayor volumen de interacciones',
     'Soporte prioritario',
     'Descuentos por laboratorio adicional del mismo dueño',
   ],
 }
 
-const PLANES_CON_COEXISTENCE = new Set(['Profesional', 'Premium'])
+// Coexistence no depende del plan — es una elección técnica al conectar el
+// número (ver WhatsAppConnect.jsx): se puede usar en cualquier plan. Se
+// explica en los 3 para que se entienda desde antes de contratar,
+// especialmente en Básico, donde un laboratorio sin otro sistema para
+// avisar resultados lo necesita para poder enviar el PDF a mano.
+const PLANES_CON_COEXISTENCE = new Set(['Básico', 'Profesional', 'Premium'])
 
 function CoexistenceExplainer() {
   const [open, setOpen] = useState(false)
@@ -155,7 +160,7 @@ export default function Pricing() {
         <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">Planes y precios</h1>
         <p className="mt-4 text-base text-[var(--muted)]">
           Pagás una habilitación única al contratar y después una cuota mensual que depende de
-          cuántos tokens de IA consume tu asistente. Esa cuota cubre las dos IA del asistente: el
+          cuántas interacciones de IA consume tu asistente. Esa cuota cubre las dos IA del asistente: el
           motor conversacional que responde a tus pacientes y Gemini, que corrige y prolija los
           mensajes del flujo con el botón "Mejorar con IA".
         </p>
@@ -179,9 +184,6 @@ export default function Pricing() {
                 </span>
               )}
               <h2 className="text-lg font-bold text-[var(--text-strong)]">{planName}</h2>
-              {planName === 'Básico' && (
-                <p className="mt-0.5 text-[11px] text-[var(--muted)]">Sin Coexistence — número dedicado al asistente</p>
-              )}
 
               <div className="mt-3">
                 <p className="text-3xl font-extrabold text-[var(--text-strong)]">
@@ -193,7 +195,7 @@ export default function Pricing() {
                 </p>
               </div>
 
-              <p className="mt-2 text-xs text-[var(--accent-soft)]">{plan.tokensLimit.toLocaleString()} tokens de IA por mes</p>
+              <p className="mt-2 text-xs text-[var(--accent-soft)]">{plan.tokensLimit.toLocaleString()} interacciones de IA por mes</p>
 
               <ul className="mt-5 flex-1 space-y-2.5">
                 {PLAN_FEATURES[planName].map((feature) => (
@@ -261,8 +263,8 @@ export default function Pricing() {
             y el 3° en adelante, 25% — se gestiona desde el panel de Facturación.
           </p>
           <p className="mt-3 text-xs text-[var(--muted)]">
-            ¿Y si me paso de los tokens de mi plan? El asistente sigue funcionando sin cortes — el
-            excedente se cobra aparte, a un precio por cada 1.000 tokens de más que uses ese mes.
+            ¿Y si me paso de las interacciones de mi plan? El asistente sigue funcionando sin cortes — el
+            excedente se cobra aparte, a un precio por cada 1.000 interacciones de más que uses ese mes.
           </p>
         </Card>
       </section>

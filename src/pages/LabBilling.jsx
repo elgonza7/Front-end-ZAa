@@ -14,6 +14,7 @@ import {
   cancelAutoRenew,
   enableAutoRenew,
   reportManualTransfer,
+  changePlan,
 } from '../api/billingService.js'
 
 function BillingTutorial() {
@@ -93,6 +94,8 @@ export default function LabBilling() {
   const [updatingAutoRenew, setUpdatingAutoRenew] = useState(false)
   const [transferReference, setTransferReference] = useState('')
   const [reportingTransfer, setReportingTransfer] = useState(false)
+  const [changingPlan, setChangingPlan] = useState(null)
+  const [planError, setPlanError] = useState('')
 
   useEffect(() => {
     Promise.all([getLabBilling(), getPlatformBillingDestination()])
@@ -133,6 +136,23 @@ export default function LabBilling() {
     setBilling(updated)
     setTransferReference('')
     setReportingTransfer(false)
+  }
+
+  async function handleChangePlan(planName) {
+    if (planName === billing.plan) return
+    if (!window.confirm(`¿Cambiar al plan ${planName}? El cambio es inmediato y tu próxima factura ya va a reflejar el nuevo precio.`)) {
+      return
+    }
+    setPlanError('')
+    setChangingPlan(planName)
+    try {
+      const updated = await changePlan(planName)
+      setBilling(updated)
+    } catch (err) {
+      setPlanError(err.message || 'No se pudo cambiar de plan.')
+    } finally {
+      setChangingPlan(null)
+    }
   }
 
   if (!billing || !destination) {
@@ -303,21 +323,39 @@ export default function LabBilling() {
 
         <Card className="p-6">
           <h2 className="text-sm font-semibold text-[var(--text-strong)]">Planes y precios</h2>
+          {planError && <p className="mt-2 text-xs text-red-400">{planError}</p>}
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {Object.entries(PLAN_PRICING).map(([planName, plan]) => (
-              <div
-                key={planName}
-                className={`rounded-xl border px-4 py-4 ${
-                  planName === billing.plan ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5' : 'border-[var(--border)] bg-[var(--bg)]'
-                }`}
-              >
-                <p className="text-sm font-semibold text-[var(--text-strong)]">{planName}</p>
-                <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">
-                  ${plan.priceUSD} <span className="text-xs font-normal text-[var(--muted)]">USD/mes</span>
-                </p>
-                <p className="mt-1 text-xs text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} tokens/mes</p>
-              </div>
-            ))}
+            {Object.entries(PLAN_PRICING).map(([planName, plan]) => {
+              const isCurrent = planName === billing.plan
+              return (
+                <div
+                  key={planName}
+                  className={`flex flex-col rounded-xl border px-4 py-4 ${
+                    isCurrent ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5' : 'border-[var(--border)] bg-[var(--bg)]'
+                  }`}
+                >
+                  <p className="text-sm font-semibold text-[var(--text-strong)]">{planName}</p>
+                  <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">
+                    ${plan.priceUSD} <span className="text-xs font-normal text-[var(--muted)]">USD/mes</span>
+                  </p>
+                  <p className="mt-1 text-xs text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} interacciones/mes</p>
+                  {isCurrent ? (
+                    <Badge variant="gold" className="mt-3 w-fit">
+                      Tu plan actual
+                    </Badge>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      disabled={changingPlan !== null}
+                      onClick={() => handleChangePlan(planName)}
+                      className="mt-3 px-3 py-2 text-xs"
+                    >
+                      {changingPlan === planName ? 'Cambiando…' : `Cambiar a ${planName}`}
+                    </Button>
+                  )}
+                </div>
+              )
+            })}
           </div>
 
           <div className="mt-4 space-y-1.5 border-t border-[var(--border)] pt-4">

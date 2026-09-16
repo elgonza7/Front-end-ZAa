@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUpRight, Plus, Trash2, Sparkles, Headset, MessageSquare } from 'lucide-react'
+import { ArrowUpRight, Plus, Trash2, Sparkles, Headset, MessageSquare, Pencil } from 'lucide-react'
 import Card from '../ui/Card.jsx'
 import Badge from '../ui/Badge.jsx'
 import Button from '../ui/Button.jsx'
@@ -20,7 +20,20 @@ function emptyNode() {
 // editar una rama hija se navega a ella desde el mapa (FlowMap) o con el
 // botón "Abrir" de cada fila, y ese nodo pasa a ser el que este mismo
 // componente edita (ver FlowNodePanel).
-export default function FlowNodeEditor({ node, onChange, allowHandoff = true, label, onOpenChild }) {
+//
+// currentLabel/onRenameSelf/onDeleteSelf son sobre el BOTÓN que lleva a este
+// nodo (vive en el padre, no acá) — undefined/null para la raíz, que no
+// tiene un botón propio: su "label" es el mensaje de bienvenida.
+export default function FlowNodeEditor({
+  node,
+  onChange,
+  allowHandoff = true,
+  label,
+  onOpenChild,
+  currentLabel,
+  onRenameSelf,
+  onDeleteSelf,
+}) {
   const [improving, setImproving] = useState(false)
   const textareaRef = useRef(null)
 
@@ -45,7 +58,8 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
       ? { id: makeId('opt'), label: '🙋 Hablar con un humano', isHandoff: true, node: null }
       : { id: makeId('opt'), label: 'Nueva opción', node: emptyNode() }
     onChange({ ...node, options: [...node.options, newOption] })
-    if (!isHandoff) onOpenChild?.(newOption.id)
+    // A propósito NO navega a la rama nueva: se queda acá para que puedas
+    // ponerle un nombre antes de entrar a escribir su mensaje.
   }
 
   function removeBranch(optionId) {
@@ -65,10 +79,34 @@ export default function FlowNodeEditor({ node, onChange, allowHandoff = true, la
 
   return (
     <Card className="p-4">
-      {label && (
+      {label && !onRenameSelf && (
         <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-[var(--accent-soft)]">
           <MessageSquare size={13} />
           {label}
+        </div>
+      )}
+
+      {onRenameSelf && (
+        <div className="mb-3 flex items-center gap-2 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-3 py-2.5">
+          <Pencil size={14} className="shrink-0 text-[var(--accent)]" />
+          <input
+            type="text"
+            value={currentLabel ?? ''}
+            onChange={(event) => onRenameSelf(event.target.value)}
+            placeholder="Nombre de esta rama"
+            className="min-w-0 flex-1 bg-transparent text-sm font-medium text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60"
+          />
+          {onDeleteSelf && (
+            <button
+              type="button"
+              onClick={onDeleteSelf}
+              className="shrink-0 text-[var(--muted)] hover:text-red-400"
+              aria-label="Eliminar esta rama"
+              title="Eliminar esta rama"
+            >
+              <Trash2 size={15} />
+            </button>
+          )}
         </div>
       )}
 

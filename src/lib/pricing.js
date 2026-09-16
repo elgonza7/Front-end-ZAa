@@ -16,7 +16,7 @@
 // el costo real de Gemini, cupo lleno, antes de infraestructura) —
 // devolvemos el margen extra como más cupo en vez de bajar precios.
 export const PLAN_PRICING = {
-  Básico: { setupFeeUSD: 70, priceUSD: 35, tokensLimit: 2_200_000 },
-  Profesional: { setupFeeUSD: 100, priceUSD: 65, tokensLimit: 4_100_000 },
-  Premium: { setupFeeUSD: 125, priceUSD: 90, tokensLimit: 9_500_000 },
+  Básico: { setupFeeUSD: 25, priceUSD: 35, tokensLimit: 2_200_000 },
+  Profesional: { setupFeeUSD: 35, priceUSD: 65, tokensLimit: 4_100_000 },
+  Premium: { setupFeeUSD: 45, priceUSD: 90, tokensLimit: 9_500_000 },
 }

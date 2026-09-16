@@ -28,7 +28,7 @@ const FEATURES = [
     icon: Zap,
     title: 'Panel de control en tiempo real',
     description:
-      'Encendé o apagá el bot, controlá tokens consumidos y tu estado de suscripción desde un solo lugar.',
+      'Encendé o apagá el bot, controlá interacciones consumidas y tu estado de suscripción desde un solo lugar.',
   },
 ]
 

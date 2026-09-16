@@ -45,7 +45,7 @@ function CustomTooltip({ active, payload, label }) {
   return (
     <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
       <p className="text-[var(--muted)]">{label}</p>
-      <p className="font-semibold text-[var(--accent)]">{payload[0].value} tokens</p>
+      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} interacciones</p>
     </div>
   )
 }
@@ -186,13 +186,13 @@ export default function LabDashboard() {
 
           <Card className="p-5">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-[var(--text-strong)]">Tokens usados este mes</p>
+              <p className="text-sm font-semibold text-[var(--text-strong)]">Interacciones usadas este mes</p>
               <Badge variant="gold">Plan {profile.planName}</Badge>
             </div>
             <p className="mt-2 text-xl font-bold text-[var(--text-strong)]">
               {profile.tokensUsed.toLocaleString()}{' '}
               <span className="text-sm font-normal text-[var(--muted)]">
-                / {profile.tokensLimit.toLocaleString()} incluidos en tu plan
+                / {profile.tokensLimit.toLocaleString()} incluidas en tu plan
               </span>
             </p>
             <ProgressBar value={profile.tokensUsed} max={profile.tokensLimit} className="mt-3" />
@@ -200,14 +200,19 @@ export default function LabDashboard() {
               Clientes atendidos: <span className="text-[var(--text-strong)]">{profile.clientsAttended.toLocaleString()}</span>
             </p>
             {profile.tokensUsed >= profile.tokensLimit ? (
-              <p className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
-                Superaste el cupo de tu plan. El asistente sigue funcionando igual — el excedente se
-                cobra automáticamente a ${profile.overagePricePer1kTokensUSD} USD cada 1.000 tokens.
-              </p>
+              <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+                <p>
+                  Superaste el cupo de tu plan. El asistente sigue funcionando igual — el excedente se
+                  cobra automáticamente a ${profile.overagePricePer1kTokensUSD} USD cada 1.000 interacciones.
+                </p>
+                <Link to="/dashboard/facturacion" className="mt-1.5 inline-block font-semibold underline">
+                  Te recomendamos pasarte al siguiente plan para no tener sorpresas el próximo mes →
+                </Link>
+              </div>
             ) : (
               <p className="mt-3 text-[11px] text-[var(--muted)]">
                 Si te pasás del cupo, el asistente no se corta: el excedente se cobra aparte a $
-                {profile.overagePricePer1kTokensUSD} USD cada 1.000 tokens.
+                {profile.overagePricePer1kTokensUSD} USD cada 1.000 interacciones.
               </p>
             )}
           </Card>
@@ -217,12 +222,12 @@ export default function LabDashboard() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Card className="p-6 lg:col-span-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Consumo de tokens (últimos 7 días)</h2>
+              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Interacciones (últimos 7 días)</h2>
             </div>
             <div className="mt-4 h-64">
               {usageHistory.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-center text-xs text-[var(--muted)]">
-                  Todavía no hay datos disponibles — el bot no registró consumo de tokens.
+                  Todavía no hay datos disponibles — el bot no registró interacciones.
                 </div>
               ) : (
               <ResponsiveContainer width="100%" height="100%">

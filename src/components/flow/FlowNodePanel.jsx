@@ -10,7 +10,7 @@ import FlowNodeEditor from './FlowNodeEditor.jsx'
 // motivo que Modal.jsx: el header del dashboard usa backdrop-blur, que
 // rompería el centrado/posicionamiento de un position:fixed si quedara
 // anidado adentro.
-export default function FlowNodePanel({ node, label, allowHandoff, onChange, onOpenChild, onClose }) {
+export default function FlowNodePanel({ node, label, allowHandoff, onChange, onOpenChild, onClose, currentLabel, onRenameSelf, onDeleteSelf }) {
   const [fullscreen, setFullscreen] = useState(false)
 
   if (!node) return null
@@ -61,6 +61,9 @@ export default function FlowNodePanel({ node, label, allowHandoff, onChange, onO
               allowHandoff={allowHandoff}
               label={label}
               onOpenChild={onOpenChild}
+              currentLabel={currentLabel}
+              onRenameSelf={onRenameSelf}
+              onDeleteSelf={onDeleteSelf}
             />
           </div>
         </div>

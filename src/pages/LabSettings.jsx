@@ -15,12 +15,7 @@ import {
   getKnowledgeDocs,
   uploadKnowledgeDoc,
 } from '../api/labService.js'
-
-const DELIVERY_METHODS = [
-  { value: 'PORTAL', label: 'Portal web (el paciente ingresa con DNI y contraseña)' },
-  { value: 'PDF', label: 'PDF por WhatsApp (el laboratorio lo envía manualmente)' },
-  { value: 'MANUAL', label: 'Manual (sin sistema — se avisa que el equipo lo enviará)' },
-]
+import { DELIVERY_METHODS } from '../lib/deliveryMethods.js'
 
 export default function LabSettings() {
   const [form, setForm] = useState(null)

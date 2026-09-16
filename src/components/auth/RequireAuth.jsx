@@ -1,13 +1,14 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { getAuthToken, getAuthRole, getMustChangePassword } from '../../api/client.js'
+import { getAuthToken, getAuthRole, getMustChangePassword, getOnboardingCompleted } from '../../api/client.js'
 
 const HOME_BY_ROLE = { lab: '/dashboard', admin: '/admin' }
 
 // Protege un grupo de rutas: sin token, manda a /login; con token pero rol
 // equivocado (ej. un lab intentando entrar a /admin), manda a la home de su
 // propio rol en vez de dejarlo pasar; con una contraseña temporal todavía sin
-// cambiar, manda a /cambiar-password y no deja entrar a ninguna otra pantalla
-// hasta que la actualice.
+// cambiar, manda a /cambiar-password; y para un laboratorio nuevo que todavía
+// no completó la configuración inicial, manda a /configuracion-inicial — en
+// ambos casos no deja entrar a ninguna otra pantalla hasta resolverlo.
 export default function RequireAuth({ role, children }) {
   const location = useLocation()
   const token = getAuthToken()
@@ -23,6 +24,15 @@ export default function RequireAuth({ role, children }) {
 
   if (getMustChangePassword() && location.pathname !== '/cambiar-password') {
     return <Navigate to="/cambiar-password" replace />
+  }
+
+  if (
+    currentRole === 'lab' &&
+    !getMustChangePassword() &&
+    !getOnboardingCompleted() &&
+    location.pathname !== '/configuracion-inicial'
+  ) {
+    return <Navigate to="/configuracion-inicial" replace />
   }
 
   return children

@@ -79,3 +79,13 @@ export async function reportManualTransfer(reference) {
   }
   return apiFetch('/lab/billing/report-transfer', { method: 'POST', body: JSON.stringify({ reference }) })
 }
+
+// PATCH /api/lab/billing/plan { plan } -> cambio de plan autogestionado,
+// efecto inmediato (sin prorrateo del período en curso).
+export async function changePlan(plan) {
+  if (USE_MOCKS) {
+    billingState = { ...billingState, plan }
+    return mockDelay({ ...billingState }, 500)
+  }
+  return apiFetch('/lab/billing/plan', { method: 'PATCH', body: JSON.stringify({ plan }) })
+}
