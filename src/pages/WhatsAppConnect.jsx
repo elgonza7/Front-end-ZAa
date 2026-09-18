@@ -351,6 +351,12 @@ export default function WhatsAppConnect() {
           </div>
 
           <div className="mt-5 flex flex-col gap-2">
+            <p className="text-[11px] text-[var(--muted)]">
+              Antes de tocar esto: desde el celular con el "Teléfono de contacto" configurado en
+              Configuración, mandale primero un WhatsApp cualquiera (ej. "hola") al número que
+              acabás de conectar. WhatsApp no deja que un negocio le escriba primero a alguien que
+              nunca lo contactó — una vez que le escribiste vos, este botón ya puede responderte.
+            </p>
             <Button type="button" variant="outline" className="py-2 text-sm" onClick={handleTest} disabled={testing}>
               <Send size={15} />
               {testing ? 'Enviando…' : 'Enviar mensaje de prueba'}
