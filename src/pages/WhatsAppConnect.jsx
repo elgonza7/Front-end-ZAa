@@ -162,6 +162,7 @@ export default function WhatsAppConnect() {
   const [connectionType, setConnectionType] = useState('MANUAL')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [testResult, setTestResult] = useState(null)
   const [testing, setTesting] = useState(false)
   const [businessProfile, setBusinessProfile] = useState(null)
@@ -198,19 +199,36 @@ export default function WhatsAppConnect() {
     event.preventDefault()
     setSaving(true)
     setSaveConfirmed(false)
-    const updated = await saveConnection({ ...form, connectionType })
-    setConnection(updated)
-    setSaving(false)
-    setSaveConfirmed(true)
-    setTimeout(() => setSaveConfirmed(false), 4000)
+    setSaveError('')
+    try {
+      const updated = await saveConnection({ ...form, connectionType })
+      setConnection(updated)
+      setSaveConfirmed(true)
+      setTimeout(() => setSaveConfirmed(false), 4000)
+    } catch (err) {
+      // Mismo problema que tenía "Enviar mensaje de prueba": sin esto, un
+      // Phone Number ID o Access Token inválido fallaba en silencio y
+      // parecía que el botón no hacía nada.
+      setSaveError(err.message || 'No se pudo guardar la conexión.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function handleTest() {
     setTesting(true)
     setTestResult(null)
-    const result = await testConnection()
-    setTestResult(result)
-    setTesting(false)
+    try {
+      const result = await testConnection()
+      setTestResult(result)
+    } catch (err) {
+      // Antes esto quedaba sin manejar: si Meta rechazaba el envío (ej. el
+      // número de prueba no está agregado como "destinatario de prueba"),
+      // el error se perdía en silencio y el botón parecía no hacer nada.
+      setTestResult({ ok: false, message: err.message || 'No se pudo enviar el mensaje de prueba.' })
+    } finally {
+      setTesting(false)
+    }
   }
 
   async function handleDisconnect() {
@@ -414,6 +432,11 @@ export default function WhatsAppConnect() {
               {saveConfirmed && (
                 <p className="flex items-center gap-1.5 text-sm font-medium text-emerald-400">
                   <CheckCircle2 size={16} /> Se guardó toda la información correctamente
+                </p>
+              )}
+              {saveError && (
+                <p className="flex items-center gap-1.5 text-sm font-medium text-red-400">
+                  <XCircle size={16} /> {saveError}
                 </p>
               )}
             </div>
