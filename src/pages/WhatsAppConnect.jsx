@@ -8,7 +8,7 @@ import HelpButton from '../components/ui/HelpButton.jsx'
 import { getConnection, saveConnection, testConnection, disconnect, getBusinessProfile } from '../api/whatsappService.js'
 import { updateLabSettings } from '../api/labService.js'
 
-function WhatsappTutorial({ coexistenceAvailable }) {
+export function WhatsappTutorial({ coexistenceAvailable }) {
   return (
     <>
       <p>

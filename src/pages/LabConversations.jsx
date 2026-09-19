@@ -5,7 +5,7 @@ import Card from '../components/ui/Card.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import { getConversations, getConversationMessages } from '../api/conversationsService.js'
 
-function ConversationsTutorial() {
+export function ConversationsTutorial() {
   return (
     <p>
       Acá ves, en orden, todo lo que tus pacientes le escribieron al asistente y todo lo que el

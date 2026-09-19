@@ -4,7 +4,47 @@ import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
+import HelpButton from '../components/ui/HelpButton.jsx'
 import { getHandoffQueue, claimConversation } from '../api/handoffService.js'
+
+export function AtencionHumanaTutorial() {
+  return (
+    <>
+      <p>
+        Acá aparecen los pacientes que necesitan que <strong>alguien del equipo</strong> haga algo
+        puntual — el asistente no puede (o no debe) resolverlo solo. Hay dos tipos de aviso, y se
+        manejan distinto:
+      </p>
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3">
+        <p className="flex items-center gap-1.5 text-sm font-semibold text-[var(--text-strong)]">
+          <Headset size={14} className="text-[var(--accent)]" /> "Pidió hablar con alguien"
+        </p>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          El paciente eligió esa opción en el flujo (o el asistente lo detectó solo). El bot{' '}
+          <strong>deja de responderle automáticamente</strong> a partir de ese momento — hasta que
+          alguien del equipo toque "Tomar conversación" y le conteste a mano desde su WhatsApp
+          (celular o, si tenés Coexistence, la misma app de siempre).
+        </p>
+      </div>
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3">
+        <p className="flex items-center gap-1.5 text-sm font-semibold text-[var(--text-strong)]">
+          <FileText size={14} className="text-[var(--accent)]" /> "Pidió su resultado"
+        </p>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          El paciente pidió ver su resultado y ya dio nombre y DNI en la conversación. El bot{' '}
+          <strong>sigue respondiendo normal</strong> — esto es solo un aviso para que alguien le
+          envíe el portal, el PDF o el aviso manual (según cómo tengas configurada la entrega de
+          resultados). Tocá "Ya se lo envié" cuando lo hagas.
+        </p>
+      </div>
+      <p className="text-xs text-[var(--muted)]">
+        Si no tenés WhatsApp Business abierto en el celular (número dedicado, sin Coexistence),
+        respondele al paciente desde otro medio a tu alcance — el teléfono que aparece en cada
+        aviso es el suyo.
+      </p>
+    </>
+  )
+}
 
 function timeAgo(isoString) {
   const minutes = Math.max(0, Math.round((Date.now() - new Date(isoString).getTime()) / 60000))
@@ -36,6 +76,11 @@ export default function HandoffInbox() {
     <LabLayout
       title="Atención humana"
       subtitle="Pacientes que necesitan que alguien del equipo haga algo — hablarles, o enviarles su resultado"
+      headerActions={
+        <HelpButton title="Cómo funciona Atención humana">
+          <AtencionHumanaTutorial />
+        </HelpButton>
+      }
     >
       {loading ? (
         <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>

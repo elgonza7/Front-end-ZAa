@@ -17,7 +17,7 @@ import {
   changePlan,
 } from '../api/billingService.js'
 
-function BillingTutorial() {
+export function BillingTutorial() {
   return (
     <>
       <p>

@@ -10,7 +10,7 @@ import { getNodeAtPath, getOptionLabelAtPath, updateNodeAtPath, renameOptionAtPa
 import { getFlow, saveFlow } from '../api/flowService.js'
 import { getLabProfile } from '../api/labService.js'
 
-function FlowTutorial() {
+export function FlowTutorial() {
   return (
     <>
       <p>

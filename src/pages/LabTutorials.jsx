@@ -1,36 +1,36 @@
-import { useEffect, useState } from 'react'
-import { GraduationCap, Server, Smartphone, MessagesSquare, Headset, CircleHelp } from 'lucide-react'
+import { useState } from 'react'
+import { GraduationCap, LayoutDashboard, MessageCircle, MessagesSquare, GitBranch, Headset, CreditCard } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
-import { getConnection } from '../api/whatsappService.js'
+import { PanelTutorial } from './LabDashboard.jsx'
+import { WhatsappTutorial } from './WhatsAppConnect.jsx'
+import { ConversationsTutorial } from './LabConversations.jsx'
+import { FlowTutorial } from './FlowBuilder.jsx'
+import { AtencionHumanaTutorial } from './HandoffInbox.jsx'
+import { BillingTutorial } from './LabBilling.jsx'
 
-function Step({ n, title, children }) {
-  return (
-    <div className="flex gap-3">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/15 text-xs font-bold text-[var(--accent)]">
-        {n}
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-[var(--text-strong)]">{title}</p>
-        <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">{children}</p>
-      </div>
-    </div>
-  )
-}
+// Mismas 6 secciones y el mismo orden que el menú de la izquierda
+// (config/nav.js) — cada una reusa el tutorial que ya existe en esa propia
+// pantalla (el botón "?" de ahí), para no mantener el mismo texto escrito
+// dos veces en dos lugares distintos.
+const SECTIONS = [
+  { id: 'panel', label: 'Panel', icon: LayoutDashboard, Content: PanelTutorial },
+  { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, Content: () => <WhatsappTutorial coexistenceAvailable /> },
+  { id: 'mensajes', label: 'Mensajes', icon: MessagesSquare, Content: ConversationsTutorial },
+  { id: 'flujo', label: 'Flujo de conversación', icon: GitBranch, Content: FlowTutorial },
+  { id: 'atencion', label: 'Atención humana', icon: Headset, Content: AtencionHumanaTutorial },
+  { id: 'facturacion', label: 'Facturación', icon: CreditCard, Content: BillingTutorial },
+]
 
 export default function LabTutorials() {
-  const [connection, setConnection] = useState(null)
-
-  useEffect(() => {
-    getConnection().then(setConnection)
-  }, [])
-
-  const type = connection?.connectionType ?? null
+  const [activeId, setActiveId] = useState(null)
+  const active = SECTIONS.find((section) => section.id === activeId)
+  const ActiveContent = active?.Content
 
   return (
     <LabLayout
       title="Tutoriales"
-      subtitle="Cómo funciona tu asistente, explicado sin vueltas ni palabras técnicas"
+      subtitle="Elegí una sección para ver cómo funciona, explicado sin vueltas ni palabras técnicas"
     >
       <div className="space-y-6">
         <Card className="p-6">
@@ -46,104 +46,51 @@ export default function LabTutorials() {
           </p>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center gap-2">
-            {type === 'COEXISTENCE' ? (
-              <Smartphone size={17} className="text-[var(--accent)]" />
-            ) : (
-              <Server size={17} className="text-[var(--accent)]" />
-            )}
-            <h2 className="text-base font-bold text-[var(--text-strong)]">
-              {type === 'COEXISTENCE'
-                ? 'Tu caso: mantenés tu WhatsApp Business de siempre'
-                : type === 'MANUAL'
-                  ? 'Tu caso: número dedicado al asistente'
-                  : 'Todavía no conectaste tu WhatsApp'}
-            </h2>
-          </div>
+        <div className="flex flex-wrap gap-2">
+          {SECTIONS.map((section) => {
+            const Icon = section.icon
+            const isActive = section.id === activeId
+            return (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => setActiveId(isActive ? null : section.id)}
+                className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]'
+                    : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--accent)]/40'
+                }`}
+              >
+                <Icon size={15} />
+                {section.label}
+              </button>
+            )
+          })}
+        </div>
 
-          {type === 'COEXISTENCE' && (
-            <div className="mt-3 space-y-3 text-sm leading-relaxed text-[var(--text)]">
-              <p>
-                Seguís usando la app de WhatsApp Business en tu celular exactamente como siempre —
-                mismos chats, mismos grupos, mismo historial. El asistente contesta en paralelo,
-                desde el mismo número, y lo que él escribe también te aparece en el celular.
-              </p>
-              <p className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3 text-xs text-[var(--muted)]">
-                Una sola cosa a tener en cuenta: abrí la app de WhatsApp Business en el celular al
-                menos una vez cada 14 días (aunque sea para mirarla un segundo). Si nadie la abre
-                en todo ese tiempo, WhatsApp pausa el asistente hasta que alguien la vuelva a
-                abrir.
-              </p>
+        {active ? (
+          <Card className="p-6">
+            <div className="flex items-center gap-2">
+              <active.icon size={17} className="text-[var(--accent)]" />
+              <h2 className="text-base font-bold text-[var(--text-strong)]">{active.label}</h2>
             </div>
-          )}
-
-          {type === 'MANUAL' && (
-            <div className="mt-3 space-y-3 text-sm leading-relaxed text-[var(--text)]">
-              <p>
-                El número que conectaste quedó dedicado 100% al asistente — no tiene la app de
-                WhatsApp instalada en ningún celular, así que vos no vas a ver esas charlas en tu
-                teléfono. Para eso está la sección <strong>"Mensajes"</strong> del menú de la
-                izquierda: ahí podés leer, cuando quieras, todo lo que el asistente conversó con
-                cada paciente.
-              </p>
+            <div className="mt-4 space-y-4 text-sm leading-relaxed text-[var(--text)]">
+              <ActiveContent />
             </div>
-          )}
-
-          {!type && (
-            <p className="mt-3 text-sm text-[var(--muted)]">
-              Andá a la sección "WhatsApp" del menú para conectar tu número — ahí te explicamos
-              paso a paso cómo hacerlo.
+          </Card>
+        ) : (
+          <Card className="flex flex-col items-center gap-2 p-10 text-center">
+            <GraduationCap size={28} className="text-[var(--muted)]" />
+            <p className="text-sm text-[var(--muted)]">
+              Tocá una de las secciones de arriba para ver su tutorial completo.
             </p>
-          )}
-        </Card>
+          </Card>
+        )}
 
         <Card className="p-6">
-          <div className="flex items-center gap-2">
-            <MessagesSquare size={17} className="text-[var(--accent)]" />
-            <h2 className="text-base font-bold text-[var(--text-strong)]">¿Cómo veo lo que habló el asistente?</h2>
-          </div>
-          <div className="mt-4 space-y-4">
-            {type === 'COEXISTENCE' ? (
-              <Step n="1" title="Abrí WhatsApp Business en tu celular">
-                Las charlas están ahí mismo, mezcladas con las que atendiste vos — no hace falta
-                entrar a ningún otro lado.
-              </Step>
-            ) : (
-              <>
-                <Step n="1" title='Entrá a "Mensajes" en el menú de la izquierda'>
-                  Vas a ver una lista con cada paciente que le escribió al asistente, ordenada por
-                  el más reciente arriba.
-                </Step>
-                <Step n="2" title="Elegí una charla para leerla completa">
-                  Se abre a la derecha, con los mensajes del paciente de un lado y las respuestas
-                  del asistente del otro — como cualquier chat de WhatsApp.
-                </Step>
-              </>
-            )}
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center gap-2">
-            <Headset size={17} className="text-[var(--accent)]" />
-            <h2 className="text-base font-bold text-[var(--text-strong)]">¿Y si un paciente necesita hablar con una persona?</h2>
-          </div>
-          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
-            Esto es igual sin importar cómo conectaste tu número. Si el asistente detecta que el
-            paciente necesita hablar con alguien del laboratorio, avisa en la sección{' '}
-            <strong>"Atención humana"</strong> del menú — ahí aparece esa charla esperando a que
-            alguien del equipo la tome y responda personalmente.
-          </p>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center gap-2">
-            <CircleHelp size={17} className="text-[var(--accent)]" />
-            <h2 className="text-base font-bold text-[var(--text-strong)]">¿Algo no funciona como esperabas?</h2>
-          </div>
-          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
-            No hace falta que sepas nada de tecnología para pedir ayuda: escribinos a{' '}
+          <p className="text-sm leading-relaxed text-[var(--muted)]">
+            ¿Algo no funciona como esperabas? No hace falta que sepas nada de tecnología para pedir
+            ayuda: escribinos a{' '}
             <a href="mailto:zeroautoapp@gmail.com" className="text-[var(--accent)] underline">
               zeroautoapp@gmail.com
             </a>{' '}

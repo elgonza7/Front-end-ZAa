@@ -8,9 +8,53 @@ import Badge from '../components/ui/Badge.jsx'
 import Switch from '../components/ui/Switch.jsx'
 import ProgressBar from '../components/ui/ProgressBar.jsx'
 import Button from '../components/ui/Button.jsx'
+import HelpButton from '../components/ui/HelpButton.jsx'
 import { getLabProfile, toggleBot, getTokenUsageHistory, getFaqRanking } from '../api/labService.js'
 import { getHandoffQueue } from '../api/handoffService.js'
 import { getConnection } from '../api/whatsappService.js'
+
+export function PanelTutorial() {
+  return (
+    <>
+      <p>
+        Este es el <strong>Panel</strong>: el primer vistazo a cómo está funcionando tu asistente,
+        sin tener que entrar a ninguna otra sección.
+      </p>
+      <ul className="list-disc space-y-2 pl-5">
+        <li>
+          <strong>El cartel de arriba de todo</strong> (verde, amarillo o rojo) te dice de un
+          vistazo si todo está en orden, si hay algo para revisar, o si el asistente no puede
+          responder ahora mismo (y por qué).
+        </li>
+        <li>
+          <strong>Asistente de WhatsApp:</strong> el interruptor prende o apaga las respuestas
+          automáticas. Apagalo solo si necesitás que un humano se haga cargo de todo por un rato.
+        </li>
+        <li>
+          <strong>Estado de pago:</strong> si dice "Pendiente" o "Vencido", andá a Facturación
+          para regularizarlo antes de que afecte el servicio.
+        </li>
+        <li>
+          <strong>Interacciones usadas este mes:</strong> cuánto consumió tu asistente del cupo de
+          tu plan. Superarlo no corta el servicio — el excedente se cobra aparte, y te avisamos ahí
+          mismo si conviene pasarte a un plan más grande.
+        </li>
+        <li>
+          <strong>El gráfico:</strong> cuánto usó el asistente en los últimos 7 días, para ver si
+          viene subiendo o bajando.
+        </li>
+        <li>
+          <strong>Preguntas más frecuentes:</strong> los temas que más preguntan tus pacientes —
+          útil para saber qué información reforzar en el flujo de conversación.
+        </li>
+      </ul>
+      <p>
+        Si aparece un cartel de "pacientes esperando", es que alguien pidió hablar con una persona
+        o está esperando que le envíes su resultado — se resuelve desde "Atención humana".
+      </p>
+    </>
+  )
+}
 
 // Semáforo de estado general: un vistazo, sin tener que interpretar nada.
 // Rojo = el asistente no puede atender pacientes ahora mismo. Amarillo =
@@ -103,6 +147,11 @@ export default function LabDashboard() {
       title={`Hola, ${profile.name}`}
       subtitle="Centralizá la gestión de tu asistente de WhatsApp"
       userLabel={profile.name}
+      headerActions={
+        <HelpButton title="Cómo leer el Panel">
+          <PanelTutorial />
+        </HelpButton>
+      }
     >
       <div className="space-y-6">
         {(() => {
