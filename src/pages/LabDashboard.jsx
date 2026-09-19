@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Headset, ArrowRight, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -9,7 +9,7 @@ import Switch from '../components/ui/Switch.jsx'
 import ProgressBar from '../components/ui/ProgressBar.jsx'
 import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
-import { getLabProfile, toggleBot, getTokenUsageHistory, getFaqRanking } from '../api/labService.js'
+import { getLabProfile, toggleBot, getTokenUsageHistory, getFaqRanking, getPatientsPerDay, getMessagesByHour } from '../api/labService.js'
 import { getHandoffQueue } from '../api/handoffService.js'
 import { getConnection } from '../api/whatsappService.js'
 
@@ -118,23 +118,45 @@ function CustomTooltip({ active, payload, label }) {
   )
 }
 
+function BarTooltip({ active, payload, label, unit, formatLabel }) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
+      <p className="text-[var(--muted)]">{formatLabel ? formatLabel(label) : label}</p>
+      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} {unit}</p>
+    </div>
+  )
+}
+
 export default function LabDashboard() {
   const [profile, setProfile] = useState(null)
   const [usageHistory, setUsageHistory] = useState([])
   const [faqRanking, setFaqRanking] = useState([])
+  const [patientsPerDay, setPatientsPerDay] = useState([])
+  const [messagesByHour, setMessagesByHour] = useState([])
   const [handoffQueue, setHandoffQueue] = useState([])
   const [whatsappConnected, setWhatsappConnected] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([getLabProfile(), getTokenUsageHistory(), getFaqRanking(), getHandoffQueue(), getConnection()])
-      .then(([profileData, usageData, faqData, handoffData, connectionData]) => {
+    Promise.all([
+      getLabProfile(),
+      getTokenUsageHistory(),
+      getFaqRanking(),
+      getHandoffQueue(),
+      getConnection(),
+      getPatientsPerDay(),
+      getMessagesByHour(),
+    ])
+      .then(([profileData, usageData, faqData, handoffData, connectionData, patientsData, hourData]) => {
         setProfile(profileData)
         setUsageHistory(usageData)
         setFaqRanking(faqData)
         setHandoffQueue(handoffData)
         setWhatsappConnected(connectionData.connected)
+        setPatientsPerDay(patientsData)
+        setMessagesByHour(hourData)
       })
       .catch((err) => setError(err.message || 'No se pudo cargar el panel del laboratorio.'))
       .finally(() => setLoading(false))
@@ -238,7 +260,7 @@ export default function LabDashboard() {
         })()}
 
         {/* KPIs */}
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Card className="p-5">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-[var(--text-strong)]">Asistente de WhatsApp</p>
@@ -273,56 +295,73 @@ export default function LabDashboard() {
             </Button>
           </Card>
 
-          <Card className="p-5">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-[var(--text-strong)]">Interacciones usadas este mes</p>
-              <Badge variant="gold">Plan {profile.planName}</Badge>
-            </div>
-            <p className="mt-2 text-xl font-bold text-[var(--text-strong)]">
-              {profile.tokensUsed.toLocaleString()}{' '}
-              <span className="text-sm font-normal text-[var(--muted)]">
-                / {profile.tokensLimit.toLocaleString()} incluidas en tu plan
-              </span>
-            </p>
-            <ProgressBar value={profile.tokensUsed} max={profile.tokensLimit} className="mt-3" />
-            <p className="mt-2 text-xs text-[var(--muted)]">
-              Clientes atendidos: <span className="text-[var(--text-strong)]">{profile.clientsAttended.toLocaleString()}</span>
-            </p>
-            {profile.averageTokensPerInteraction > 0 && (
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                Cada interacción te consume en promedio{' '}
-                <span className="text-[var(--text-strong)]">
-                  ~{profile.averageTokensPerInteraction.toLocaleString()} tokens
-                </span>{' '}
-                este mes
-                {profile.tokensUsed < profile.tokensLimit && (
-                  <>
-                    {' '}— con ese promedio te quedan ~
-                    {Math.floor((profile.tokensLimit - profile.tokensUsed) / profile.averageTokensPerInteraction).toLocaleString()}{' '}
-                    interacciones más en tu cupo
-                  </>
-                )}
-                .
-              </p>
-            )}
-            {profile.tokensUsed >= profile.tokensLimit ? (
-              <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
-                <p>
-                  Superaste el cupo de tu plan. El asistente sigue funcionando igual — el excedente se
-                  cobra automáticamente a ${profile.overagePricePer1kTokensUSD} USD cada 1.000 interacciones.
-                </p>
-                <Link to="/dashboard/facturacion" className="mt-1.5 inline-block font-semibold underline">
-                  Te recomendamos pasarte al siguiente plan para no tener sorpresas el próximo mes →
-                </Link>
-              </div>
-            ) : (
-              <p className="mt-3 text-[11px] text-[var(--muted)]">
-                Si te pasás del cupo, el asistente no se corta: el excedente se cobra aparte a $
-                {profile.overagePricePer1kTokensUSD} USD cada 1.000 interacciones.
-              </p>
-            )}
-          </Card>
         </div>
+
+        {/* Interacciones usadas este mes — ancho completo, desglose a la derecha */}
+        <Card className="p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-[var(--text-strong)]">Interacciones usadas este mes</p>
+            <Badge variant="gold">Plan {profile.planName}</Badge>
+          </div>
+
+          <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-[1.3fr_1fr]">
+            <div>
+              <p className="text-xl font-bold text-[var(--text-strong)]">
+                {profile.tokensUsed.toLocaleString()}{' '}
+                <span className="text-sm font-normal text-[var(--muted)]">
+                  / {profile.tokensLimit.toLocaleString()} incluidas en tu plan
+                </span>
+              </p>
+              <ProgressBar value={profile.tokensUsed} max={profile.tokensLimit} className="mt-3" />
+              <p className="mt-2 text-xs text-[var(--muted)]">
+                Clientes atendidos: <span className="text-[var(--text-strong)]">{profile.clientsAttended.toLocaleString()}</span>
+              </p>
+              {profile.tokensUsed >= profile.tokensLimit && (
+                <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+                  <p>Superaste el cupo de tu plan. El asistente sigue funcionando igual — el excedente se cobra aparte.</p>
+                  <Link to="/dashboard/facturacion" className="mt-1.5 inline-block font-semibold underline">
+                    Te recomendamos pasarte al siguiente plan para no tener sorpresas el próximo mes →
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2.5 border-t border-[var(--border)] pt-3.5 md:border-l md:border-t-0 md:pl-5 md:pt-0">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[var(--muted)]">Interacciones totales incluidas</span>
+                <span className="font-semibold text-[var(--text-strong)]">{profile.tokensLimit.toLocaleString()} / mes</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[var(--muted)]">Si se supera el cupo, se cobra</span>
+                <span className="font-semibold text-[var(--text-strong)]">${profile.overagePricePer1kTokensUSD} USD c/1.000</span>
+              </div>
+              {profile.averageTokensPerInteraction > 0 && (
+                <>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[var(--muted)]">Promedio de este mes</span>
+                    <span className="font-semibold text-[var(--text-strong)]">
+                      ~{profile.averageTokensPerInteraction.toLocaleString()} tokens/mensaje
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[var(--muted)]">Costo aprox. por mensaje</span>
+                    <span className="font-semibold text-[var(--text-strong)]">
+                      ~${((profile.overagePricePer1kTokensUSD / 1000) * profile.averageTokensPerInteraction).toFixed(4)} USD
+                    </span>
+                  </div>
+                  {profile.tokensUsed < profile.tokensLimit && (
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[var(--muted)]">Con ese promedio, te quedan</span>
+                      <span className="font-semibold text-[var(--text-strong)]">
+                        ~{Math.floor((profile.tokensLimit - profile.tokensUsed) / profile.averageTokensPerInteraction).toLocaleString()} interacciones
+                      </span>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </Card>
 
         {/* Analítica */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -376,6 +415,70 @@ export default function LabDashboard() {
                 </li>
               ))}
             </ul>
+          </Card>
+        </div>
+
+        {/* Analítica avanzada */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Card className="p-6">
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Pacientes atendidos por día</h2>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              Personas distintas que le escribieron al asistente cada día (últimos 7 días) — no cuenta
+              mensajes repetidos de la misma persona.
+            </p>
+            <div className="mt-4 h-56">
+              {patientsPerDay.every((d) => d.patients === 0) ? (
+                <div className="flex h-full items-center justify-center text-center text-xs text-[var(--muted)]">
+                  Todavía no hay datos disponibles.
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={patientsPerDay} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="day" stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <Tooltip content={<BarTooltip unit="pacientes" />} cursor={{ fill: 'var(--border)', opacity: 0.3 }} />
+                    <Bar dataKey="patients" fill="var(--accent)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="text-sm font-semibold text-[var(--text-strong)]">Mensajes por hora del día</h2>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              A qué hora te suelen escribir los pacientes (últimos 30 días, hora Argentina) — útil para
+              saber cuándo conviene tener a alguien más atento.
+            </p>
+            <div className="mt-4 h-56">
+              {messagesByHour.every((h) => h.count === 0) ? (
+                <div className="flex h-full items-center justify-center text-center text-xs text-[var(--muted)]">
+                  Todavía no hay datos disponibles.
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={messagesByHour} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                      dataKey="hour"
+                      tickFormatter={(hour) => `${String(hour).padStart(2, '0')}h`}
+                      interval={2}
+                      stroke="var(--muted)"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <Tooltip
+                      content={<BarTooltip unit="mensajes" formatLabel={(hour) => `${String(hour).padStart(2, '0')}:00`} />}
+                      cursor={{ fill: 'var(--border)', opacity: 0.3 }}
+                    />
+                    <Bar dataKey="count" fill="var(--accent)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
           </Card>
         </div>
       </div>

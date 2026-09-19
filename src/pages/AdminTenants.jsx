@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Search, Plus, Ban, PlayCircle, Eye, ArrowUpRight, ArrowDownRight, Minus, Send, Gift } from 'lucide-react'
+import { Search, Plus, Ban, PlayCircle, Eye, ArrowUpRight, ArrowDownRight, Minus, Send, Gift, MessageCircle, MessageCircleOff, Headset, AlertTriangle } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import AdminLayout from '../components/layout/AdminLayout.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -180,7 +180,7 @@ export default function AdminTenants() {
                 <th className="px-6 py-3 font-medium">Laboratorio</th>
                 <th className="px-6 py-3 font-medium">Contacto</th>
                 <th className="px-6 py-3 font-medium">Plan</th>
-                <th className="px-6 py-3 font-medium">Estado del Bot</th>
+                <th className="px-6 py-3 font-medium">Estado</th>
                 <th className="px-6 py-3 font-medium">Último Pago</th>
                 <th className="px-6 py-3 font-medium">Uso (tendencia)</th>
                 <th className="px-6 py-3 font-medium text-right">Acciones</th>
@@ -210,9 +210,34 @@ export default function AdminTenants() {
                         <Badge variant="gold">{lab.plan}</Badge>
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant={lab.botActive ? 'success' : 'neutral'}>
-                          {lab.botActive ? 'ON' : 'OFF'}
-                        </Badge>
+                        <div className="flex flex-col gap-1.5">
+                          <Badge variant={lab.botActive ? 'success' : 'neutral'}>
+                            Bot {lab.botActive ? 'ON' : 'OFF'}
+                          </Badge>
+                          <span className="flex items-center gap-1 text-[11px] text-[var(--muted)]">
+                            {lab.whatsappConnected ? (
+                              <>
+                                <MessageCircle size={12} className="text-emerald-400" />
+                                WhatsApp OK ({lab.whatsappConnectionType === 'Coexistence' ? 'Coexistence' : 'Manual'})
+                              </>
+                            ) : (
+                              <>
+                                <MessageCircleOff size={12} className="text-red-400" />
+                                Sin conectar
+                              </>
+                            )}
+                          </span>
+                          {lab.pendingHandoffCount > 0 && (
+                            <span className="flex items-center gap-1 text-[11px] text-amber-400">
+                              <Headset size={12} /> {lab.pendingHandoffCount} esperando atención
+                            </span>
+                          )}
+                          {lab.geminiFallbacksLast7Days > 0 && (
+                            <span className="flex items-center gap-1 text-[11px] text-red-400" title="Veces que la IA falló y se mandó un aviso genérico en los últimos 7 días">
+                              <AlertTriangle size={12} /> {lab.geminiFallbacksLast7Days} fallas de IA (7d)
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-[var(--text)]">
                         {lab.lastPayment}
@@ -351,6 +376,11 @@ export default function AdminTenants() {
               <Badge variant={detailLab.botActive ? 'success' : 'neutral'}>
                 {detailLab.botActive ? 'Bot activo' : 'Bot suspendido'}
               </Badge>
+              <Badge variant={detailLab.whatsappConnected ? 'success' : 'danger'}>
+                {detailLab.whatsappConnected
+                  ? `WhatsApp conectado (${detailLab.whatsappConnectionType === 'Coexistence' ? 'Coexistence' : 'Manual'})`
+                  : 'WhatsApp sin conectar'}
+              </Badge>
               <Badge variant={STATUS_LABEL[detailLab.status]?.variant ?? 'neutral'}>
                 {STATUS_LABEL[detailLab.status]?.text ?? detailLab.status}
               </Badge>
@@ -372,6 +402,24 @@ export default function AdminTenants() {
                   </p>
                 </div>
                 <Badge variant="warning">Verificar</Badge>
+              </div>
+            )}
+
+            {(detailLab.pendingHandoffCount > 0 || detailLab.geminiFallbacksLast7Days > 0) && (
+              <div className="space-y-1.5 rounded-xl border border-amber-500/30 bg-amber-500/5 px-3.5 py-2.5 text-xs">
+                {detailLab.pendingHandoffCount > 0 && (
+                  <p className="flex items-center gap-1.5 text-amber-300">
+                    <Headset size={13} />
+                    {detailLab.pendingHandoffCount} conversación(es) esperando que alguien del laboratorio las atienda
+                  </p>
+                )}
+                {detailLab.geminiFallbacksLast7Days > 0 && (
+                  <p className="flex items-center gap-1.5 text-red-300">
+                    <AlertTriangle size={13} />
+                    La IA falló {detailLab.geminiFallbacksLast7Days} vez(veces) en los últimos 7 días (se mandó un
+                    aviso genérico al paciente en su lugar)
+                  </p>
+                )}
               </div>
             )}
 

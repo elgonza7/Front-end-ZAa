@@ -113,6 +113,23 @@ export async function getFaqRanking() {
   return apiFetch('/lab/metrics/faq')
 }
 
+// GET /api/lab/metrics/patients-per-day -> pacientes ÚNICOS atendidos por día
+export async function getPatientsPerDay() {
+  if (USE_MOCKS) return mockDelay([
+    { day: 'Lun', patients: 8 }, { day: 'Mar', patients: 12 }, { day: 'Mie', patients: 6 },
+    { day: 'Jue', patients: 15 }, { day: 'Vie', patients: 20 }, { day: 'Sab', patients: 4 }, { day: 'Dom', patients: 1 },
+  ])
+  return apiFetch('/lab/metrics/patients-per-day?days=7')
+}
+
+// GET /api/lab/metrics/messages-by-hour -> distribución horaria (hora Argentina) de los últimos 30 días
+export async function getMessagesByHour() {
+  if (USE_MOCKS) return mockDelay(Array.from({ length: 24 }, (_, hour) => ({
+    hour, count: hour >= 8 && hour <= 20 ? Math.round(20 + 30 * Math.sin(((hour - 8) / 12) * Math.PI)) : 1,
+  })))
+  return apiFetch('/lab/metrics/messages-by-hour')
+}
+
 // POST /api/lab/subscription/checkout -> returns the MercadoPago checkout URL
 export async function startSubscriptionCheckout() {
   if (USE_MOCKS) return mockDelay({ checkoutUrl: 'https://mercadopago.com/checkout/mock' })
