@@ -24,9 +24,9 @@ function FlowTutorial() {
           abrirla.
         </li>
         <li>
-          <strong>Hacé click</strong> en una caja para editarla en un panel — desde ahí también
-          podés pasar a pantalla completa con el botón de arriba a la derecha, y volver con
-          "← Volver".
+          <strong>Hacé click</strong> en una caja para verla en un panel de solo lectura — tocá
+          "Editar" (arriba a la derecha) recién ahí para poder modificarla. Desde ahí también podés
+          pasar a pantalla completa, y volver con "← Volver".
         </li>
         <li>
           <strong>Ramas:</strong> cada botón ("Sacar turno", "Obras Sociales"...) tiene su propio
