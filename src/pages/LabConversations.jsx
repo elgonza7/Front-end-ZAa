@@ -17,6 +17,14 @@ export function ConversationsTutorial() {
   )
 }
 
+// El conversationId es el wa_id (número sin "+" ni espacios) — se muestra
+// legible cuando no hay nombre de perfil de WhatsApp para esa charla.
+function formatPhone(waId) {
+  const digits = String(waId).replace(/\D/g, '')
+  if (digits.length < 8) return `+${digits}`
+  return `+${digits.slice(0, digits.length - 8)} ${digits.slice(-8, -4)} ${digits.slice(-4)}`
+}
+
 function timeAgo(isoString) {
   const minutes = Math.max(0, Math.round((Date.now() - new Date(isoString).getTime()) / 60000))
   if (minutes < 1) return 'recién'
@@ -91,13 +99,17 @@ export default function LabConversations() {
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <p className="flex items-center gap-1.5 text-sm font-semibold text-[var(--text-strong)]">
-                    <MessagesSquare size={13} className="text-[var(--accent)]" /> {conv.conversationId}
+                  <p className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-[var(--text-strong)]">
+                    <MessagesSquare size={13} className="shrink-0 text-[var(--accent)]" />
+                    <span className="truncate">{conv.patientName || formatPhone(conv.conversationId)}</span>
                   </p>
                   <span className="shrink-0 text-[10px] text-[var(--muted)]">{timeAgo(conv.lastMessageAt)}</span>
                 </div>
                 <p className="mt-1.5 truncate text-xs text-[var(--muted)]">{conv.lastMessage}</p>
-                <p className="mt-1 text-[10px] text-[var(--muted)]">{conv.messageCount} mensajes</p>
+                <p className="mt-1 text-[10px] text-[var(--muted)]">
+                  {conv.patientName ? `${formatPhone(conv.conversationId)} · ` : ''}
+                  {conv.messageCount} mensajes
+                </p>
               </button>
             ))}
           </div>

@@ -61,19 +61,43 @@ export function PanelTutorial() {
 // funciona, pero hay algo para revisar pronto. Verde = todo en orden.
 function computeOverallStatus({ profile, connected }) {
   if (!connected) {
-    return { level: 'danger', title: 'El asistente no puede responder', detail: 'Todavía no conectaste tu número de WhatsApp.', icon: XCircle }
+    return {
+      level: 'danger',
+      title: 'El asistente no puede responder',
+      detail: 'Todavía no conectaste tu número de WhatsApp.',
+      icon: XCircle,
+      cta: { label: 'Conectar WhatsApp', to: '/dashboard/whatsapp' },
+    }
   }
   if (profile.paymentStatus === 'OVERDUE') {
-    return { level: 'danger', title: 'El asistente no puede responder', detail: 'Tu suscripción está vencida — regularizala desde Facturación.', icon: XCircle }
+    return {
+      level: 'danger',
+      title: 'El asistente no puede responder',
+      detail: 'Tu suscripción está vencida — regularizala desde Facturación.',
+      icon: XCircle,
+      cta: { label: 'Regularizar pago', to: '/dashboard/facturacion' },
+    }
   }
   if (!profile.botActive) {
     return { level: 'warning', title: 'El asistente está pausado', detail: 'Lo apagaste vos desde este panel — los pacientes no reciben respuesta automática.', icon: AlertTriangle }
   }
   if (profile.paymentStatus === 'PENDING') {
-    return { level: 'warning', title: 'Funcionando, con un pendiente', detail: 'Tenés un pago pendiente de confirmación en Facturación.', icon: AlertTriangle }
+    return {
+      level: 'warning',
+      title: 'Funcionando, con un pendiente',
+      detail: 'Tenés un pago pendiente de confirmación en Facturación.',
+      icon: AlertTriangle,
+      cta: { label: 'Ver Facturación', to: '/dashboard/facturacion' },
+    }
   }
   if (profile.tokensUsed >= profile.tokensLimit) {
-    return { level: 'warning', title: 'Funcionando, pasaste tu cupo', detail: 'El asistente sigue respondiendo — el excedente se cobra aparte.', icon: AlertTriangle }
+    return {
+      level: 'warning',
+      title: 'Funcionando, pasaste tu cupo',
+      detail: 'El asistente sigue respondiendo — el excedente se cobra aparte.',
+      icon: AlertTriangle,
+      cta: { label: 'Ver planes', to: '/dashboard/facturacion' },
+    }
   }
   return { level: 'success', title: 'Todo funcionando correctamente', detail: 'Tu asistente está conectado y respondiendo a tus pacientes.', icon: CheckCircle2 }
 }
@@ -161,11 +185,17 @@ export default function LabDashboard() {
           return (
             <Card className={`flex items-center gap-3.5 border p-4 ${style.border} ${style.bg}`}>
               <Icon size={26} className={`shrink-0 ${style.iconColor}`} />
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-[var(--text-strong)]">{status.title}</p>
                 <p className="text-xs text-[var(--muted)]">{status.detail}</p>
               </div>
-              <Badge variant={style.badge} className="ml-auto shrink-0">
+              {status.cta && (
+                <Button as={Link} to={status.cta.to} variant="outline" className="ml-auto shrink-0 px-3.5 py-2 text-xs">
+                  {status.cta.label}
+                  <ArrowRight size={13} />
+                </Button>
+              )}
+              <Badge variant={style.badge} className={`shrink-0 ${status.cta ? '' : 'ml-auto'}`}>
                 {status.level === 'success' ? 'OK' : status.level === 'warning' ? 'Atención' : 'Caído'}
               </Badge>
             </Card>
@@ -238,7 +268,7 @@ export default function LabDashboard() {
             <p className="mt-3 text-xs text-[var(--muted)]">
               Próximo vencimiento: <span className="text-[var(--text-strong)]">{profile.nextDueDate}</span>
             </p>
-            <Button variant="outline" className="mt-4 w-full py-2 text-xs">
+            <Button as={Link} to="/dashboard/facturacion" variant="outline" className="mt-4 w-full py-2 text-xs">
               Gestionar suscripción
             </Button>
           </Card>
