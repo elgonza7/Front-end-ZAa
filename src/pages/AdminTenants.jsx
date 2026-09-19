@@ -54,7 +54,7 @@ function DetailTooltip({ active, payload, label }) {
   return (
     <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
       <p className="text-[var(--muted)]">{label}</p>
-      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} interacciones</p>
+      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} tokens</p>
     </div>
   )
 }
@@ -227,9 +227,9 @@ export default function AdminTenants() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-[var(--text)]">{lab.tokensConsumed.toLocaleString()} interacciones</p>
+                        <p className="text-[var(--text)]">{lab.tokensConsumed.toLocaleString()} tokens</p>
                         {lab.averageTokensPerInteraction > 0 && (
-                          <p className="text-[11px] text-[var(--muted)]">~{lab.averageTokensPerInteraction.toLocaleString()} tokens/interacción</p>
+                          <p className="text-[11px] text-[var(--muted)]">~{lab.averageTokensPerInteraction.toLocaleString()} tokens/mensaje</p>
                         )}
                         <TrendBadge usageHistory={lab.usageHistory} />
                       </td>
@@ -394,7 +394,7 @@ export default function AdminTenants() {
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-medium text-[var(--muted)]">Interacciones consumidas — últimos 6 meses</p>
+              <p className="mb-2 text-xs font-medium text-[var(--muted)]">Tokens consumidos — últimos 6 meses</p>
               <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={detailLab.usageHistory} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>

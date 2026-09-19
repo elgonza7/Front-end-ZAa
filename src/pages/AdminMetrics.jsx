@@ -14,9 +14,11 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts'
+import { Pencil } from 'lucide-react'
 import AdminLayout from '../components/layout/AdminLayout.jsx'
 import Card from '../components/ui/Card.jsx'
-import { getMetricsHistory, getGlobalMetrics } from '../api/adminService.js'
+import Button from '../components/ui/Button.jsx'
+import { getMetricsHistory, getGlobalMetrics, getCostSettings, updateCostSettings } from '../api/adminService.js'
 
 const PLAN_COLORS = ['var(--accent)', '#34d399', '#60a5fa']
 
@@ -25,7 +27,7 @@ function TokenTooltip({ active, payload, label }) {
   return (
     <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
       <p className="text-[var(--muted)]">{label}</p>
-      <p className="font-semibold text-emerald-400">{payload[0].value.toLocaleString('es-AR')} interacciones</p>
+      <p className="font-semibold text-emerald-400">{payload[0].value.toLocaleString('es-AR')} tokens</p>
     </div>
   )
 }
@@ -52,15 +54,36 @@ export default function AdminMetrics() {
   const [history, setHistory] = useState(null)
   const [metrics, setMetrics] = useState(null)
   const [error, setError] = useState('')
+  const [editingCosts, setEditingCosts] = useState(false)
+  const [costForm, setCostForm] = useState({ renderMonthlyCostUSD: '', domainMonthlyCostUSD: '' })
+  const [savingCosts, setSavingCosts] = useState(false)
 
   useEffect(() => {
-    Promise.all([getMetricsHistory(), getGlobalMetrics()])
-      .then(([historyData, metricsData]) => {
+    Promise.all([getMetricsHistory(), getGlobalMetrics(), getCostSettings()])
+      .then(([historyData, metricsData, costSettings]) => {
         setHistory(historyData)
         setMetrics(metricsData)
+        setCostForm(costSettings)
       })
       .catch((err) => setError(err.message || 'No se pudieron cargar las métricas.'))
   }, [])
+
+  async function handleSaveCosts() {
+    setSavingCosts(true)
+    try {
+      await updateCostSettings({
+        renderMonthlyCostUSD: Number(costForm.renderMonthlyCostUSD),
+        domainMonthlyCostUSD: Number(costForm.domainMonthlyCostUSD),
+      })
+      // Los costos fijos afectan la ganancia neta estimada — se recalcula
+      // todo junto en vez de solo pisar los dos números editados.
+      const refreshedMetrics = await getGlobalMetrics()
+      setMetrics(refreshedMetrics)
+      setEditingCosts(false)
+    } finally {
+      setSavingCosts(false)
+    }
+  }
 
   if (error) {
     return (
@@ -103,11 +126,60 @@ export default function AdminMetrics() {
             </p>
           </Card>
           <Card className="p-4">
-            <p className="text-xs text-[var(--muted)]">Costos fijos (Render + dominio)</p>
-            <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
-              ${metrics.fixedInfraCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
-            </p>
-            <p className="mt-1 text-[10px] text-[var(--muted)]">Por mes, sin importar el uso — ajustable en el código.</p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs text-[var(--muted)]">Costos fijos (Render + dominio)</p>
+              {!editingCosts && (
+                <button
+                  type="button"
+                  onClick={() => setEditingCosts(true)}
+                  className="text-[var(--muted)] hover:text-[var(--accent)]"
+                  aria-label="Editar costos fijos"
+                  title="Editar costos fijos"
+                >
+                  <Pencil size={13} />
+                </button>
+              )}
+            </div>
+
+            {editingCosts ? (
+              <div className="mt-2 space-y-2">
+                <div>
+                  <label className="text-[10px] text-[var(--muted)]">Render (USD/mes)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={costForm.renderMonthlyCostUSD}
+                    onChange={(event) => setCostForm((prev) => ({ ...prev, renderMonthlyCostUSD: event.target.value }))}
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-2.5 py-1.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-[var(--muted)]">Dominio (USD/mes)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={costForm.domainMonthlyCostUSD}
+                    onChange={(event) => setCostForm((prev) => ({ ...prev, domainMonthlyCostUSD: event.target.value }))}
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-2.5 py-1.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="button" disabled={savingCosts} onClick={handleSaveCosts} className="flex-1 justify-center px-2 py-1.5 text-xs">
+                    {savingCosts ? 'Guardando…' : 'Guardar'}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setEditingCosts(false)} className="flex-1 justify-center px-2 py-1.5 text-xs">
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
+                  ${metrics.fixedInfraCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                </p>
+                <p className="mt-1 text-[10px] text-[var(--muted)]">Por mes, sin importar el uso — tocá el lápiz para actualizarlo.</p>
+              </>
+            )}
           </Card>
           <Card className="p-4">
             <p className="text-xs text-[var(--muted)]">Ganancia neta estimada</p>
@@ -120,7 +192,7 @@ export default function AdminMetrics() {
 
         <Card className="p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-base font-bold text-[var(--accent)]">Interacciones de la plataforma</h2>
+            <h2 className="text-base font-bold text-[var(--accent)]">Tokens de la plataforma</h2>
             <span className="text-sm text-[var(--muted)]">
               Cantidad de Respuestas: <span className="font-semibold text-[var(--text-strong)]">{history.responseCount.toLocaleString('es-AR')}</span>
             </span>
@@ -128,7 +200,7 @@ export default function AdminMetrics() {
 
           <div className="mt-4 h-80">
             {history.tokenHistory.length === 0 ? (
-              <EmptyChart label="interacciones" />
+              <EmptyChart label="tokens" />
             ) : (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={history.tokenHistory} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>

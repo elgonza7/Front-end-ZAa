@@ -44,7 +44,7 @@ export default function AdminPanel() {
           <StatCard icon={PlayCircle} label="Bots activos" value={metrics?.activeLabs ?? '—'} />
           <StatCard
             icon={Coins}
-            label="Interacciones consumidas"
+            label="Tokens consumidos"
             value={metrics ? metrics.totalTokensConsumed.toLocaleString() : '—'}
           />
           <StatCard
@@ -70,7 +70,7 @@ export default function AdminPanel() {
                   <th className="px-6 py-3 font-medium">Nombre del Lab</th>
                   <th className="px-6 py-3 font-medium">Estado del Bot</th>
                   <th className="px-6 py-3 font-medium">Último Pago</th>
-                  <th className="px-6 py-3 font-medium">Interacciones Consumidas</th>
+                  <th className="px-6 py-3 font-medium">Tokens Consumidos</th>
                 </tr>
               </thead>
               <tbody>

@@ -55,6 +55,19 @@ export async function getMetricsHistory() {
   return apiFetch('/admin/metrics/history')
 }
 
+// GET /api/admin/metrics/cost-settings -> costos fijos mensuales usados para
+// calcular la ganancia neta estimada (Render + dominio)
+export async function getCostSettings() {
+  if (USE_MOCKS) return mockDelay({ renderMonthlyCostUSD: 14, domainMonthlyCostUSD: 2.5 })
+  return apiFetch('/admin/metrics/cost-settings')
+}
+
+// PUT /api/admin/metrics/cost-settings { renderMonthlyCostUSD, domainMonthlyCostUSD }
+export async function updateCostSettings(payload) {
+  if (USE_MOCKS) return mockDelay(payload)
+  return apiFetch('/admin/metrics/cost-settings', { method: 'PUT', body: JSON.stringify(payload) })
+}
+
 // PATCH /api/admin/labs/{id}/suspend -> forces IsBotActive = false regardless
 // of the 15-day grace period Worker Service (manual override for admins)
 export async function suspendLab(labId) {
