@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /cambiar-password
+Disallow: /configuracion-inicial
+Disallow: /restablecer-password
+
+Sitemap: https://www.zeroautoapp.com/sitemap.xml
