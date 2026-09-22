@@ -20,3 +20,12 @@ export const PLAN_PRICING = {
   Profesional: { setupFeeUSD: 35, priceUSD: 65, tokensLimit: 4_100_000 },
   Premium: { setupFeeUSD: 45, priceUSD: 90, tokensLimit: 9_500_000 },
 }
+
+// Cuánto gasta en promedio UNA interacción (un mensaje de respuesta del
+// asistente a un paciente) — un token no le dice nada a un dueño de
+// laboratorio, así que en la UI pública se muestra "≈ N interacciones" como
+// número principal y el total de tokens como aclaración entre paréntesis.
+// Es una estimación general para marketing; dentro del panel de un
+// laboratorio ya conectado se usa su propio promedio real
+// (profile.averageTokensPerInteraction) en vez de este número fijo.
+export const AVG_TOKENS_PER_INTERACTION_ESTIMATE = 5000

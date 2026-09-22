@@ -59,12 +59,12 @@ const FEATURES = [
     icon: BarChart3,
     title: 'Panel de control con métricas en vivo',
     description:
-      'Tokens consumidos, clientes atendidos y estado de pago, todo en una sola pantalla. Sabés exactamente cuánto está usando tu asistente y cuánto te queda del plan.',
+      'Interacciones consumidas, clientes atendidos y estado de pago, todo en una sola pantalla. Sabés exactamente cuánto está usando tu asistente y cuánto te queda del plan.',
     mockup: (
       <Card className="p-5">
-        <p className="text-xs font-semibold text-[var(--text-strong)]">Tokens</p>
+        <p className="text-xs font-semibold text-[var(--text-strong)]">Interacciones</p>
         <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">
-          4.580 <span className="text-xs font-normal text-[var(--muted)]">/ 10.000</span>
+          916 <span className="text-xs font-normal text-[var(--muted)]">/ 2.000</span>
         </p>
         <div className="mt-3 h-24">
           <ResponsiveContainer width="100%" height="100%">

@@ -5,7 +5,7 @@ import LandingNavbar from '../components/layout/LandingNavbar.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Card from '../components/ui/Card.jsx'
 import Button from '../components/ui/Button.jsx'
-import { PLAN_PRICING } from '../lib/pricing.js'
+import { PLAN_PRICING, AVG_TOKENS_PER_INTERACTION_ESTIMATE } from '../lib/pricing.js'
 
 // Estimación para recomendar un plan según cuántos pacientes por día
 // escriben por WhatsApp: ~7.500 tokens promedio por conversación completa
@@ -27,6 +27,8 @@ function PlanCalculator() {
   const [dailyContacts, setDailyContacts] = useState(5)
   const recommended = recommendPlan(dailyContacts)
   const estimatedTokens = dailyContacts * 30 * TOKENS_PER_CONTACT_ESTIMATE
+  const estimatedInteractions = Math.round(estimatedTokens / AVG_TOKENS_PER_INTERACTION_ESTIMATE)
+  const recommendedInteractions = Math.round(PLAN_PRICING[recommended].tokensLimit / AVG_TOKENS_PER_INTERACTION_ESTIMATE)
 
   return (
     <Card className="p-6">
@@ -65,8 +67,9 @@ function PlanCalculator() {
         <p className="text-xs text-[var(--muted)]">Plan recomendado</p>
         <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">{recommended}</p>
         <p className="mt-1 text-xs text-[var(--muted)]">
-          Con ~{estimatedTokens.toLocaleString()} tokens estimados por mes, entra dentro del
-          cupo de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} tokens de {recommended}.
+          Con ~{estimatedInteractions.toLocaleString()} interacciones estimadas por mes, entra dentro
+          del cupo de ~{recommendedInteractions.toLocaleString()} interacciones de {recommended}
+          ({estimatedTokens.toLocaleString()} de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} tokens).
         </p>
       </div>
 
@@ -200,9 +203,11 @@ export default function Pricing() {
                 </p>
               </div>
 
-              <p className="mt-2 text-xs text-[var(--accent-soft)]">{plan.tokensLimit.toLocaleString()} tokens de IA por mes</p>
+              <p className="mt-2 text-sm font-bold text-[var(--accent-soft)]">
+                ≈ {Math.round(plan.tokensLimit / AVG_TOKENS_PER_INTERACTION_ESTIMATE).toLocaleString()} interacciones por mes
+              </p>
               <p className="text-[11px] text-[var(--muted)]">
-                ≈ {Math.round(plan.tokensLimit / TOKENS_PER_CONTACT_ESTIMATE).toLocaleString()} conversaciones estimadas, según su duración
+                {plan.tokensLimit.toLocaleString()} tokens de IA (cada interacción usa ~{AVG_TOKENS_PER_INTERACTION_ESTIMATE.toLocaleString()} tokens aprox.)
               </p>
 
               <ul className="mt-5 flex-1 space-y-2.5">

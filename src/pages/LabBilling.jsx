@@ -6,7 +6,7 @@ import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import Switch from '../components/ui/Switch.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
-import { PLAN_PRICING } from '../lib/pricing.js'
+import { PLAN_PRICING, AVG_TOKENS_PER_INTERACTION_ESTIMATE } from '../lib/pricing.js'
 import {
   getLabBilling,
   getPlatformBillingDestination,
@@ -338,7 +338,10 @@ export default function LabBilling() {
                   <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">
                     ${plan.priceUSD} <span className="text-xs font-normal text-[var(--muted)]">USD/mes</span>
                   </p>
-                  <p className="mt-1 text-xs text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} tokens/mes</p>
+                  <p className="mt-1 text-xs font-semibold text-[var(--accent-soft)]">
+                    ≈ {Math.round(plan.tokensLimit / AVG_TOKENS_PER_INTERACTION_ESTIMATE).toLocaleString()} interacciones/mes
+                  </p>
+                  <p className="text-[11px] text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} tokens</p>
                   {isCurrent ? (
                     <Badge variant="gold" className="mt-3 w-fit">
                       Tu plan actual

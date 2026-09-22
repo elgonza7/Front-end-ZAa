@@ -4,7 +4,8 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { ArrowLeft } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
-import { getTokenUsageRange, getPatientsPerDayRange } from '../api/labService.js'
+import { getTokenUsageRange, getPatientsPerDayRange, getLabProfile } from '../api/labService.js'
+import { AVG_TOKENS_PER_INTERACTION_ESTIMATE } from '../lib/pricing.js'
 
 function toISODate(date) {
   return date.toISOString().slice(0, 10)
@@ -67,12 +68,12 @@ const PERIODS = [
   },
 ]
 
-function TokensTooltip({ active, payload, label }) {
+function InteractionsTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
     <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
       <p className="text-[var(--muted)]">{label}</p>
-      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} tokens</p>
+      <p className="font-semibold text-[var(--accent)]">~{payload[0].value.toLocaleString('es-AR')} interacciones</p>
     </div>
   )
 }
@@ -91,6 +92,7 @@ export default function LabHistory() {
   const [periodId, setPeriodId] = useState('este-mes')
   const [tokenUsage, setTokenUsage] = useState([])
   const [patientsPerDay, setPatientsPerDay] = useState([])
+  const [avgTokensPerInteraction, setAvgTokensPerInteraction] = useState(AVG_TOKENS_PER_INTERACTION_ESTIMATE)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -103,6 +105,12 @@ export default function LabHistory() {
     setLoading(true)
     setError('')
   }
+
+  useEffect(() => {
+    getLabProfile().then((profile) => {
+      if (profile.averageTokensPerInteraction > 0) setAvgTokensPerInteraction(profile.averageTokensPerInteraction)
+    })
+  }, [])
 
   useEffect(() => {
     const period = PERIODS.find((p) => p.id === periodId)
@@ -122,6 +130,7 @@ export default function LabHistory() {
 
   const totalTokens = tokenUsage.reduce((sum, item) => sum + item.tokens, 0)
   const totalPatients = patientsPerDay.reduce((sum, item) => sum + item.patients, 0)
+  const interactionsHistory = tokenUsage.map((d) => ({ day: d.day, interactions: Math.round(d.tokens / avgTokensPerInteraction) }))
 
   return (
     <LabLayout title="Historial" subtitle="Consultá el consumo y la actividad de meses o años anteriores">
@@ -164,8 +173,13 @@ export default function LabHistory() {
           <>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <Card className="p-5">
-                <p className="text-xs text-[var(--muted)]">Tokens consumidos en el período</p>
-                <p className="mt-1 text-2xl font-bold text-[var(--text-strong)]">{totalTokens.toLocaleString('es-AR')}</p>
+                <p className="text-xs text-[var(--muted)]">Interacciones en el período</p>
+                <p className="mt-1 text-2xl font-bold text-[var(--text-strong)]">
+                  ~{Math.round(totalTokens / avgTokensPerInteraction).toLocaleString('es-AR')}
+                </p>
+                <p className="mt-0.5 text-[11px] text-[var(--muted)]">
+                  {totalTokens.toLocaleString('es-AR')} tokens (cada interacción usa ~{avgTokensPerInteraction.toLocaleString('es-AR')} tokens aprox.)
+                </p>
               </Card>
               <Card className="p-5">
                 <p className="text-xs text-[var(--muted)]">Pacientes distintos atendidos</p>
@@ -174,7 +188,7 @@ export default function LabHistory() {
             </div>
 
             <Card className="p-6">
-              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Tokens consumidos</h2>
+              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Interacciones</h2>
               <div className="mt-4 h-72">
                 {tokenUsage.every((d) => d.tokens === 0) ? (
                   <div className="flex h-full items-center justify-center text-center text-xs text-[var(--muted)]">
@@ -182,14 +196,14 @@ export default function LabHistory() {
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={tokenUsage} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <LineChart data={interactionsHistory} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                       <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="day" stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
-                      <Tooltip content={<TokensTooltip />} cursor={{ stroke: 'var(--border)' }} />
+                      <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                      <Tooltip content={<InteractionsTooltip />} cursor={{ stroke: 'var(--border)' }} />
                       <Line
                         type="monotone"
-                        dataKey="tokens"
+                        dataKey="interactions"
                         stroke="var(--accent)"
                         strokeWidth={3}
                         dot={{ fill: 'var(--accent)', r: 3 }}

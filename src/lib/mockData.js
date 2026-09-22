@@ -16,8 +16,10 @@ export const mockLabProfile = {
     '¡Hola! Soy el asistente virtual de Laboratorio Ameghino. Puedo ayudarte con horarios de atención, requisitos de ayuno y turnos. ¿En qué puedo ayudarte hoy?',
   paymentStatus: 'PAID',
   nextDueDate: '2026-09-15',
-  tokensUsed: 4580,
-  tokensLimit: 10000,
+  tokensUsed: 980000,
+  tokensLimit: 2200000,
+  overagePricePer1kTokensUSD: 0.05,
+  averageTokensPerInteraction: 4300,
   clientsAttended: 1235,
   // Toggles that reshape the conversation flow — not every lab offers turnos,
   // and result delivery varies a lot from cliente a cliente (ver ASISTENTE VIRTUAL.pdf).
@@ -38,13 +40,13 @@ export const mockKnowledgeDocs = [
 ]
 
 export const mockTokenUsageHistory = [
-  { day: 'Lun', tokens: 480 },
-  { day: 'Mar', tokens: 620 },
-  { day: 'Mié', tokens: 390 },
-  { day: 'Jue', tokens: 710 },
-  { day: 'Vie', tokens: 890 },
-  { day: 'Sáb', tokens: 340 },
-  { day: 'Dom', tokens: 210 },
+  { day: 'Lun', tokens: 32000 },
+  { day: 'Mar', tokens: 41000 },
+  { day: 'Mié', tokens: 26000 },
+  { day: 'Jue', tokens: 47000 },
+  { day: 'Vie', tokens: 59000 },
+  { day: 'Sáb', tokens: 22000 },
+  { day: 'Dom', tokens: 14000 },
 ]
 
 export const mockFaqRanking = [
