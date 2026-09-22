@@ -65,15 +65,15 @@ function PlanCalculator() {
         <p className="text-xs text-[var(--muted)]">Plan recomendado</p>
         <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">{recommended}</p>
         <p className="mt-1 text-xs text-[var(--muted)]">
-          Con ~{estimatedTokens.toLocaleString()} interacciones estimadas por mes, entra dentro del
-          cupo de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} interacciones de {recommended}.
+          Con ~{estimatedTokens.toLocaleString()} tokens estimados por mes, entra dentro del
+          cupo de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} tokens de {recommended}.
         </p>
       </div>
 
       <p className="mt-3 text-[11px] text-[var(--muted)]">
         Es una estimación (varía según cuán largas sean las conversaciones). Si en algún mes te
         pasás del cupo de tu plan, el asistente no se corta — el excedente se cobra aparte, a un
-        precio por cada 1.000 interacciones extra.
+        precio por cada 1.000 tokens extra.
       </p>
     </Card>
   )
@@ -90,13 +90,13 @@ const PLAN_FEATURES = {
   ],
   Profesional: [
     'Todo lo del plan Básico',
-    'Más interacciones mensuales',
+    'Más tokens mensuales',
     'Métricas de preguntas frecuentes',
     'Atención humana con notificación por email',
   ],
   Premium: [
     'Todo lo del plan Profesional',
-    'Mayor volumen de interacciones',
+    'Mayor volumen de tokens',
     'Soporte prioritario',
     'Descuentos por laboratorio adicional del mismo dueño',
   ],
@@ -159,9 +159,15 @@ export default function Pricing() {
         <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">Planes y precios</h1>
         <p className="mt-4 text-base text-[var(--muted)]">
           Pagás una habilitación única al contratar y después una cuota mensual que depende de
-          cuántas interacciones de IA consume tu asistente. Esa cuota cubre las dos IA del asistente: el
+          cuántos tokens de IA consume tu asistente. Esa cuota cubre las dos IA del asistente: el
           motor conversacional que responde a tus pacientes y Gemini, que corrige y prolija los
           mensajes del flujo con el botón "Mejorar con IA".
+        </p>
+        <p className="mt-3 text-sm text-[var(--muted)]">
+          El token es la unidad con la que se mide cuánto "piensa y escribe" la IA — no es lo mismo
+          que una conversación: cada charla con un paciente gasta entre 4.000 y 6.000 tokens según
+          lo larga que sea, así que el cupo de tu plan alcanza para bastantes más charlas de lo que
+          el número parece indicar.
         </p>
       </section>
 
@@ -194,7 +200,10 @@ export default function Pricing() {
                 </p>
               </div>
 
-              <p className="mt-2 text-xs text-[var(--accent-soft)]">{plan.tokensLimit.toLocaleString()} interacciones de IA por mes</p>
+              <p className="mt-2 text-xs text-[var(--accent-soft)]">{plan.tokensLimit.toLocaleString()} tokens de IA por mes</p>
+              <p className="text-[11px] text-[var(--muted)]">
+                ≈ {Math.round(plan.tokensLimit / TOKENS_PER_CONTACT_ESTIMATE).toLocaleString()} conversaciones estimadas, según su duración
+              </p>
 
               <ul className="mt-5 flex-1 space-y-2.5">
                 {PLAN_FEATURES[planName].map((feature) => (
@@ -262,8 +271,8 @@ export default function Pricing() {
             y el 3° en adelante, 25% — se gestiona desde el panel de Facturación.
           </p>
           <p className="mt-3 text-xs text-[var(--muted)]">
-            ¿Y si me paso de las interacciones de mi plan? El asistente sigue funcionando sin cortes — el
-            excedente se cobra aparte, a un precio por cada 1.000 interacciones de más que uses ese mes.
+            ¿Y si me paso de los tokens de mi plan? El asistente sigue funcionando sin cortes — el
+            excedente se cobra aparte, a un precio por cada 1.000 tokens de más que uses ese mes.
           </p>
         </Card>
       </section>

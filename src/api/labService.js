@@ -130,6 +130,19 @@ export async function getMessagesByHour() {
   return apiFetch('/lab/metrics/messages-by-hour')
 }
 
+// GET /api/lab/metrics/token-usage-range?from&to -> tokens agrupados por día
+// (rango corto) o por mes (rango largo, más de ~2 meses)
+export async function getTokenUsageRange(from, to) {
+  if (USE_MOCKS) return mockDelay(mockTokenUsageHistory)
+  return apiFetch(`/lab/metrics/token-usage-range?from=${from}&to=${to}`)
+}
+
+// GET /api/lab/metrics/patients-per-day-range?from&to -> mismo criterio que token-usage-range
+export async function getPatientsPerDayRange(from, to) {
+  if (USE_MOCKS) return mockDelay([])
+  return apiFetch(`/lab/metrics/patients-per-day-range?from=${from}&to=${to}`)
+}
+
 // POST /api/lab/subscription/checkout -> returns the MercadoPago checkout URL
 export async function startSubscriptionCheckout() {
   if (USE_MOCKS) return mockDelay({ checkoutUrl: 'https://mercadopago.com/checkout/mock' })

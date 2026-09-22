@@ -13,6 +13,7 @@ import Legal from './pages/Legal.jsx'
 import HelpCenterPublic from './pages/HelpCenterPublic.jsx'
 import SystemStatus from './pages/SystemStatus.jsx'
 import LabDashboard from './pages/LabDashboard.jsx'
+import LabHistory from './pages/LabHistory.jsx'
 import WhatsAppConnect from './pages/WhatsAppConnect.jsx'
 import FlowBuilder from './pages/FlowBuilder.jsx'
 import LabSettings from './pages/LabSettings.jsx'
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/estado" element={<SystemStatus />} />
 
         <Route path="/dashboard" element={<RequireAuth role="lab"><LabDashboard /></RequireAuth>} />
+        <Route path="/dashboard/historial" element={<RequireAuth role="lab"><LabHistory /></RequireAuth>} />
         <Route path="/dashboard/whatsapp" element={<RequireAuth role="lab"><WhatsAppConnect /></RequireAuth>} />
         <Route path="/dashboard/tutoriales" element={<RequireAuth role="lab"><LabTutorials /></RequireAuth>} />
         <Route path="/dashboard/mensajes" element={<RequireAuth role="lab"><LabConversations /></RequireAuth>} />

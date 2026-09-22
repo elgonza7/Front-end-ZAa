@@ -35,9 +35,11 @@ export function PanelTutorial() {
           para regularizarlo antes de que afecte el servicio.
         </li>
         <li>
-          <strong>Interacciones usadas este mes:</strong> cuánto consumió tu asistente del cupo de
-          tu plan. Superarlo no corta el servicio — el excedente se cobra aparte, y te avisamos ahí
-          mismo si conviene pasarte a un plan más grande.
+          <strong>Tokens usados este mes:</strong> cuánto consumió tu asistente del cupo de tu
+          plan. Un token no es una charla — es la unidad con la que la IA mide texto, y cada charla
+          con un paciente gasta varios miles según lo larga que sea (por eso el número parece
+          grande). Superar el cupo no corta el servicio — el excedente se cobra aparte, y te
+          avisamos ahí mismo si conviene pasarte a un plan más grande.
         </li>
         <li>
           <strong>El gráfico:</strong> cuánto usó el asistente en los últimos 7 días, para ver si
@@ -113,7 +115,7 @@ function CustomTooltip({ active, payload, label }) {
   return (
     <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-strong)] shadow-lg">
       <p className="text-[var(--muted)]">{label}</p>
-      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} interacciones</p>
+      <p className="font-semibold text-[var(--accent)]">{payload[0].value.toLocaleString('es-AR')} tokens</p>
     </div>
   )
 }
@@ -297,19 +299,23 @@ export default function LabDashboard() {
 
         </div>
 
-        {/* Interacciones usadas este mes — ancho completo, desglose a la derecha */}
+        {/* Tokens usados este mes — ancho completo, desglose a la derecha */}
         <Card className="p-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-[var(--text-strong)]">Interacciones usadas este mes</p>
+            <p className="text-sm font-semibold text-[var(--text-strong)]">Tokens usados este mes</p>
             <Badge variant="gold">Plan {profile.planName}</Badge>
           </div>
+          <p className="mt-1 text-[11px] text-[var(--muted)]">
+            El token es la unidad con la que la IA mide texto — no es lo mismo que una charla: cada
+            conversación con un paciente gasta varios miles según lo larga que sea.
+          </p>
 
           <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-[1.3fr_1fr]">
             <div>
               <p className="text-xl font-bold text-[var(--text-strong)]">
                 {profile.tokensUsed.toLocaleString()}{' '}
                 <span className="text-sm font-normal text-[var(--muted)]">
-                  / {profile.tokensLimit.toLocaleString()} incluidas en tu plan
+                  / {profile.tokensLimit.toLocaleString()} tokens incluidos en tu plan
                 </span>
               </p>
               <ProgressBar value={profile.tokensUsed} max={profile.tokensLimit} className="mt-3" />
@@ -328,12 +334,12 @@ export default function LabDashboard() {
 
             <div className="space-y-2.5 border-t border-[var(--border)] pt-3.5 md:border-l md:border-t-0 md:pl-5 md:pt-0">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[var(--muted)]">Interacciones totales incluidas</span>
+                <span className="text-[var(--muted)]">Tokens totales incluidos</span>
                 <span className="font-semibold text-[var(--text-strong)]">{profile.tokensLimit.toLocaleString()} / mes</span>
               </div>
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[var(--muted)]">Si se supera el cupo, se cobra</span>
-                <span className="font-semibold text-[var(--text-strong)]">${profile.overagePricePer1kTokensUSD} USD c/1.000</span>
+                <span className="font-semibold text-[var(--text-strong)]">${profile.overagePricePer1kTokensUSD} USD c/1.000 tokens</span>
               </div>
               {profile.averageTokensPerInteraction > 0 && (
                 <>
@@ -353,7 +359,7 @@ export default function LabDashboard() {
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-[var(--muted)]">Con ese promedio, te quedan</span>
                       <span className="font-semibold text-[var(--text-strong)]">
-                        ~{Math.floor((profile.tokensLimit - profile.tokensUsed) / profile.averageTokensPerInteraction).toLocaleString()} interacciones
+                        ~{Math.floor((profile.tokensLimit - profile.tokensUsed) / profile.averageTokensPerInteraction).toLocaleString()} conversaciones
                       </span>
                     </div>
                   )}
@@ -367,12 +373,15 @@ export default function LabDashboard() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Card className="p-6 lg:col-span-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Interacciones (últimos 7 días)</h2>
+              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Tokens consumidos (últimos 7 días)</h2>
+              <Button as={Link} to="/dashboard/historial" variant="outline" className="shrink-0 px-3 py-1.5 text-xs">
+                Ver meses pasados
+              </Button>
             </div>
             <div className="mt-4 h-64">
               {usageHistory.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-center text-xs text-[var(--muted)]">
-                  Todavía no hay datos disponibles — el bot no registró interacciones.
+                  Todavía no hay datos disponibles — el bot no consumió tokens.
                 </div>
               ) : (
               <ResponsiveContainer width="100%" height="100%">

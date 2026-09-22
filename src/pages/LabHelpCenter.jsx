@@ -11,20 +11,22 @@ const SUPPORT_EMAIL = 'zeroautoapp@gmail.com'
 // el dueño del laboratorio, no alguien de sistemas. Nada de jerga técnica.
 const TUTORIAL_ITEMS = [
   {
-    question: '¿Qué es una "interacción"?',
+    question: '¿Qué es un "token"?',
     answer:
       'Es la unidad con la que se mide cuánto "piensa y escribe" la inteligencia artificial. ' +
-      'No es plata ni minutos: es más parecido a contar palabras. Cada vez que un paciente te ' +
-      'escribe y el asistente responde, se gastan algunas interacciones — una conversación corta ' +
-      'gasta pocas, una larga con muchas idas y vueltas gasta más. Tu plan viene con una cantidad ' +
-      'de interacciones incluida por mes.',
+      'No es plata ni minutos, y tampoco es lo mismo que una charla: es más parecido a contar ' +
+      'palabras. Cada vez que un paciente te escribe y el asistente responde, se gastan algunos ' +
+      'tokens — una conversación corta gasta pocos miles, una larga con muchas idas y vueltas ' +
+      'gasta más. Por eso el cupo de tu plan (por ejemplo, 2.200.000 tokens) no quiere decir "2,2 ' +
+      'millones de charlas": una charla típica gasta entre 4.000 y 6.000 tokens, así que ese cupo ' +
+      'alcanza para varios cientos de conversaciones por mes.',
   },
   {
-    question: '¿Qué pasa si me quedo sin interacciones en el mes?',
+    question: '¿Qué pasa si me quedo sin tokens en el mes?',
     answer:
       'Nada se corta. El asistente sigue respondiendo a tus pacientes con total normalidad. Lo ' +
-      'único que cambia es que las interacciones que uses de más ese mes se cobran aparte, a un ' +
-      'precio fijo cada 1.000 interacciones extra (lo ves en tu panel de Facturación). Ahí mismo ' +
+      'único que cambia es que los tokens que uses de más ese mes se cobran aparte, a un ' +
+      'precio fijo cada 1.000 tokens extra (lo ves en tu panel de Facturación). Ahí mismo ' +
       'podés cambiarte a un plan con más cupo si te pasa seguido. El mes siguiente vuelve a ' +
       'empezar de cero con el cupo de tu plan.',
   },
@@ -73,8 +75,8 @@ const TUTORIAL_ITEMS = [
   {
     question: '¿Por qué hay distintos planes y precios?',
     answer:
-      'La diferencia entre planes es la cantidad de interacciones que incluye cada uno por mes — es ' +
-      'decir, ' +
+      'La diferencia entre planes es la cantidad de tokens que incluye cada uno por mes — eso ' +
+      'determina, en definitiva, ' +
       'cuántas conversaciones podés atender sin pagar excedente. Si tenés pocos pacientes por día, ' +
       'con un plan chico alcanza; si tenés mucho movimiento de WhatsApp, conviene un plan con más ' +
       'cupo. En la página de Precios hay una calculadora que te sugiere cuál te conviene según ' +

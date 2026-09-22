@@ -338,7 +338,7 @@ export default function LabBilling() {
                   <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">
                     ${plan.priceUSD} <span className="text-xs font-normal text-[var(--muted)]">USD/mes</span>
                   </p>
-                  <p className="mt-1 text-xs text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} interacciones/mes</p>
+                  <p className="mt-1 text-xs text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} tokens/mes</p>
                   {isCurrent ? (
                     <Badge variant="gold" className="mt-3 w-fit">
                       Tu plan actual
