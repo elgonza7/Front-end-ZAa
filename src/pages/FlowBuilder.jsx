@@ -29,9 +29,14 @@ export function FlowTutorial() {
           pasar a pantalla completa, y volver con "← Volver".
         </li>
         <li>
-          <strong>Ramas:</strong> cada botón ("Sacar turno", "Obras Sociales"...) tiene su propio
-          mensaje de respuesta, y podés seguir agregando sub-ramas con "Agregar rama" — así se arma
-          el árbol completo, como Obras Sociales → PAMI → instrucciones puntuales.
+          <strong>Ramas:</strong> cada botón ("Sacar turno", "Autorización de estudios"...) tiene su
+          propio mensaje de respuesta, y podés seguir agregando sub-ramas con "Agregar rama" para
+          armar sub-menús.
+        </li>
+        <li>
+          <strong>Ramas celestes con ícono de enlace</strong> (como "Ver todas las obras sociales")
+          no son parte de la conversación: te llevan a otra pantalla del panel donde se configura
+          eso — el asistente igual usa esa información al responder, aunque no la veas dibujada acá.
         </li>
         <li>
           <strong>Ya viene precargado</strong> con las indicaciones típicas de un laboratorio de

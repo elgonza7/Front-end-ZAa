@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope, Pencil } from 'lucide-react'
+import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope, Pencil, Search, CheckSquare, Square } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -34,6 +34,7 @@ export default function LabSettings() {
   const [savingObrasSociales, setSavingObrasSociales] = useState(false)
   const [obrasSocialesSaved, setObrasSocialesSaved] = useState(false)
   const [editingObraSocial, setEditingObraSocial] = useState(null)
+  const [obrasSocialesFilter, setObrasSocialesFilter] = useState('')
 
   useEffect(() => {
     Promise.all([getLabProfile(), getKnowledgeDocs(), getObrasSociales()])
@@ -58,6 +59,14 @@ export default function LabSettings() {
   function toggleObraSocial(id) {
     setObrasSociales((prev) => prev.map((o) => (o.id === id ? { ...o, habilitada: !o.habilitada } : o)))
   }
+
+  function setAllObrasSociales(habilitada) {
+    setObrasSociales((prev) => prev.map((o) => ({ ...o, habilitada })))
+  }
+
+  const filteredObrasSociales = obrasSociales.filter((o) =>
+    o.nombre.toLowerCase().includes(obrasSocialesFilter.trim().toLowerCase()),
+  )
 
   async function handleSaveObrasSociales() {
     setSavingObrasSociales(true)
@@ -397,8 +406,40 @@ export default function LabSettings() {
           ofrecer. Usá el lápiz para escribir tu propio texto en vez del genérico.
         </p>
 
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative flex-1 sm:max-w-xs">
+            <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
+            <input
+              type="text"
+              value={obrasSocialesFilter}
+              onChange={(event) => setObrasSocialesFilter(event.target.value)}
+              placeholder="Buscar obra social…"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] py-2 pl-9 pr-3 text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)]"
+            />
+          </div>
+          <div className="flex items-center gap-3 text-xs">
+            <span className="text-[var(--muted)]">
+              {obrasSociales.filter((o) => o.habilitada).length} de {obrasSociales.length} activas
+            </span>
+            <button
+              type="button"
+              onClick={() => setAllObrasSociales(true)}
+              className="flex items-center gap-1 font-medium text-[var(--accent)] hover:underline"
+            >
+              <CheckSquare size={13} /> Todas
+            </button>
+            <button
+              type="button"
+              onClick={() => setAllObrasSociales(false)}
+              className="flex items-center gap-1 font-medium text-[var(--muted)] hover:text-[var(--text-strong)] hover:underline"
+            >
+              <Square size={13} /> Ninguna
+            </button>
+          </div>
+        </div>
+
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {obrasSociales.map((obraSocial) => (
+          {filteredObrasSociales.map((obraSocial) => (
             <div
               key={obraSocial.id}
               className={`flex items-start justify-between gap-2 rounded-xl border px-3.5 py-2.5 transition-colors ${
@@ -435,6 +476,11 @@ export default function LabSettings() {
           ))}
           {obrasSociales.length === 0 && (
             <p className="py-4 text-center text-xs text-[var(--muted)] sm:col-span-2">Cargando catálogo…</p>
+          )}
+          {obrasSociales.length > 0 && filteredObrasSociales.length === 0 && (
+            <p className="py-4 text-center text-xs text-[var(--muted)] sm:col-span-2">
+              Ninguna obra social coincide con "{obrasSocialesFilter}".
+            </p>
           )}
         </div>
 
