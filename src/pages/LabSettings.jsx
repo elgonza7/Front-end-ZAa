@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope } from 'lucide-react'
+import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope, Pencil } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -7,6 +7,7 @@ import Switch from '../components/ui/Switch.jsx'
 import Button from '../components/ui/Button.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
+import ObraSocialEditModal from '../components/settings/ObraSocialEditModal.jsx'
 import {
   getLabProfile,
   updateLabSettings,
@@ -30,6 +31,7 @@ export default function LabSettings() {
   const [obrasSociales, setObrasSociales] = useState([])
   const [savingObrasSociales, setSavingObrasSociales] = useState(false)
   const [obrasSocialesSaved, setObrasSocialesSaved] = useState(false)
+  const [editingObraSocial, setEditingObraSocial] = useState(null)
 
   useEffect(() => {
     Promise.all([getLabProfile(), getKnowledgeDocs(), getObrasSociales()])
@@ -55,6 +57,11 @@ export default function LabSettings() {
     setSavingObrasSociales(false)
     setObrasSocialesSaved(true)
     setTimeout(() => setObrasSocialesSaved(false), 4000)
+  }
+
+  function handleObraSocialTextoSaved(updated) {
+    setObrasSociales((prev) => prev.map((o) => (o.id === updated.id ? updated : o)))
+    setEditingObraSocial(null)
   }
 
   function set(field, value) {
@@ -126,6 +133,7 @@ export default function LabSettings() {
   }
 
   return (
+    <>
     <LabLayout title="Configuración" subtitle="Marca, reglas del asistente y base de conocimiento">
       <form onSubmit={handleSave} className="space-y-6">
         <Card className="p-6">
@@ -358,6 +366,11 @@ export default function LabSettings() {
               nombra una que desactivaste, el bot le pide la orden médica y avisa que el equipo la
               va a confirmar a mano, en vez de inventar requisitos.
             </p>
+            <p>
+              Con el lápiz al lado de cada una podés escribir tu propio texto de requisitos — útil
+              si tu laboratorio pide algo distinto a lo genérico para esa cobertura. Es solo para tu
+              cuenta, no afecta a otros laboratorios que también la tengan activada.
+            </p>
             <p className="text-xs text-[var(--muted)]">
               El listado es el mismo para todos los laboratorios; cada uno elige cuáles de estas
               acepta. Si te falta una obra social que no está en la lista, escribinos a{' '}
@@ -370,27 +383,44 @@ export default function LabSettings() {
         </div>
         <p className="mt-1 text-xs text-[var(--muted)]">
           Marcá las que acepta este laboratorio — las que dejes sin marcar, el asistente no las va a
-          ofrecer.
+          ofrecer. Usá el lápiz para escribir tu propio texto en vez del genérico.
         </p>
 
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {obrasSociales.map((obraSocial) => (
-            <label
+            <div
               key={obraSocial.id}
-              className={`flex cursor-pointer items-start gap-2.5 rounded-xl border px-3.5 py-2.5 transition-colors ${
+              className={`flex items-start justify-between gap-2 rounded-xl border px-3.5 py-2.5 transition-colors ${
                 obraSocial.habilitada
                   ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5'
                   : 'border-[var(--border)] bg-[var(--bg)]'
               }`}
             >
-              <input
-                type="checkbox"
-                className="mt-0.5"
-                checked={obraSocial.habilitada}
-                onChange={() => toggleObraSocial(obraSocial.id)}
-              />
-              <span className="text-sm text-[var(--text-strong)]">{obraSocial.nombre}</span>
-            </label>
+              <label className="flex flex-1 cursor-pointer items-start gap-2.5">
+                <input
+                  type="checkbox"
+                  className="mt-0.5"
+                  checked={obraSocial.habilitada}
+                  onChange={() => toggleObraSocial(obraSocial.id)}
+                />
+                <span className="text-sm text-[var(--text-strong)]">
+                  {obraSocial.nombre}
+                  {obraSocial.personalizado && (
+                    <span className="ml-1.5 rounded-full bg-[var(--accent)]/15 px-1.5 py-0.5 text-[10px] font-medium text-[var(--accent-soft)]">
+                      Personalizado
+                    </span>
+                  )}
+                </span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setEditingObraSocial(obraSocial)}
+                className="shrink-0 text-[var(--muted)] hover:text-[var(--accent)]"
+                aria-label={`Personalizar texto de ${obraSocial.nombre}`}
+              >
+                <Pencil size={14} />
+              </button>
+            </div>
           ))}
           {obrasSociales.length === 0 && (
             <p className="py-4 text-center text-xs text-[var(--muted)] sm:col-span-2">Cargando catálogo…</p>
@@ -485,5 +515,11 @@ export default function LabSettings() {
         </ul>
       </Card>
     </LabLayout>
+    <ObraSocialEditModal
+      obraSocial={editingObraSocial}
+      onClose={() => setEditingObraSocial(null)}
+      onSaved={handleObraSocialTextoSaved}
+    />
+    </>
   )
 }

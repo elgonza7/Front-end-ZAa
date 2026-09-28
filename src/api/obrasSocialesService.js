@@ -12,3 +12,17 @@ export async function updateObrasSociales(obraSocialIds) {
     body: JSON.stringify({ obraSocialIds }),
   })
 }
+
+// PUT /api/lab/obras-sociales/{id}/texto { requisitosRegistro, requisitosEstudio, notas }
+// -> texto propio de este laboratorio para esa obra social, en vez del genérico del catálogo
+export async function updateObraSocialTexto(obraSocialId, texto) {
+  return apiFetch(`/lab/obras-sociales/${obraSocialId}/texto`, {
+    method: 'PUT',
+    body: JSON.stringify(texto),
+  })
+}
+
+// DELETE /api/lab/obras-sociales/{id}/texto -> vuelve a usar el texto del catálogo
+export async function resetObraSocialTexto(obraSocialId) {
+  return apiFetch(`/lab/obras-sociales/${obraSocialId}/texto`, { method: 'DELETE' })
+}
