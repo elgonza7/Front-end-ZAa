@@ -15,7 +15,7 @@ import { BillingTutorial } from './LabBilling.jsx'
 // dos veces en dos lugares distintos.
 const SECTIONS = [
   { id: 'panel', label: 'Panel', icon: LayoutDashboard, Content: PanelTutorial },
-  { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, Content: () => <WhatsappTutorial coexistenceAvailable /> },
+  { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, Content: WhatsappTutorial },
   { id: 'mensajes', label: 'Mensajes', icon: MessagesSquare, Content: ConversationsTutorial },
   { id: 'flujo', label: 'Flujo de conversación', icon: GitBranch, Content: FlowTutorial },
   { id: 'atencion', label: 'Atención humana', icon: Headset, Content: AtencionHumanaTutorial },

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, ArrowRight, CreditCard, Landmark, Calculator, HelpCircle, Smartphone, Server } from 'lucide-react'
+import { Check, ArrowRight, CreditCard, Landmark, Calculator, HelpCircle, Smartphone } from 'lucide-react'
 import LandingNavbar from '../components/layout/LandingNavbar.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -85,7 +85,7 @@ function PlanCalculator() {
 const PLAN_FEATURES = {
   Básico: [
     '1 número de WhatsApp',
-    'Elegís si mantenés tu WhatsApp Business (Coexistence)',
+    'Mantenés tu WhatsApp Business de siempre (Coexistence)',
     'Flujo de conversación completo',
     'Corrección de mensajes con IA (motor conversacional + Gemini)',
     'Base de conocimiento (PDF)',
@@ -105,12 +105,6 @@ const PLAN_FEATURES = {
   ],
 }
 
-// Decisión de producto (2026-09-16): Coexistence pasa a estar disponible en
-// los 3 planes — es el método recomendado para todos los laboratorios
-// nuevos, así ninguno pierde su WhatsApp Business existente. Ver el mismo
-// cambio del lado del backend en WhatsappService.cs.
-const PLANES_CON_COEXISTENCE = new Set(['Básico', 'Profesional', 'Premium'])
-
 function CoexistenceExplainer() {
   const [open, setOpen] = useState(false)
 
@@ -126,27 +120,15 @@ function CoexistenceExplainer() {
       </button>
 
       {open && (
-        <div className="mt-3 space-y-3">
-          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
-            <p className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-strong)]">
-              <Smartphone size={12} className="text-[var(--accent)]" /> Con Coexistence
-            </p>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
-              Seguís usando tu WhatsApp Business de siempre, en tu celular, con todos tus chats y
-              contactos. El asistente de IA responde en paralelo, en el mismo número — no se borra
-              ni se pierde nada de lo que ya tenías.
-            </p>
-          </div>
-          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
-            <p className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-strong)]">
-              <Server size={12} className="text-[var(--accent)]" /> Sin Coexistence (número dedicado)
-            </p>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
-              Ese número deja de funcionar como WhatsApp Business normal en un celular — pasa a
-              atenderse 100% a través de nuestra plataforma, como si fuera tu WhatsApp Business
-              pero manejado por el asistente. Ideal para un número nuevo, sin historia previa.
-            </p>
-          </div>
+        <div className="mt-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-strong)]">
+            <Smartphone size={12} className="text-[var(--accent)]" /> Así conectamos tu WhatsApp
+          </p>
+          <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+            Seguís usando tu WhatsApp Business de siempre, en tu celular, con todos tus chats y
+            contactos. El asistente de IA responde en paralelo, en el mismo número — no se borra
+            ni se pierde nada de lo que ya tenías, ni necesitás un número nuevo.
+          </p>
         </div>
       )}
     </div>
@@ -219,7 +201,7 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              {PLANES_CON_COEXISTENCE.has(planName) && <CoexistenceExplainer />}
+              <CoexistenceExplainer />
 
               <Button
                 as={Link}

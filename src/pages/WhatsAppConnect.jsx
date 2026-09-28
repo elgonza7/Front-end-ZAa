@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, XCircle, Send, Unlink, Save, Phone, Smartphone, Server, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
+import { CheckCircle2, XCircle, Send, Unlink, Save, Phone, Smartphone, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -8,7 +8,7 @@ import HelpButton from '../components/ui/HelpButton.jsx'
 import { getConnection, saveConnection, testConnection, disconnect, getBusinessProfile } from '../api/whatsappService.js'
 import { updateLabSettings } from '../api/labService.js'
 
-export function WhatsappTutorial({ coexistenceAvailable }) {
+export function WhatsappTutorial() {
   return (
     <>
       <p>
@@ -18,15 +18,12 @@ export function WhatsappTutorial({ coexistenceAvailable }) {
         y de ahí en más el asistente queda funcionando solo.
       </p>
 
-      {coexistenceAvailable && (
-        <p>
-          Tu plan te deja elegir cómo conectar el número: <strong>Número nuevo</strong> (más
-          simple, para un número sin WhatsApp Business previo) o <strong>Coexistence</strong>{' '}
-          (si ya usás WhatsApp Business en ese número desde hace tiempo y no querés perder nada).
-          Elegís cuál usar en el panel de abajo, antes de completar el formulario — cada uno tiene
-          su propia explicación ahí.
-        </p>
-      )}
+      <p>
+        Este asistente se conecta en modo <strong>Coexistence</strong>: seguís usando la app de
+        WhatsApp Business en tu celular exactamente como siempre —chats, historial, grupos— y el
+        asistente responde en paralelo, por el mismo número que ya usás con tus pacientes. No hace
+        falta un número nuevo ni se borra nada de lo que ya tenés.
+      </p>
 
       <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4">
         <p className="text-sm font-semibold text-[var(--text-strong)]">¿Preferís que lo hagamos nosotros?</p>
@@ -57,11 +54,9 @@ export function WhatsappTutorial({ coexistenceAvailable }) {
             antemano.
           </li>
           <li>
-            El número de WhatsApp que vas a usar para el bot. <strong>Importante:</strong> ese
-            número no puede tener WhatsApp normal o WhatsApp Business App instalado al mismo
-            tiempo — Meta lo migra a la API y deja de funcionar en el celular. Si querés seguir
-            usando ese número a mano, usá otro número para el bot (podés arrancar con el número de
-            prueba gratuito de Meta mientras tanto, ver paso 2).
+            El número de WhatsApp que ya usás con tus pacientes, con la app de{' '}
+            <strong>WhatsApp Business</strong> instalada en el celular. Es justamente el que vas a
+            conectar en modo Coexistence — no hace falta un número nuevo ni desinstalar nada.
           </li>
         </ul>
       </div>
@@ -109,14 +104,13 @@ export function WhatsappTutorial({ coexistenceAvailable }) {
           momento, Meta no te lo vuelve a mostrar completo después.
         </li>
         <li>
-          <strong>Pasá a tu número real (opcional, para producción).</strong> Mientras usás el
-          número de prueba, el bot solo le puede escribir a números que vos agregues a mano como
-          "destinatario de prueba" en esa misma pantalla. Para atender pacientes de verdad,
-          necesitás vincular tu número real: en{' '}
-          <strong>WhatsApp → Configuración de la API</strong>, "Agregar número de teléfono", y
-          seguí la verificación por SMS o llamada. Si es la primera vez que verificás el negocio
-          ante Meta (Business Verification), puede pedir datos legales del laboratorio (CUIT,
-          dirección) — tarda entre minutos y un par de días.
+          <strong>Agregá tu número real en modo Coexistence.</strong> En{' '}
+          <strong>WhatsApp → Configuración de la API</strong>, "Agregar número de teléfono", elegí
+          la opción para usar un número que <strong>ya tiene WhatsApp Business activo</strong>{' '}
+          (Meta lo detecta solo). Te va a pedir confirmar el número y, si es la primera vez que
+          verificás el negocio ante Meta (Business Verification), puede pedir datos legales del
+          laboratorio (CUIT, dirección) — tarda entre minutos y un par de días. Vas a seguir viendo
+          tus chats normalmente en el celular durante y después de este paso.
         </li>
         <li>
           <strong>Definí el Webhook Verify Token.</strong> Es un texto cualquiera que vos inventás
@@ -159,7 +153,6 @@ const QUALITY_LABEL = {
 export default function WhatsAppConnect() {
   const [connection, setConnection] = useState(null)
   const [form, setForm] = useState({ phoneNumberId: '', wabaId: '', accessToken: '', webhookVerifyToken: '' })
-  const [connectionType, setConnectionType] = useState('MANUAL')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
@@ -178,7 +171,6 @@ export default function WhatsAppConnect() {
         accessToken: data.accessToken || '',
         webhookVerifyToken: data.webhookVerifyToken || '',
       })
-      setConnectionType(data.connectionType || 'MANUAL')
       setLoading(false)
 
       // El perfil solo existe del lado de Meta si hay un número conectado —
@@ -201,7 +193,7 @@ export default function WhatsAppConnect() {
     setSaveConfirmed(false)
     setSaveError('')
     try {
-      const updated = await saveConnection({ ...form, connectionType })
+      const updated = await saveConnection({ ...form, connectionType: 'COEXISTENCE' })
       setConnection(updated)
       setSaveConfirmed(true)
       setTimeout(() => setSaveConfirmed(false), 4000)
@@ -252,63 +244,30 @@ export default function WhatsAppConnect() {
       subtitle="Vinculá tu número con la API de WhatsApp Cloud (Meta) para que el asistente pueda responder"
       headerActions={
         <HelpButton title="Cómo obtener tus credenciales de WhatsApp Cloud API">
-          <WhatsappTutorial coexistenceAvailable={connection.coexistenceAvailableForPlan} />
+          <WhatsappTutorial />
         </HelpButton>
       }
     >
       <Card className="mb-6 p-5">
-          <p className="text-sm font-semibold text-[var(--text-strong)]">¿Cómo querés conectar tu WhatsApp?</p>
-          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <button
-              type="button"
-              onClick={() => setConnectionType('MANUAL')}
-              className={`rounded-xl border p-4 text-left transition ${
-                connectionType === 'MANUAL'
-                  ? 'border-[var(--accent)] bg-[var(--accent)]/5'
-                  : 'border-[var(--border)] bg-[var(--bg)] hover:border-[var(--border-hover)]'
-              }`}
-            >
-              <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
-                <Server size={15} className="text-[var(--accent)]" /> Número nuevo
-              </div>
-              <p className="mt-1.5 text-xs text-[var(--muted)]">
-                El número queda dedicado 100% al asistente. Es la forma más simple: no dependés de
-                tener el celular con batería o conectado. Ideal si todavía no usás WhatsApp
-                Business en ese número.
-              </p>
-            </button>
-            <button
-              type="button"
-              onClick={() => setConnectionType('COEXISTENCE')}
-              className={`rounded-xl border p-4 text-left transition ${
-                connectionType === 'COEXISTENCE'
-                  ? 'border-[var(--accent)] bg-[var(--accent)]/5'
-                  : 'border-[var(--border)] bg-[var(--bg)] hover:border-[var(--border-hover)]'
-              }`}
-            >
-              <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
-                <Smartphone size={15} className="text-[var(--accent)]" /> Mantener mi WhatsApp Business
-              </div>
-              <p className="mt-1.5 text-xs text-[var(--muted)]">
-                Seguís usando la app de WhatsApp Business en tu celular como siempre —chats,
-                grupos, historial— mientras el asistente responde en paralelo por el mismo número.
-                No se borra nada.
-              </p>
-            </button>
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
+            <Smartphone size={15} className="text-[var(--accent)]" /> Conexión en modo Coexistence
           </div>
+          <p className="mt-1.5 text-xs text-[var(--muted)]">
+            Seguís usando la app de WhatsApp Business en tu celular como siempre —chats, grupos,
+            historial— mientras el asistente responde en paralelo por el mismo número. No se borra
+            nada.
+          </p>
 
-          {connectionType === 'COEXISTENCE' && (
-            <div className="mt-4 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4 text-xs text-[var(--text)]">
-              <p className="flex items-center gap-1.5 font-semibold text-[var(--text-strong)]">
-                <Lock size={13} className="text-[var(--accent)]" /> Cosas para saber antes de elegir esto
-              </p>
-              <ul className="mt-2 list-disc space-y-1 pl-4 text-[var(--muted)]">
-                <li>Alguien tiene que abrir la app de WhatsApp Business en el celular al menos una vez cada 14 días — si nadie la abre, WhatsApp pausa el asistente hasta que se vuelva a abrir.</li>
-                <li>Los grupos y las llamadas siguen funcionando solo desde el celular, no pasan por el asistente.</li>
-                <li>Algunas funciones del celular se desactivan mientras esté activo (mensajes que se autodestruyen, ubicación en vivo, listas de difusión clásicas).</li>
-              </ul>
-            </div>
-          )}
+          <div className="mt-4 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4 text-xs text-[var(--text)]">
+            <p className="flex items-center gap-1.5 font-semibold text-[var(--text-strong)]">
+              <Lock size={13} className="text-[var(--accent)]" /> Cosas para saber
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-[var(--muted)]">
+              <li>Alguien tiene que abrir la app de WhatsApp Business en el celular al menos una vez cada 14 días — si nadie la abre, WhatsApp pausa el asistente hasta que se vuelva a abrir.</li>
+              <li>Los grupos y las llamadas siguen funcionando solo desde el celular, no pasan por el asistente.</li>
+              <li>Algunas funciones del celular se desactivan mientras esté activo (mensajes que se autodestruyen, ubicación en vivo, listas de difusión clásicas).</li>
+            </ul>
+          </div>
       </Card>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

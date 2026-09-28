@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck } from 'lucide-react'
+import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -15,6 +15,7 @@ import {
   getKnowledgeDocs,
   uploadKnowledgeDoc,
 } from '../api/labService.js'
+import { getObrasSociales, updateObrasSociales } from '../api/obrasSocialesService.js'
 import { DELIVERY_METHODS } from '../lib/deliveryMethods.js'
 
 export default function LabSettings() {
@@ -26,16 +27,35 @@ export default function LabSettings() {
   const [docUploading, setDocUploading] = useState(false)
   const [securityPhone, setSecurityPhone] = useState('')
   const [loadError, setLoadError] = useState('')
+  const [obrasSociales, setObrasSociales] = useState([])
+  const [savingObrasSociales, setSavingObrasSociales] = useState(false)
+  const [obrasSocialesSaved, setObrasSocialesSaved] = useState(false)
 
   useEffect(() => {
-    Promise.all([getLabProfile(), getKnowledgeDocs()])
-      .then(([profile, knowledgeDocs]) => {
+    Promise.all([getLabProfile(), getKnowledgeDocs(), getObrasSociales()])
+      .then(([profile, knowledgeDocs, obrasSocialesList]) => {
         setForm(profile)
         setSecurityPhone(profile.securityPhone || '')
         setDocs(knowledgeDocs)
+        setObrasSociales(obrasSocialesList)
       })
       .catch((err) => setLoadError(err.message || 'No se pudo cargar la configuración.'))
   }, [])
+
+  function toggleObraSocial(id) {
+    setObrasSociales((prev) => prev.map((o) => (o.id === id ? { ...o, habilitada: !o.habilitada } : o)))
+  }
+
+  async function handleSaveObrasSociales() {
+    setSavingObrasSociales(true)
+    setObrasSocialesSaved(false)
+    const ids = obrasSociales.filter((o) => o.habilitada).map((o) => o.id)
+    const updated = await updateObrasSociales(ids)
+    setObrasSociales(updated)
+    setSavingObrasSociales(false)
+    setObrasSocialesSaved(true)
+    setTimeout(() => setObrasSocialesSaved(false), 4000)
+  }
 
   function set(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -324,6 +344,76 @@ export default function LabSettings() {
           {saving ? 'Guardando…' : 'Guardar configuración'}
         </Button>
       </form>
+
+      <Card className="mt-6 p-6">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
+            <Stethoscope size={16} className="text-[var(--accent)]" />
+            Obras sociales
+          </h2>
+          <HelpButton title="Cómo funcionan las obras sociales" label="¿Cómo funciona?">
+            <p>
+              Activá acá las obras sociales y prepagas que este laboratorio acepta. El asistente
+              solo va a mencionar y usar los requisitos de las que estén activas — si un paciente
+              nombra una que desactivaste, el bot le pide la orden médica y avisa que el equipo la
+              va a confirmar a mano, en vez de inventar requisitos.
+            </p>
+            <p className="text-xs text-[var(--muted)]">
+              El listado es el mismo para todos los laboratorios; cada uno elige cuáles de estas
+              acepta. Si te falta una obra social que no está en la lista, escribinos a{' '}
+              <a href="mailto:zeroautoapp@gmail.com" className="text-[var(--accent)] underline">
+                zeroautoapp@gmail.com
+              </a>{' '}
+              y la agregamos al catálogo.
+            </p>
+          </HelpButton>
+        </div>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Marcá las que acepta este laboratorio — las que dejes sin marcar, el asistente no las va a
+          ofrecer.
+        </p>
+
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {obrasSociales.map((obraSocial) => (
+            <label
+              key={obraSocial.id}
+              className={`flex cursor-pointer items-start gap-2.5 rounded-xl border px-3.5 py-2.5 transition-colors ${
+                obraSocial.habilitada
+                  ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5'
+                  : 'border-[var(--border)] bg-[var(--bg)]'
+              }`}
+            >
+              <input
+                type="checkbox"
+                className="mt-0.5"
+                checked={obraSocial.habilitada}
+                onChange={() => toggleObraSocial(obraSocial.id)}
+              />
+              <span className="text-sm text-[var(--text-strong)]">{obraSocial.nombre}</span>
+            </label>
+          ))}
+          {obrasSociales.length === 0 && (
+            <p className="py-4 text-center text-xs text-[var(--muted)] sm:col-span-2">Cargando catálogo…</p>
+          )}
+        </div>
+
+        <div className="mt-4 flex items-center gap-3">
+          <Button
+            type="button"
+            onClick={handleSaveObrasSociales}
+            disabled={savingObrasSociales || obrasSociales.length === 0}
+            className="px-4 py-2.5 text-sm"
+          >
+            <Save size={16} />
+            {savingObrasSociales ? 'Guardando…' : 'Guardar obras sociales'}
+          </Button>
+          {obrasSocialesSaved && (
+            <p className="flex items-center gap-1.5 text-sm font-medium text-emerald-400">
+              <CheckCircle2 size={16} /> Se guardó correctamente
+            </p>
+          )}
+        </div>
+      </Card>
 
       <Card className="mt-6 p-6">
         <div className="flex items-center justify-between gap-3">

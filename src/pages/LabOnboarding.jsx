@@ -347,9 +347,9 @@ export default function LabOnboarding() {
 
             {form.resultsDeliveryMethod === 'PDF' && (
               <p className="mt-4 text-xs text-[var(--muted)]">
-                Para enviar el PDF manualmente desde el mismo número que usa el bot, vas a necesitar activar{' '}
-                <strong>Coexistence</strong> al conectar tu WhatsApp (así seguís teniendo la app de WhatsApp
-                Business en tu celular, en paralelo al asistente) — eso se configura en el panel, en "WhatsApp".
+                Para enviar el PDF manualmente desde el mismo número que usa el bot vas a poder usar la app de
+                WhatsApp Business en tu celular como siempre — así conectamos el WhatsApp acá (modo
+                Coexistence), sin pasos extra de tu parte.
               </p>
             )}
 
