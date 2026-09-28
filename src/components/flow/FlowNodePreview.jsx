@@ -1,6 +1,8 @@
-import { ArrowRight, Headset, ImageIcon, MessageSquare } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowRight, ExternalLink, Headset, ImageIcon, MessageSquare } from 'lucide-react'
 import Card from '../ui/Card.jsx'
 import Badge from '../ui/Badge.jsx'
+import { FLOW_LINK_TARGETS } from './flowTree.js'
 
 // Vista de solo lectura de un nodo: lo que ve el laboratorio al hacer click
 // en una caja del mapa, ANTES de entrar a editar. A propósito no tiene ni un
@@ -8,6 +10,8 @@ import Badge from '../ui/Badge.jsx'
 // ramas, sin el ruido visual de un formulario completo. "Editar" (en
 // FlowNodePanel, arriba a la derecha) es lo que lleva a FlowNodeEditor.
 export default function FlowNodePreview({ node, label, onOpenChild }) {
+  const navigate = useNavigate()
+
   return (
     <div className="space-y-5">
       {label && (
@@ -40,29 +44,49 @@ export default function FlowNodePreview({ node, label, onOpenChild }) {
             {node.options.length === 1 ? '1 rama' : `${node.options.length} ramas`}
           </p>
           <div className="space-y-2">
-            {node.options.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                disabled={option.isHandoff}
-                onClick={() => onOpenChild?.(option.id)}
-                className={`flex w-full items-center gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-left text-sm transition-colors ${
-                  option.isHandoff ? 'cursor-default' : 'hover:border-[var(--accent)]'
-                }`}
-              >
-                {option.isHandoff ? (
-                  <Headset size={15} className="shrink-0 text-[var(--accent)]" />
-                ) : (
-                  <MessageSquare size={15} className="shrink-0 text-[var(--muted)]" />
-                )}
-                <span className="min-w-0 flex-1 truncate text-[var(--text-strong)]">{option.label}</span>
-                {option.isHandoff ? (
-                  <Badge variant="gold">Atención humana</Badge>
-                ) : (
-                  <ArrowRight size={14} className="shrink-0 text-[var(--muted)]" />
-                )}
-              </button>
-            ))}
+            {node.options.map((option) => {
+              const linkTarget = option.linkTo ? FLOW_LINK_TARGETS[option.linkTo] : null
+
+              if (linkTarget) {
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => navigate(linkTarget.path)}
+                    className="flex w-full items-center gap-2.5 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-3.5 py-2.5 text-left text-sm transition-colors hover:border-[var(--accent)]"
+                    title={linkTarget.description}
+                  >
+                    <ExternalLink size={15} className="shrink-0 text-[var(--accent)]" />
+                    <span className="min-w-0 flex-1 truncate text-[var(--text-strong)]">{option.label}</span>
+                    <Badge variant="gold">{linkTarget.shortLabel}</Badge>
+                  </button>
+                )
+              }
+
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  disabled={option.isHandoff}
+                  onClick={() => onOpenChild?.(option.id)}
+                  className={`flex w-full items-center gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-left text-sm transition-colors ${
+                    option.isHandoff ? 'cursor-default' : 'hover:border-[var(--accent)]'
+                  }`}
+                >
+                  {option.isHandoff ? (
+                    <Headset size={15} className="shrink-0 text-[var(--accent)]" />
+                  ) : (
+                    <MessageSquare size={15} className="shrink-0 text-[var(--muted)]" />
+                  )}
+                  <span className="min-w-0 flex-1 truncate text-[var(--text-strong)]">{option.label}</span>
+                  {option.isHandoff ? (
+                    <Badge variant="gold">Atención humana</Badge>
+                  ) : (
+                    <ArrowRight size={14} className="shrink-0 text-[var(--muted)]" />
+                  )}
+                </button>
+              )
+            })}
           </div>
         </div>
       )}

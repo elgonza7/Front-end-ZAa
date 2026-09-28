@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Headset, MessageSquare } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ExternalLink, Headset, MessageSquare } from 'lucide-react'
+import { FLOW_LINK_TARGETS } from './flowTree.js'
 
 const COL_WIDTH = 236
 const ROW_HEIGHT = 68
@@ -33,7 +35,19 @@ function computeLayout(tree) {
         const childDepth = depth + 1
         let childY
 
-        if (option.isHandoff || !option.node) {
+        if (option.linkTo) {
+          childY = nextRow * ROW_HEIGHT
+          nextRow += 1
+          boxes.push({
+            id: option.id,
+            path: childPath,
+            depth: childDepth,
+            y: childY,
+            label: option.label,
+            kind: 'link',
+            linkTo: option.linkTo,
+          })
+        } else if (option.isHandoff || !option.node) {
           childY = nextRow * ROW_HEIGHT
           nextRow += 1
           boxes.push({
@@ -78,12 +92,14 @@ function computeLayout(tree) {
 }
 
 function previewText(box) {
+  if (box.kind === 'link') return FLOW_LINK_TARGETS[box.linkTo]?.description ?? 'Atajo a otra pantalla del panel.'
   if (box.kind === 'handoff') return 'Deriva la conversación a atención humana — el bot deja de responder automáticamente.'
   const text = box.node?.text?.trim()
   return text ? text : 'Todavía no tiene mensaje escrito.'
 }
 
 export default function FlowMap({ tree, selectedPath, onSelect }) {
+  const navigate = useNavigate()
   const { boxes, edges, width, height } = useMemo(() => computeLayout(tree), [tree])
   const [hoveredId, setHoveredId] = useState(null)
   const hoveredBox = boxes.find((box) => box.id === hoveredId)
@@ -113,27 +129,37 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
         {boxes.map((box) => {
           const isSelected = selectedPath != null && selectedPath.join('/') === box.path.join('/')
           const isHandoff = box.kind === 'handoff'
+          const isLink = box.kind === 'link'
           return (
             <button
               key={box.id}
               type="button"
               onClick={() => {
-                if (!isHandoff) onSelect(box.path)
+                if (isLink) navigate(FLOW_LINK_TARGETS[box.linkTo]?.path ?? '/dashboard/configuracion')
+                else if (!isHandoff) onSelect(box.path)
               }}
               onMouseEnter={() => setHoveredId(box.id)}
               onMouseLeave={() => setHoveredId((prev) => (prev === box.id ? null : prev))}
               onFocus={() => setHoveredId(box.id)}
               onBlur={() => setHoveredId((prev) => (prev === box.id ? null : prev))}
               className={`absolute flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs shadow-sm transition-colors ${
-                isHandoff
-                  ? 'cursor-default border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent-soft)]'
-                  : isSelected
-                    ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--text-strong)]'
-                    : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--accent)]/60'
+                isLink
+                  ? 'border-[var(--accent)]/60 bg-[var(--accent)]/10 text-[var(--accent-soft)] hover:border-[var(--accent)]'
+                  : isHandoff
+                    ? 'cursor-default border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent-soft)]'
+                    : isSelected
+                      ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--text-strong)]'
+                      : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--accent)]/60'
               }`}
               style={{ left: box.depth * COL_WIDTH, top: box.y, width: BOX_WIDTH, minHeight: BOX_HEIGHT }}
             >
-              {isHandoff ? <Headset size={14} className="shrink-0" /> : <MessageSquare size={14} className="shrink-0 text-[var(--accent)]" />}
+              {isLink ? (
+                <ExternalLink size={14} className="shrink-0" />
+              ) : isHandoff ? (
+                <Headset size={14} className="shrink-0" />
+              ) : (
+                <MessageSquare size={14} className="shrink-0 text-[var(--accent)]" />
+              )}
               <span className="line-clamp-2 leading-snug">{box.label}</span>
             </button>
           )

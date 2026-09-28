@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUpRight, Plus, Trash2, Sparkles, Headset, MessageSquare, Pencil } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowUpRight, ExternalLink, Plus, Trash2, Sparkles, Headset, MessageSquare, Pencil } from 'lucide-react'
 import Card from '../ui/Card.jsx'
 import Badge from '../ui/Badge.jsx'
 import Button from '../ui/Button.jsx'
 import ImageDrop from '../ui/ImageDrop.jsx'
 import InfoTooltip from '../ui/InfoTooltip.jsx'
 import { improveMessage } from '../../api/aiService.js'
+import { FLOW_LINK_TARGETS } from './flowTree.js'
 
 function makeId(prefix) {
   return `${prefix}_${Date.now()}_${Math.round(Math.random() * 9999)}`
@@ -34,6 +36,7 @@ export default function FlowNodeEditor({
   onRenameSelf,
   onDeleteSelf,
 }) {
+  const navigate = useNavigate()
   const [improving, setImproving] = useState(false)
   const [lastTokensConsumed, setLastTokensConsumed] = useState(null)
   const textareaRef = useRef(null)
@@ -165,49 +168,72 @@ export default function FlowNodeEditor({
 
       {node.options.length > 0 && (
         <div className="mt-4 space-y-2 border-l-2 border-[var(--border)] pl-4">
-          {node.options.map((option) => (
-            <div
-              key={option.id}
-              className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2"
-            >
-              {option.isHandoff ? (
-                <Headset size={16} className="shrink-0 text-[var(--accent)]" />
-              ) : (
-                <MessageSquare size={16} className="shrink-0 text-[var(--muted)]" />
-              )}
+          {node.options.map((option) => {
+            const linkTarget = option.linkTo ? FLOW_LINK_TARGETS[option.linkTo] : null
 
-              <input
-                type="text"
-                value={option.label}
-                onChange={(event) => updateOption(option.id, { label: event.target.value })}
-                placeholder="Texto del botón"
-                className="min-w-0 flex-1 bg-transparent text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60"
-              />
+            return (
+              <div
+                key={option.id}
+                className={`flex items-center gap-2 rounded-xl border px-3 py-2 ${
+                  linkTarget ? 'border-[var(--accent)]/30 bg-[var(--accent)]/5' : 'border-[var(--border)] bg-[var(--bg)]'
+                }`}
+              >
+                {linkTarget ? (
+                  <ExternalLink size={16} className="shrink-0 text-[var(--accent)]" />
+                ) : option.isHandoff ? (
+                  <Headset size={16} className="shrink-0 text-[var(--accent)]" />
+                ) : (
+                  <MessageSquare size={16} className="shrink-0 text-[var(--muted)]" />
+                )}
 
-              {option.isHandoff && <Badge variant="gold">Atención humana</Badge>}
+                <input
+                  type="text"
+                  value={option.label}
+                  onChange={(event) => updateOption(option.id, { label: event.target.value })}
+                  placeholder="Texto del botón"
+                  className="min-w-0 flex-1 bg-transparent text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60"
+                />
 
-              {!option.isHandoff && (
+                {option.isHandoff && <Badge variant="gold">Atención humana</Badge>}
+
+                {linkTarget && (
+                  <>
+                    <InfoTooltip text={linkTarget.description} />
+                    <button
+                      type="button"
+                      onClick={() => navigate(linkTarget.path)}
+                      className="shrink-0 text-[var(--muted)] hover:text-[var(--accent)]"
+                      aria-label={linkTarget.shortLabel}
+                      title={linkTarget.shortLabel}
+                    >
+                      <ExternalLink size={16} />
+                    </button>
+                  </>
+                )}
+
+                {!option.isHandoff && !linkTarget && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenChild?.(option.id)}
+                    className="shrink-0 text-[var(--muted)] hover:text-[var(--accent)]"
+                    aria-label="Abrir esta rama"
+                    title="Editar esta rama"
+                  >
+                    <ArrowUpRight size={16} />
+                  </button>
+                )}
+
                 <button
                   type="button"
-                  onClick={() => onOpenChild?.(option.id)}
-                  className="shrink-0 text-[var(--muted)] hover:text-[var(--accent)]"
-                  aria-label="Abrir esta rama"
-                  title="Editar esta rama"
+                  onClick={() => removeBranch(option.id)}
+                  className="shrink-0 text-[var(--muted)] hover:text-red-400"
+                  aria-label="Eliminar rama"
                 >
-                  <ArrowUpRight size={16} />
+                  <Trash2 size={15} />
                 </button>
-              )}
-
-              <button
-                type="button"
-                onClick={() => removeBranch(option.id)}
-                className="shrink-0 text-[var(--muted)] hover:text-red-400"
-                aria-label="Eliminar rama"
-              >
-                <Trash2 size={15} />
-              </button>
-            </div>
-          ))}
+              </div>
+            )
+          })}
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope, Pencil } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
@@ -20,6 +21,7 @@ import { getObrasSociales, updateObrasSociales } from '../api/obrasSocialesServi
 import { DELIVERY_METHODS } from '../lib/deliveryMethods.js'
 
 export default function LabSettings() {
+  const location = useLocation()
   const [form, setForm] = useState(null)
   const [logoUploading, setLogoUploading] = useState(false)
   const [bannerUploading, setBannerUploading] = useState(false)
@@ -43,6 +45,15 @@ export default function LabSettings() {
       })
       .catch((err) => setLoadError(err.message || 'No se pudo cargar la configuración.'))
   }, [])
+
+  // Llegar acá desde el atajo del Flujo de conversación (ver flowTree.js)
+  // deja el foco justo en la tarjeta de Obras sociales en vez de arriba de
+  // todo — recién se puede hacer scroll una vez que la tarjeta existe en el
+  // DOM (después de cargar el catálogo).
+  useEffect(() => {
+    if (location.hash !== '#obras-sociales' || obrasSociales.length === 0) return
+    document.getElementById('obras-sociales')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [location.hash, obrasSociales.length])
 
   function toggleObraSocial(id) {
     setObrasSociales((prev) => prev.map((o) => (o.id === id ? { ...o, habilitada: !o.habilitada } : o)))
@@ -353,7 +364,7 @@ export default function LabSettings() {
         </Button>
       </form>
 
-      <Card className="mt-6 p-6">
+      <Card id="obras-sociales" className="mt-6 p-6 scroll-mt-6">
         <div className="flex items-center justify-between gap-3">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
             <Stethoscope size={16} className="text-[var(--accent)]" />

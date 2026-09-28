@@ -3,6 +3,21 @@
 // Se usan desde FlowBuilder/FlowNodePanel para saber qué nodo está
 // seleccionado en el mapa y para escribir cambios sin mutar el árbol.
 
+// Ramas "atajo": no llevan a un nodo del árbol (node: null, sin isHandoff)
+// sino a otra pantalla del panel — ej. la lista real de obras sociales vive
+// en Configuración, no acá, para no duplicar esos textos y gastar tokens de
+// más (ver LabSettings.jsx y WhatsAppMessageProcessingService en el backend).
+// Es solo una señal visual para quien edita el flujo, así no parece que
+// "falta" contenido: el bot igual tiene y usa esa info en la conversación.
+export const FLOW_LINK_TARGETS = {
+  'obras-sociales': {
+    path: '/dashboard/configuracion#obras-sociales',
+    shortLabel: 'Ir a Configuración',
+    description:
+      'Lleva a Configuración → Obras sociales, donde se activan y se personalizan los requisitos de cada una. No es una rama real de la conversación: el asistente ya usa esa información aunque no esté dibujada acá.',
+  },
+}
+
 export function getNodeAtPath(tree, path) {
   let node = tree
   for (const optionId of path) {
