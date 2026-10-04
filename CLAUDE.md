@@ -19,7 +19,9 @@ Auth: JWT en `sessionStorage` (NO localStorage) — a propósito, así pestañas
 
 `WhatsAppConnect.jsx` tiene un botón "Conectar con Facebook" (arriba del formulario manual, que se mantiene como fallback) que dispara `src/lib/metaEmbeddedSignup.js`: carga el SDK de Facebook, llama `FB.login()` con un `config_id` de WhatsApp Embedded Signup, y combina el `code` (viene del callback de login) con `waba_id`/`phone_number_id` (vienen aparte, por `postMessage` del popup de Meta — pueden llegar en cualquier orden). El resultado se manda a `POST /api/lab/whatsapp/embedded-signup`.
 
-El botón se **oculta solo** (`EMBEDDED_SIGNUP_AVAILABLE`) si faltan `VITE_META_APP_ID` / `VITE_META_WHATSAPP_CONFIG_ID` en el `.env` — esos dos salen de una "Configuración" que hay que crear a mano en el panel de Meta for Developers (producto "Facebook Login for Business" de la App central), no son algo que yo pueda generar. Ver `Zero/CLAUDE.md` para el resto de la configuración pendiente (webhook central, App ID/Secret del lado del backend). No se pudo probar contra la Graph API real todavía.
+El botón se **oculta solo** (`EMBEDDED_SIGNUP_AVAILABLE`) si faltan `VITE_META_APP_ID` / `VITE_META_WHATSAPP_CONFIG_ID` en el `.env`.
+
+**Estado (4 oct 2026): ya configurado y pusheado.** `VITE_META_APP_ID`/`VITE_META_WHATSAPP_CONFIG_ID` están cargadas en Vercel (Production). Si el botón no aparece en producción, lo primero a chequear es si hubo un **redeploy** después de cargar esas variables — Vite las compila adentro del bundle en build time, cargarlas en el dashboard no alcanza si no se re-buildea. Ver `Zero/CLAUDE.md` para el resto (webhook central, Configuration ID, gotcha de nombres de env vars en Render). Falta probar el flujo completo con un número real — todavía nadie conectó un WhatsApp por este camino, solo se verificó que el webhook responde.
 
 ## UX / diseño
 
