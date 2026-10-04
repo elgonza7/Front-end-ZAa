@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope, Pencil, Search, CheckSquare, Square } from 'lucide-react'
+import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope, Search, CheckSquare, Square } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -467,10 +467,10 @@ export default function LabSettings() {
               <button
                 type="button"
                 onClick={() => setEditingObraSocial(obraSocial)}
-                className="shrink-0 text-[var(--muted)] hover:text-[var(--accent)]"
+                className="shrink-0 rounded-lg border border-[var(--border)] px-2.5 py-1 text-xs font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 aria-label={`Personalizar texto de ${obraSocial.nombre}`}
               >
-                <Pencil size={14} />
+                Editar
               </button>
             </div>
           ))}
