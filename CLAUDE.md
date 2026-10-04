@@ -15,6 +15,12 @@ Auth: JWT en `sessionStorage` (NO localStorage) — a propósito, así pestañas
 - **Flow Builder (`components/flow/`)**: soporta opciones "atajo" que no abren un nodo sino que navegan a otra pantalla del panel — `option.linkTo` + `FLOW_LINK_TARGETS` en `flowTree.js`. Se ven con ícono de enlace y color distinto en `FlowMap`, `FlowNodeEditor` y `FlowNodePreview`. Usado hoy solo para "Ver todas las obras sociales" dentro del nodo de autorización de estudios.
 - **Modal.jsx**: ahora acepta `size="lg"` (por defecto sigue siendo el tamaño chico de siempre) y tiene scroll interno con `max-h-[85vh]` — usarlo en vez de agrandar un modal a mano si hace falta más espacio.
 
+## Embedded Signup (~4 oct 2026)
+
+`WhatsAppConnect.jsx` tiene un botón "Conectar con Facebook" (arriba del formulario manual, que se mantiene como fallback) que dispara `src/lib/metaEmbeddedSignup.js`: carga el SDK de Facebook, llama `FB.login()` con un `config_id` de WhatsApp Embedded Signup, y combina el `code` (viene del callback de login) con `waba_id`/`phone_number_id` (vienen aparte, por `postMessage` del popup de Meta — pueden llegar en cualquier orden). El resultado se manda a `POST /api/lab/whatsapp/embedded-signup`.
+
+El botón se **oculta solo** (`EMBEDDED_SIGNUP_AVAILABLE`) si faltan `VITE_META_APP_ID` / `VITE_META_WHATSAPP_CONFIG_ID` en el `.env` — esos dos salen de una "Configuración" que hay que crear a mano en el panel de Meta for Developers (producto "Facebook Login for Business" de la App central), no son algo que yo pueda generar. Ver `Zero/CLAUDE.md` para el resto de la configuración pendiente (webhook central, App ID/Secret del lado del backend). No se pudo probar contra la Graph API real todavía.
+
 ## UX / diseño
 
 Se hizo una revisión completa contra investigación de UX actual (Nielsen Norman, comparativas de ManyChat/Landbot/Typebot/Gallabox, guías de dashboards SaaS) el 28 sep 2026: la conclusión fue que la app **ya sigue bien la mayoría de las buenas prácticas** (semáforo de estado con CTA accionable en el Panel, ayuda progresiva detrás de botones "?", estados vacíos en todos los gráficos, un solo color de acento, grillas responsive). No hacer un rediseño visual grande sin que el dueño dé una dirección concreta (paleta, layout, qué pantalla puntual) — no hay pedido pendiente de eso, ya se le avisó y no pidió más por ahora.

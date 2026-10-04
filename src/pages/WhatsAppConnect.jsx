@@ -5,8 +5,9 @@ import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
-import { getConnection, saveConnection, testConnection, disconnect, getBusinessProfile } from '../api/whatsappService.js'
+import { getConnection, saveConnection, testConnection, disconnect, getBusinessProfile, completeEmbeddedSignup } from '../api/whatsappService.js'
 import { updateLabSettings } from '../api/labService.js'
+import { EMBEDDED_SIGNUP_AVAILABLE, startEmbeddedSignup } from '../lib/metaEmbeddedSignup.js'
 
 export function WhatsappTutorial() {
   return (
@@ -161,6 +162,8 @@ export default function WhatsAppConnect() {
   const [businessProfile, setBusinessProfile] = useState(null)
   const [addressCopied, setAddressCopied] = useState(false)
   const [saveConfirmed, setSaveConfirmed] = useState(false)
+  const [signupLoading, setSignupLoading] = useState(false)
+  const [signupError, setSignupError] = useState('')
 
   useEffect(() => {
     getConnection().then((data) => {
@@ -185,6 +188,23 @@ export default function WhatsAppConnect() {
     if (!businessProfile?.address) return
     await updateLabSettings({ address: businessProfile.address })
     setAddressCopied(true)
+  }
+
+  async function handleEmbeddedSignup() {
+    setSignupLoading(true)
+    setSignupError('')
+    try {
+      const { code, wabaId, phoneNumberId } = await startEmbeddedSignup()
+      const updated = await completeEmbeddedSignup({ code, wabaId, phoneNumberId })
+      setConnection(updated)
+      setSaveConfirmed(true)
+      setTimeout(() => setSaveConfirmed(false), 4000)
+      getBusinessProfile().then(setBusinessProfile).catch(() => setBusinessProfile(null))
+    } catch (err) {
+      setSignupError(err.message || 'No se pudo completar la conexión con Facebook.')
+    } finally {
+      setSignupLoading(false)
+    }
   }
 
   async function handleSave(event) {
@@ -269,6 +289,31 @@ export default function WhatsAppConnect() {
             </ul>
           </div>
       </Card>
+
+      {EMBEDDED_SIGNUP_AVAILABLE && !connection.connected && (
+        <Card className="mb-6 border-[var(--accent)]/40 bg-[var(--accent)]/5 p-5">
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-[var(--text-strong)]">Conectar con Facebook</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">
+                La forma más rápida: iniciás sesión con la cuenta de Facebook del laboratorio, elegís
+                tu WhatsApp Business, y listo — no hace falta copiar ningún código a mano.
+              </p>
+            </div>
+            <Button type="button" onClick={handleEmbeddedSignup} disabled={signupLoading} className="shrink-0 px-4 py-2.5 text-sm">
+              {signupLoading ? 'Conectando…' : 'Conectar con Facebook'}
+            </Button>
+          </div>
+          {signupError && (
+            <p className="mt-3 flex items-center gap-1.5 text-sm font-medium text-red-400">
+              <XCircle size={16} /> {signupError}
+            </p>
+          )}
+          <p className="mt-3 text-[11px] text-[var(--muted)]">
+            ¿Preferís pegar las credenciales vos mismo? Podés seguir usando el formulario de abajo.
+          </p>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-1">

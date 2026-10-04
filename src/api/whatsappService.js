@@ -41,6 +41,14 @@ export async function disconnect() {
   return apiFetch('/lab/whatsapp', { method: 'DELETE' })
 }
 
+// POST /api/lab/whatsapp/embedded-signup { code, wabaId, phoneNumberId }
+// -> el backend canjea el code por un token, suscribe la WABA al webhook
+// central y activa la Cloud API en el número — nada de esto lo copia el
+// laboratorio a mano.
+export async function completeEmbeddedSignup(payload) {
+  return apiFetch('/lab/whatsapp/embedded-signup', { method: 'POST', body: JSON.stringify(payload) })
+}
+
 // GET /api/lab/whatsapp/business-profile -> perfil cargado del lado de Meta
 // (About, descripción, dirección, email, sitios web, categoría) — de solo
 // lectura, para mostrarlo como referencia sin pisar nada de Configuración.
