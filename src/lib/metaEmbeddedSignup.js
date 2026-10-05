@@ -71,7 +71,14 @@ export function startEmbeddedSignup() {
     }
 
     function handleMessage(event) {
-      if (!event.origin.endsWith('facebook.com')) return
+      // OJO acá: tiene que ser un dominio exacto o un subdominio real de
+      // facebook.com (con el punto adelante) — "endsWith('facebook.com')"
+      // sin el punto también deja pasar un origen falso como
+      // "https://evil-facebook.com", que termina en esa misma cadena de
+      // texto sin ser realmente un subdominio de Meta.
+      const origin = event.origin
+      const isRealFacebookOrigin = origin === 'https://www.facebook.com' || origin.endsWith('.facebook.com')
+      if (!isRealFacebookOrigin) return
 
       let data
       try {
