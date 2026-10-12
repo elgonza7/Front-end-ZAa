@@ -39,10 +39,10 @@ export default function Sidebar({ items, open, onClose }) {
               to={to}
               end
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors ${
                   isActive
                     ? 'bg-gradient-to-r from-[var(--accent)]/20 to-transparent text-[var(--accent)] border border-[var(--accent)]/30'
-                    : 'text-[var(--muted)] hover:bg-[var(--bg)] hover:text-[var(--text-strong)] border border-transparent'
+                    : 'text-[var(--text)] hover:bg-[var(--bg)] hover:text-[var(--text-strong)] border border-transparent'
                 }`
               }
             >
@@ -51,7 +51,7 @@ export default function Sidebar({ items, open, onClose }) {
               {!!badge && (
                 <span className="relative flex h-5 min-w-5 shrink-0 items-center justify-center">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                  <span className="relative flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-[var(--text-strong)]">
+                  <span className="relative flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-[var(--text-strong)]">
                     {badge}
                   </span>
                 </span>

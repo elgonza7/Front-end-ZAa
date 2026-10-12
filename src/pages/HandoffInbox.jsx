@@ -118,7 +118,7 @@ export default function HandoffInbox() {
                       </p>
                     )}
                     <p className="mt-1.5 max-w-xl text-sm text-[var(--text)]">"{conv.lastMessage}"</p>
-                    <p className="mt-1 text-[11px] text-[var(--muted)]">Esperando {timeAgo(conv.waitingSince)}</p>
+                    <p className="mt-1 text-xs text-[var(--muted)]">Esperando {timeAgo(conv.waitingSince)}</p>
                   </div>
                 </div>
 

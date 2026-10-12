@@ -57,7 +57,7 @@ function PlanCalculator() {
           onChange={(event) => setDailyContacts(Number(event.target.value))}
           className="mt-3 w-full accent-[var(--accent)]"
         />
-        <div className="mt-1 flex justify-between text-[10px] text-[var(--muted)]">
+        <div className="mt-1 flex justify-between text-[11px] text-[var(--muted)]">
           <span>1</span>
           <span>{CALCULATOR_MAX_CONTACTS}+</span>
         </div>
@@ -73,7 +73,7 @@ function PlanCalculator() {
         </p>
       </div>
 
-      <p className="mt-3 text-[11px] text-[var(--muted)]">
+      <p className="mt-3 text-xs text-[var(--muted)]">
         Es una estimación (varía según cuán largas sean las conversaciones). Si en algún mes te
         pasás del cupo de tu plan, el asistente no se corta — el excedente se cobra aparte, a un
         precio por cada 1.000 tokens extra.
@@ -124,7 +124,7 @@ function CoexistenceExplainer() {
           <p className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-strong)]">
             <Smartphone size={12} className="text-[var(--accent)]" /> Así conectamos tu WhatsApp
           </p>
-          <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+          <p className="mt-1 text-xs leading-relaxed text-[var(--muted)]">
             Seguís usando tu WhatsApp Business de siempre, en tu celular, con todos tus chats y
             contactos. El asistente de IA responde en paralelo, en el mismo número — no se borra
             ni se pierde nada de lo que ya tenías, ni necesitás un número nuevo.
@@ -164,12 +164,12 @@ export default function Pricing() {
               className={`flex flex-col p-6 ${planName === 'Profesional' ? 'border-[var(--accent)]/50' : ''}`}
             >
               {planName === 'Profesional' && (
-                <span className="mb-3 inline-flex w-fit items-center rounded-full bg-gradient-to-r from-[var(--accent)] to-[#FCEABB] px-2.5 py-1 text-[11px] font-bold text-black">
+                <span className="mb-3 inline-flex w-fit items-center rounded-full bg-gradient-to-r from-[var(--accent)] to-[#FCEABB] px-2.5 py-1 text-xs font-bold text-black">
                   MÁS ELEGIDO
                 </span>
               )}
               {planName === 'Básico' && (
-                <span className="mb-3 inline-flex w-fit items-center rounded-full border border-[var(--border)] bg-[var(--bg)] px-2.5 py-1 text-[11px] font-semibold text-[var(--muted)]">
+                <span className="mb-3 inline-flex w-fit items-center rounded-full border border-[var(--border)] bg-[var(--bg)] px-2.5 py-1 text-xs font-semibold text-[var(--muted)]">
                   Recomendado para laboratorio nuevo
                 </span>
               )}
@@ -188,7 +188,7 @@ export default function Pricing() {
               <p className="mt-2 text-sm font-bold text-[var(--accent-soft)]">
                 ≈ {Math.round(plan.tokensLimit / AVG_TOKENS_PER_INTERACTION_ESTIMATE).toLocaleString()} interacciones por mes
               </p>
-              <p className="text-[11px] text-[var(--muted)]">
+              <p className="text-xs text-[var(--muted)]">
                 {plan.tokensLimit.toLocaleString()} tokens de IA (cada interacción usa ~{AVG_TOKENS_PER_INTERACTION_ESTIMATE.toLocaleString()} tokens aprox.)
               </p>
 

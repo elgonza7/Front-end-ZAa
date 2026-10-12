@@ -62,7 +62,7 @@ export default function AdminFeedback() {
                           </div>
                           <p className="mt-1.5 text-sm font-semibold text-[var(--text-strong)]">{item.subject}</p>
                           <p className="mt-1 max-w-xl text-sm text-[var(--text)]">{item.message}</p>
-                          <p className="mt-1.5 text-[11px] text-[var(--muted)]">
+                          <p className="mt-1.5 text-xs text-[var(--muted)]">
                             {new Date(item.createdAt).toLocaleString('es-AR')}
                           </p>
                         </div>

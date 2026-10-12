@@ -227,7 +227,7 @@ export default function LabOnboarding() {
                   placeholder='Ej: "Laboratorio de análisis clínicos — turnos y resultados por WhatsApp"'
                   className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)]"
                 />
-                <p className="mt-1.5 text-[11px] text-[var(--muted)]">
+                <p className="mt-1.5 text-xs text-[var(--muted)]">
                   Se aplica al perfil real de WhatsApp Business en cuanto conectes tu número. El nombre
                   grande de arriba del todo ("verified name") no se puede cambiar desde acá.
                 </p>
@@ -293,7 +293,7 @@ export default function LabOnboarding() {
                 <p className="flex items-center gap-2 text-xs font-semibold text-[var(--text-strong)]">
                   Próximamente <Badge variant="neutral">En camino</Badge>
                 </p>
-                <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+                <p className="mt-1 text-xs leading-relaxed text-[var(--muted)]">
                   Vas a poder indicar acá qué obras sociales aceptás y qué estudios hacés, para que las ramas
                   que no te aplican (por ejemplo, una obra social que no tenés o un estudio que no realizás)
                   se oculten solas del flujo. Todavía no está disponible — por ahora, sacá esas ramas a mano

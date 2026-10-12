@@ -71,7 +71,7 @@ function CopyField({ label, value }) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5">
       <div className="min-w-0">
-        <p className="text-[11px] text-[var(--muted)]">{label}</p>
+        <p className="text-xs text-[var(--muted)]">{label}</p>
         <p className="truncate text-sm text-[var(--text-strong)]">{value}</p>
       </div>
       <button
@@ -236,7 +236,7 @@ export default function LabBilling() {
                     : 'La renovación automática está apagada.'}
               </p>
               {billing.autoRenew && (
-                <p className="mt-1 text-[11px] text-[var(--muted)]">
+                <p className="mt-1 text-xs text-[var(--muted)]">
                   Fecha límite para cancelar sin que se cobre el próximo período:{' '}
                   <span className="text-[var(--text-strong)]">{billing.renewalCutoffDate}</span>.
                 </p>
@@ -314,7 +314,7 @@ export default function LabBilling() {
                 </Button>
               </form>
             )}
-            <p className="mt-3 text-[11px] text-[var(--muted)]">
+            <p className="mt-3 text-xs text-[var(--muted)]">
               Ya no hace falta avisar por otro medio: al transferir, cargá acá el número de operación
               y queda registrado en el sistema para que lo verifiquemos.
             </p>
@@ -341,7 +341,7 @@ export default function LabBilling() {
                   <p className="mt-1 text-xs font-semibold text-[var(--accent-soft)]">
                     ≈ {Math.round(plan.tokensLimit / AVG_TOKENS_PER_INTERACTION_ESTIMATE).toLocaleString()} interacciones/mes
                   </p>
-                  <p className="text-[11px] text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} tokens</p>
+                  <p className="text-xs text-[var(--muted)]">{plan.tokensLimit.toLocaleString()} tokens</p>
                   {isCurrent ? (
                     <Badge variant="gold" className="mt-3 w-fit">
                       Tu plan actual
@@ -368,7 +368,7 @@ export default function LabBilling() {
                 {tier.tier}: <span className="text-[var(--accent)]">{tier.discountPct}% off</span>
               </p>
             ))}
-            <p className="pt-1 text-[11px] text-[var(--muted)]">
+            <p className="pt-1 text-xs text-[var(--muted)]">
               ¿Tenés más de un laboratorio? Escribinos para que apliquemos el descuento correspondiente.
             </p>
           </div>

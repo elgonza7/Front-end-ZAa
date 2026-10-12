@@ -103,10 +103,10 @@ export default function LabConversations() {
                     <MessagesSquare size={13} className="shrink-0 text-[var(--accent)]" />
                     <span className="truncate">{conv.patientName || formatPhone(conv.conversationId)}</span>
                   </p>
-                  <span className="shrink-0 text-[10px] text-[var(--muted)]">{timeAgo(conv.lastMessageAt)}</span>
+                  <span className="shrink-0 text-[11px] text-[var(--muted)]">{timeAgo(conv.lastMessageAt)}</span>
                 </div>
                 <p className="mt-1.5 truncate text-xs text-[var(--muted)]">{conv.lastMessage}</p>
-                <p className="mt-1 text-[10px] text-[var(--muted)]">
+                <p className="mt-1 text-[11px] text-[var(--muted)]">
                   {conv.patientName ? `${formatPhone(conv.conversationId)} · ` : ''}
                   {conv.messageCount} mensajes
                 </p>
@@ -125,11 +125,11 @@ export default function LabConversations() {
                   return (
                     <div key={index} className={`flex ${style.align}`}>
                       <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${style.bubble}`}>
-                        <p className="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-wide text-[var(--muted)]">
+                        <p className="mb-1 flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-[var(--muted)]">
                           <Icon size={11} /> {style.label}
                         </p>
                         <p className="whitespace-pre-wrap">{msg.text}</p>
-                        <p className="mt-1 text-right text-[10px] text-[var(--muted)]">
+                        <p className="mt-1 text-right text-[11px] text-[var(--muted)]">
                           {new Date(msg.createdAt).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>

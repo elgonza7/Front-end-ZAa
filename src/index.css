@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Tamaños de letra base un poco más grandes que los de Tailwind (12/14px):
+ * mucha gente que usa el panel no está acostumbrada a pantallas densas, y
+ * text-xs/text-sm se usan en casi todo el texto secundario de la app. */
+@theme {
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.25rem;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.4rem;
+}
+
 /* Sistema de colores: 1° (fondo), 2° (marca/dorado) y 3° (semáforo
  * rojo/amarillo/verde, casi igual en los dos temas) — ver también Badge.jsx.
  * Oscuro es el look de siempre y queda como default; claro se activa con
@@ -11,8 +21,10 @@
   --surface: #161b22;
   --border: #30363d;
   --border-hover: #484f58;
-  --muted: #8b949e;
-  --text: #e6e6e6;
+  /* Texto secundario: antes #8b949e — se leía demasiado gris/apagado sobre
+   * el fondo oscuro para gente que no está acostumbrada a pantallas así. */
+  --muted: #b4bcc6;
+  --text: #ececec;
   --text-strong: #ffffff;
   --accent: #f8b500;
   --accent-soft: #e3c065;
@@ -27,7 +39,8 @@
    * demasiado claro se pierde y todo se ve "extremadamente blanco". */
   --border: #c4c9d1;
   --border-hover: #9aa0aa;
-  --muted: #5b6270;
+  /* Antes #5b6270 — mismo motivo que en el tema oscuro, más contraste. */
+  --muted: #3d4450;
   --text: #14161a;
   --text-strong: #000000;
   --accent: #9a6700;

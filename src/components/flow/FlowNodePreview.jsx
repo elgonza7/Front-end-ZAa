@@ -32,7 +32,7 @@ export default function FlowNodePreview({ node, label, onOpenChild }) {
           </div>
         )}
         {!node.image && (
-          <p className="mt-3 flex items-center gap-1.5 text-[11px] text-[var(--muted)]">
+          <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--muted)]">
             <ImageIcon size={12} /> Sin imagen adjunta
           </p>
         )}

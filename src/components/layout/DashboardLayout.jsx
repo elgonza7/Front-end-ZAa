@@ -30,8 +30,8 @@ export default function DashboardLayout({ navItems, title, subtitle, userLabel, 
               <Menu size={22} />
             </button>
             <div className="min-w-0">
-              <h1 className="truncate text-lg font-bold text-[var(--text-strong)]">{title}</h1>
-              {subtitle && <p className="truncate text-xs text-[var(--muted)]">{subtitle}</p>}
+              <h1 className="truncate text-xl font-bold text-[var(--text-strong)] sm:text-2xl">{title}</h1>
+              {subtitle && <p className="truncate text-sm text-[var(--muted)]">{subtitle}</p>}
             </div>
           </div>
 
@@ -45,7 +45,7 @@ export default function DashboardLayout({ navItems, title, subtitle, userLabel, 
             <button
               type="button"
               onClick={handleLogout}
-              className="flex items-center gap-2 rounded-xl border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--muted)] transition-colors hover:border-red-500/40 hover:text-red-400"
+              className="flex items-center gap-2 rounded-xl border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--text)] transition-colors hover:border-red-500/40 hover:text-red-400"
             >
               <LogOut size={16} />
               <span className="hidden sm:inline">Cerrar sesión</span>

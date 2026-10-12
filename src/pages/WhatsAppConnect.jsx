@@ -1,146 +1,76 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, XCircle, Send, Unlink, Save, Phone, Smartphone, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
+import { CheckCircle2, XCircle, Send, Unlink, Phone, Smartphone, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
-import { getConnection, saveConnection, testConnection, disconnect, getBusinessProfile, completeEmbeddedSignup } from '../api/whatsappService.js'
+import { getConnection, testConnection, disconnect, getBusinessProfile, completeEmbeddedSignup } from '../api/whatsappService.js'
 import { updateLabSettings } from '../api/labService.js'
 import { EMBEDDED_SIGNUP_AVAILABLE, startEmbeddedSignup } from '../lib/metaEmbeddedSignup.js'
+
+const SUPPORT_MAILTO =
+  'mailto:zeroautoapp@gmail.com?subject=Quiero%20que%20conecten%20mi%20WhatsApp&body=Hola%2C%20quiero%20usar%20el%20n%C3%BAmero%3A%20%5Btu%20n%C3%BAmero%20de%20WhatsApp%20ac%C3%A1%5D'
 
 export function WhatsappTutorial() {
   return (
     <>
       <p>
-        Estos datos salen de <strong>Meta for Developers</strong>, la plataforma de Meta (la
-        empresa de Facebook/WhatsApp) para conectar aplicaciones a WhatsApp. No hace falta saber
-        de programación: es completar formularios en su sitio. Se configura <strong>una sola vez</strong>{' '}
-        y de ahí en más el asistente queda funcionando solo.
+        Conectar tu WhatsApp lleva un par de minutos y se hace <strong>una sola vez</strong>. No
+        hace falta saber nada de tecnología ni copiar ningún código.
       </p>
 
       <p>
-        Este asistente se conecta en modo <strong>Coexistence</strong>: seguís usando la app de
+        El asistente se conecta en modo <strong>Coexistence</strong>: seguís usando la app de
         WhatsApp Business en tu celular exactamente como siempre —chats, historial, grupos— y el
-        asistente responde en paralelo, por el mismo número que ya usás con tus pacientes. No hace
-        falta un número nuevo ni se borra nada de lo que ya tenés.
+        asistente responde en paralelo, por el mismo número que ya usás con tus pacientes.
       </p>
 
-      <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4">
-        <p className="text-sm font-semibold text-[var(--text-strong)]">¿Preferís que lo hagamos nosotros?</p>
-        <p className="mt-1.5">
-          Los pasos de abajo (Meta for Developers, Business Manager, tokens) son los más técnicos
-          de toda la app. Si no te sentís cómodo haciéndolos vos, mandanos el número de WhatsApp
-          que vas a usar y nosotros nos encargamos de toda esta parte por vos — no hace falta que
-          entiendas nada de esto.
-        </p>
-        <a
-          href="mailto:zeroautoapp@gmail.com?subject=Quiero%20que%20conecten%20mi%20WhatsApp&body=Hola%2C%20quiero%20usar%20el%20n%C3%BAmero%3A%20%5Btu%20n%C3%BAmero%20de%20WhatsApp%20ac%C3%A1%5D"
-          className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] underline"
-        >
-          Pedir que lo conecten por mí →
-        </a>
-      </div>
-
       <div>
-        <p className="text-sm font-semibold text-[var(--text-strong)]">Antes de empezar, necesitás:</p>
+        <p className="text-sm font-semibold text-[var(--text-strong)]">Antes de empezar, tené a mano:</p>
         <ul className="mt-2 list-disc space-y-1.5 pl-5">
+          <li>La cuenta de Facebook del dueño o encargado del laboratorio.</li>
           <li>
-            Una cuenta de Facebook (personal, sirve la del dueño o encargado del laboratorio) para
-            entrar a Meta for Developers.
-          </li>
-          <li>
-            Un <strong>Facebook Business Manager</strong> (administrador comercial). Si no lo
-            tenés, Meta te lo ofrece crear gratis en el mismo paso 1 — no es necesario tenerlo de
-            antemano.
-          </li>
-          <li>
-            El número de WhatsApp que ya usás con tus pacientes, con la app de{' '}
-            <strong>WhatsApp Business</strong> instalada en el celular. Es justamente el que vas a
-            conectar en modo Coexistence — no hace falta un número nuevo ni desinstalar nada.
+            El celular con la app de <strong>WhatsApp Business</strong> del número que usás con tus
+            pacientes — Meta te va a mandar un código ahí para confirmar que el número es tuyo.
           </li>
         </ul>
       </div>
 
       <ol className="list-decimal space-y-3 pl-5">
         <li>
-          <strong>Creá la App de Meta.</strong> Entrá a{' '}
-          <a
-            href="https://developers.facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[var(--accent)] underline"
-          >
-            developers.facebook.com
-          </a>{' '}
-          → arriba a la derecha, "Mis Apps" → "Crear app". Elegí el tipo <strong>"Business"</strong>{' '}
-          (Empresa), ponele un nombre (ej. el nombre del laboratorio) y confirmá. Si te pide crear
-          un Business Manager nuevo, aceptá — es gratis.
+          Tocá <strong>"Conectar con Facebook"</strong>. Se abre una ventana de Facebook.
         </li>
         <li>
-          <strong>Agregá el producto WhatsApp.</strong> Dentro del panel de la App, en la lista de
-          productos que aparece, buscá la tarjeta <strong>"WhatsApp"</strong> y tocá "Configurar" /
-          "Set up". Meta te asigna automáticamente un número de prueba gratuito con un token
-          temporal (dura 24 hs) — sirve para probar todo el flujo antes de usar tu número real.
+          Iniciá sesión con tu cuenta de Facebook y aceptá los permisos que te pide (son para que
+          el asistente pueda leer y responder los mensajes de tu WhatsApp Business).
         </li>
         <li>
-          <strong>Copiá el Phone Number ID y el WABA ID.</strong> En el menú lateral{' '}
-          <strong>WhatsApp → Configuración de la API</strong> ("API Setup") vas a ver dos códigos
-          largos de números: <strong>Phone Number ID</strong> (el número que envía los mensajes) y
-          más abajo el <strong>WhatsApp Business Account ID</strong> (WABA ID, la cuenta que agrupa
-          uno o más números). Copialos tal cual figuran, sin espacios.
+          Elegí tu negocio (o creá uno nuevo si Meta te lo ofrece) y después elegí el número de
+          WhatsApp Business que querés conectar.
         </li>
         <li>
-          <strong>Generá un Access Token permanente.</strong> El token que te da la pantalla de
-          prueba dura 24 hs y después el bot deja de responder. Para uno que no vence: andá a{' '}
-          <strong>Configuración de la empresa</strong> (ícono de engranaje, arriba a la izquierda,
-          fuera del panel de la App) → <strong>Usuarios → Usuarios del sistema</strong> → "Añadir" →
-          creá un usuario con rol <strong>Administrador</strong>. Entrá a ese usuario → "Añadir
-          activos" → asignale tu App con permiso "Control total". Después tocá{' '}
-          <strong>"Generar nuevo token"</strong>, elegí esa misma App, y marcá los permisos{' '}
-          <code className="rounded bg-[var(--bg)] px-1 py-0.5 text-[var(--accent-soft)]">whatsapp_business_messaging</code>{' '}
-          y{' '}
-          <code className="rounded bg-[var(--bg)] px-1 py-0.5 text-[var(--accent-soft)]">whatsapp_business_management</code>.
-          Ese token largo (empieza con "EAAG…") es el <strong>Access Token</strong> — copialo en el
-          momento, Meta no te lo vuelve a mostrar completo después.
+          Confirmá el número con el código que te llega a la app de WhatsApp Business en el celular.
         </li>
         <li>
-          <strong>Agregá tu número real en modo Coexistence.</strong> En{' '}
-          <strong>WhatsApp → Configuración de la API</strong>, "Agregar número de teléfono", elegí
-          la opción para usar un número que <strong>ya tiene WhatsApp Business activo</strong>{' '}
-          (Meta lo detecta solo). Te va a pedir confirmar el número y, si es la primera vez que
-          verificás el negocio ante Meta (Business Verification), puede pedir datos legales del
-          laboratorio (CUIT, dirección) — tarda entre minutos y un par de días. Vas a seguir viendo
-          tus chats normalmente en el celular durante y después de este paso.
-        </li>
-        <li>
-          <strong>Definí el Webhook Verify Token.</strong> Es un texto cualquiera que vos inventás
-          (ej. <code className="rounded bg-[var(--bg)] px-1 py-0.5 text-[var(--accent-soft)]">zeroauto-mi-laboratorio-2026</code>),
-          no lo genera Meta. Pegalo en el campo de acá abajo y también en Meta, en{' '}
-          <strong>WhatsApp → Configuración → Webhook → Editar</strong>: como URL de callback poné
-          la dirección de nuestro servidor terminada en{' '}
-          <code className="rounded bg-[var(--bg)] px-1 py-0.5 text-[var(--accent-soft)]">/api/webhooks/whatsapp</code>,
-          y como "Verify Token" el mismo texto que elegiste. Guardá y suscribite al campo{' '}
-          <strong>messages</strong> (es el que avisa cuando llega un mensaje nuevo).
-        </li>
-        <li>
-          <strong>Completá el formulario acá abajo.</strong> Pegá los 4 datos (Phone Number ID,
-          WABA ID, Access Token, Webhook Verify Token), tocá "Guardar y conectar", y después "Enviar
-          mensaje de prueba" para confirmar que llega a un WhatsApp real.
+          Listo: la ventana se cierra sola y acá vas a ver el estado en <strong>"Conectado"</strong>.
+          Tocá "Enviar mensaje de prueba" para confirmar que todo funciona.
         </li>
       </ol>
 
-      <p className="text-xs text-[var(--muted)]">
-        Este proceso se hace una única vez por laboratorio; después de guardado, el asistente queda
-        conectado hasta que lo desvincules. Si en algún paso Meta muestra una pantalla distinta a
-        la descripta, es porque cambian el diseño seguido — los nombres de los menús
-        (Configuración de la API, Usuarios del sistema, Webhook) se mantienen aunque cambie el
-        acomodo visual. Ante cualquier duda, escribinos a{' '}
-        <a href="mailto:zeroautoapp@gmail.com" className="text-[var(--accent)] underline">
-          zeroautoapp@gmail.com
-        </a>{' '}
-        y te ayudamos a conectarlo.
-      </p>
+      <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4">
+        <p className="text-sm font-semibold text-[var(--text-strong)]">¿Algo no funciona o preferís que lo hagamos nosotros?</p>
+        <p className="mt-1.5">
+          No hace falta que sepas nada del tema ni de tecnología: contanos qué pasa y te ayudamos a
+          resolverlo, o lo conectamos nosotros por vos.
+        </p>
+        <a
+          href={SUPPORT_MAILTO}
+          className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] underline"
+        >
+          Pedir ayuda →
+        </a>
+      </div>
     </>
   )
 }
@@ -153,27 +83,19 @@ const QUALITY_LABEL = {
 
 export default function WhatsAppConnect() {
   const [connection, setConnection] = useState(null)
-  const [form, setForm] = useState({ phoneNumberId: '', wabaId: '', accessToken: '', webhookVerifyToken: '' })
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState('')
   const [testResult, setTestResult] = useState(null)
   const [testing, setTesting] = useState(false)
   const [businessProfile, setBusinessProfile] = useState(null)
   const [addressCopied, setAddressCopied] = useState(false)
-  const [saveConfirmed, setSaveConfirmed] = useState(false)
+  const [connectConfirmed, setConnectConfirmed] = useState(false)
   const [signupLoading, setSignupLoading] = useState(false)
   const [signupError, setSignupError] = useState('')
+  const [disconnecting, setDisconnecting] = useState(false)
 
   useEffect(() => {
     getConnection().then((data) => {
       setConnection(data)
-      setForm({
-        phoneNumberId: data.phoneNumberId || '',
-        wabaId: data.wabaId || '',
-        accessToken: data.accessToken || '',
-        webhookVerifyToken: data.webhookVerifyToken || '',
-      })
       setLoading(false)
 
       // El perfil solo existe del lado de Meta si hay un número conectado —
@@ -197,33 +119,13 @@ export default function WhatsAppConnect() {
       const { code, wabaId, phoneNumberId } = await startEmbeddedSignup()
       const updated = await completeEmbeddedSignup({ code, wabaId, phoneNumberId })
       setConnection(updated)
-      setSaveConfirmed(true)
-      setTimeout(() => setSaveConfirmed(false), 4000)
+      setConnectConfirmed(true)
+      setTimeout(() => setConnectConfirmed(false), 6000)
       getBusinessProfile().then(setBusinessProfile).catch(() => setBusinessProfile(null))
     } catch (err) {
       setSignupError(err.message || 'No se pudo completar la conexión con Facebook.')
     } finally {
       setSignupLoading(false)
-    }
-  }
-
-  async function handleSave(event) {
-    event.preventDefault()
-    setSaving(true)
-    setSaveConfirmed(false)
-    setSaveError('')
-    try {
-      const updated = await saveConnection({ ...form, connectionType: 'COEXISTENCE' })
-      setConnection(updated)
-      setSaveConfirmed(true)
-      setTimeout(() => setSaveConfirmed(false), 4000)
-    } catch (err) {
-      // Mismo problema que tenía "Enviar mensaje de prueba": sin esto, un
-      // Phone Number ID o Access Token inválido fallaba en silencio y
-      // parecía que el botón no hacía nada.
-      setSaveError(err.message || 'No se pudo guardar la conexión.')
-    } finally {
-      setSaving(false)
     }
   }
 
@@ -234,9 +136,6 @@ export default function WhatsAppConnect() {
       const result = await testConnection()
       setTestResult(result)
     } catch (err) {
-      // Antes esto quedaba sin manejar: si Meta rechazaba el envío (ej. el
-      // número de prueba no está agregado como "destinatario de prueba"),
-      // el error se perdía en silencio y el botón parecía no hacer nada.
       setTestResult({ ok: false, message: err.message || 'No se pudo enviar el mensaje de prueba.' })
     } finally {
       setTesting(false)
@@ -244,8 +143,18 @@ export default function WhatsAppConnect() {
   }
 
   async function handleDisconnect() {
-    const updated = await disconnect()
-    setConnection(updated)
+    if (!window.confirm('¿Desvincular tu WhatsApp? El asistente va a dejar de responder a tus pacientes hasta que lo vuelvas a conectar.')) {
+      return
+    }
+    setDisconnecting(true)
+    try {
+      const updated = await disconnect()
+      setConnection(updated)
+      setBusinessProfile(null)
+      setTestResult(null)
+    } finally {
+      setDisconnecting(false)
+    }
   }
 
   if (loading || !connection) {
@@ -261,218 +170,162 @@ export default function WhatsAppConnect() {
   return (
     <LabLayout
       title="Conexión de WhatsApp"
-      subtitle="Vinculá tu número con la API de WhatsApp Cloud (Meta) para que el asistente pueda responder"
+      subtitle="Conectá tu WhatsApp Business para que el asistente pueda responder a tus pacientes"
       headerActions={
-        <HelpButton title="Cómo obtener tus credenciales de WhatsApp Cloud API">
+        <HelpButton title="Cómo conectar tu WhatsApp">
           <WhatsappTutorial />
         </HelpButton>
       }
     >
       <Card className="mb-6 p-5">
-          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
-            <Smartphone size={15} className="text-[var(--accent)]" /> Conexión en modo Coexistence
-          </div>
-          <p className="mt-1.5 text-xs text-[var(--muted)]">
-            Seguís usando la app de WhatsApp Business en tu celular como siempre —chats, grupos,
-            historial— mientras el asistente responde en paralelo por el mismo número. No se borra
-            nada.
-          </p>
+        <div className="flex items-center gap-2 text-base font-semibold text-[var(--text-strong)]">
+          <Smartphone size={17} className="text-[var(--accent)]" /> Conexión en modo Coexistence
+        </div>
+        <p className="mt-1.5 text-sm text-[var(--muted)]">
+          Seguís usando la app de WhatsApp Business en tu celular como siempre —chats, grupos,
+          historial— mientras el asistente responde en paralelo por el mismo número. No se borra
+          nada.
+        </p>
 
-          <div className="mt-4 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4 text-xs text-[var(--text)]">
-            <p className="flex items-center gap-1.5 font-semibold text-[var(--text-strong)]">
-              <Lock size={13} className="text-[var(--accent)]" /> Cosas para saber
-            </p>
-            <ul className="mt-2 list-disc space-y-1 pl-4 text-[var(--muted)]">
-              <li>Alguien tiene que abrir la app de WhatsApp Business en el celular al menos una vez cada 14 días — si nadie la abre, WhatsApp pausa el asistente hasta que se vuelva a abrir.</li>
-              <li>Los grupos y las llamadas siguen funcionando solo desde el celular, no pasan por el asistente.</li>
-              <li>Algunas funciones del celular se desactivan mientras esté activo (mensajes que se autodestruyen, ubicación en vivo, listas de difusión clásicas).</li>
-            </ul>
-          </div>
+        <div className="mt-4 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4 text-sm text-[var(--text)]">
+          <p className="flex items-center gap-1.5 font-semibold text-[var(--text-strong)]">
+            <Lock size={14} className="text-[var(--accent)]" /> Cosas para saber
+          </p>
+          <ul className="mt-2 list-disc space-y-1 pl-4">
+            <li>Alguien tiene que abrir la app de WhatsApp Business en el celular al menos una vez cada 14 días — si nadie la abre, WhatsApp pausa el asistente hasta que se vuelva a abrir.</li>
+            <li>Los grupos y las llamadas siguen funcionando solo desde el celular, no pasan por el asistente.</li>
+            <li>Algunas funciones del celular se desactivan mientras esté activo (mensajes que se autodestruyen, ubicación en vivo, listas de difusión clásicas).</li>
+          </ul>
+        </div>
       </Card>
 
-      {EMBEDDED_SIGNUP_AVAILABLE && !connection.connected && (
-        <Card className="mb-6 border-[var(--accent)]/40 bg-[var(--accent)]/5 p-5">
-          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-[var(--text-strong)]">Conectar con Facebook</p>
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                La forma más rápida: iniciás sesión con la cuenta de Facebook del laboratorio, elegís
-                tu WhatsApp Business, y listo — no hace falta copiar ningún código a mano.
+      {!connection.connected && (
+        <Card className="mb-6 border-[var(--accent)]/40 bg-[var(--accent)]/5 p-6">
+          {EMBEDDED_SIGNUP_AVAILABLE ? (
+            <>
+              <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-base font-semibold text-[var(--text-strong)]">Conectar tu WhatsApp</p>
+                  <p className="mt-1 text-sm text-[var(--muted)]">
+                    Iniciás sesión con la cuenta de Facebook del laboratorio, elegís tu WhatsApp
+                    Business, y listo — no hace falta copiar ningún código.
+                  </p>
+                </div>
+                <Button type="button" onClick={handleEmbeddedSignup} disabled={signupLoading} className="shrink-0 px-5 py-3 text-sm">
+                  {signupLoading ? 'Conectando…' : 'Conectar con Facebook'}
+                </Button>
+              </div>
+              {signupError && (
+                <p className="mt-4 flex items-center gap-1.5 text-sm font-medium text-red-400">
+                  <XCircle size={16} /> {signupError}
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-base font-semibold text-[var(--text-strong)]">Conectar tu WhatsApp</p>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                La conexión automática todavía no está disponible. Escribinos y lo conectamos por vos.
               </p>
-            </div>
-            <Button type="button" onClick={handleEmbeddedSignup} disabled={signupLoading} className="shrink-0 px-4 py-2.5 text-sm">
-              {signupLoading ? 'Conectando…' : 'Conectar con Facebook'}
-            </Button>
-          </div>
-          {signupError && (
-            <p className="mt-3 flex items-center gap-1.5 text-sm font-medium text-red-400">
-              <XCircle size={16} /> {signupError}
-            </p>
+            </>
           )}
-          <p className="mt-3 text-[11px] text-[var(--muted)]">
-            ¿Preferís pegar las credenciales vos mismo? Podés seguir usando el formulario de abajo.
+          <p className="mt-4 text-sm text-[var(--muted)]">
+            ¿Algo no funciona? No hace falta que sepas de tecnología:{' '}
+            <a href={SUPPORT_MAILTO} className="font-semibold text-[var(--accent)] underline">
+              contanos y te ayudamos
+            </a>
+            .
           </p>
         </Card>
       )}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <Card className="p-6 lg:col-span-1">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
-              <Phone size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-[var(--text-strong)]">Estado de la conexión</p>
-              <p className="text-xs text-[var(--muted)]">WhatsApp Cloud API</p>
-            </div>
-          </div>
+      {connectConfirmed && (
+        <p className="mb-6 flex items-center gap-1.5 text-sm font-medium text-emerald-400">
+          <CheckCircle2 size={16} /> ¡Tu WhatsApp quedó conectado!
+        </p>
+      )}
 
-          <div className="mt-5 space-y-3">
+      <Card className="p-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--accent)]">
+            <Phone size={20} />
+          </div>
+          <div>
+            <p className="text-base font-semibold text-[var(--text-strong)]">Estado de la conexión</p>
+            <p className="text-sm text-[var(--muted)]">WhatsApp Business</p>
+          </div>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-x-10 gap-y-3 sm:grid-cols-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-[var(--muted)]">Estado</span>
+            {connection.connected ? (
+              <Badge variant="success">
+                <CheckCircle2 size={12} /> Conectado
+              </Badge>
+            ) : (
+              <Badge variant="danger">
+                <XCircle size={12} /> Desconectado
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-[var(--muted)]">Número</span>
+            <span className="text-sm font-medium text-[var(--text-strong)]">{connection.displayPhoneNumber || '—'}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-[var(--muted)]">Nombre verificado</span>
+            <span className="text-sm font-medium text-[var(--text-strong)]">{connection.verifiedName || '—'}</span>
+          </div>
+          {connection.connected && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-[var(--muted)]">Estado</span>
-              {connection.connected ? (
-                <Badge variant="success">
-                  <CheckCircle2 size={12} /> Conectado
-                </Badge>
-              ) : (
-                <Badge variant="danger">
-                  <XCircle size={12} /> Desconectado
-                </Badge>
-              )}
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-[var(--muted)]">Número</span>
-              <span className="text-sm text-[var(--text-strong)]">{connection.displayPhoneNumber}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-[var(--muted)]">Nombre verificado</span>
-              <span className="text-sm text-[var(--text-strong)]">{connection.verifiedName}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-[var(--muted)]">Calidad</span>
+              <span className="text-sm text-[var(--muted)]">Calidad</span>
               <Badge variant={quality.variant}>{quality.text}</Badge>
             </div>
-          </div>
+          )}
+        </div>
 
-          <div className="mt-5 flex flex-col gap-2">
-            <p className="text-[11px] text-[var(--muted)]">
-              Antes de tocar esto: desde el celular con el "Teléfono de contacto" configurado en
-              Configuración, mandale primero un WhatsApp cualquiera (ej. "hola") al número que
-              acabás de conectar. WhatsApp no deja que un negocio le escriba primero a alguien que
-              nunca lo contactó — una vez que le escribiste vos, este botón ya puede responderte.
+        {connection.connected && (
+          <div className="mt-6 border-t border-[var(--border)] pt-5">
+            <p className="text-sm text-[var(--muted)]">
+              Antes de enviar el mensaje de prueba: desde el celular con el "Teléfono de contacto"
+              configurado en Configuración, mandale primero un WhatsApp cualquiera (ej. "hola") a tu
+              número conectado. WhatsApp no deja que un negocio le escriba primero a alguien que nunca
+              lo contactó.
             </p>
-            <Button type="button" variant="outline" className="py-2 text-sm" onClick={handleTest} disabled={testing}>
-              <Send size={15} />
-              {testing ? 'Enviando…' : 'Enviar mensaje de prueba'}
-            </Button>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <Button type="button" variant="outline" className="px-4 py-2.5 text-sm" onClick={handleTest} disabled={testing}>
+                <Send size={15} />
+                {testing ? 'Enviando…' : 'Enviar mensaje de prueba'}
+              </Button>
+              <Button type="button" variant="danger" className="px-4 py-2.5 text-sm" onClick={handleDisconnect} disabled={disconnecting}>
+                <Unlink size={15} />
+                {disconnecting ? 'Desvinculando…' : 'Desvincular WhatsApp'}
+              </Button>
+            </div>
             {testResult && (
-              <p className={`text-xs ${testResult.ok ? 'text-emerald-400' : 'text-red-400'}`}>
+              <p className={`mt-3 text-sm ${testResult.ok ? 'text-emerald-400' : 'text-red-400'}`}>
                 {testResult.message}
               </p>
             )}
-            <Button type="button" variant="danger" className="py-2 text-sm" onClick={handleDisconnect}>
-              <Unlink size={15} />
-              Desvincular número
-            </Button>
           </div>
-        </Card>
-
-        <Card className="p-6 lg:col-span-2">
-          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Credenciales de Meta Cloud API</h2>
-          <p className="mt-1 text-xs text-[var(--muted)]">
-            Obtenelas desde tu App de Meta for Developers (WhatsApp → API Setup). El backend guarda
-            el token de forma cifrada y registra el webhook automáticamente.
-          </p>
-
-          <form className="mt-4 space-y-4" onSubmit={handleSave}>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Phone Number ID</label>
-                <input
-                  type="text"
-                  value={form.phoneNumberId}
-                  onChange={(event) => setForm({ ...form, phoneNumberId: event.target.value })}
-                  placeholder="109876543210987"
-                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
-                />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">WhatsApp Business Account ID</label>
-                <input
-                  type="text"
-                  value={form.wabaId}
-                  onChange={(event) => setForm({ ...form, wabaId: event.target.value })}
-                  placeholder="123456789012345"
-                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Access Token</label>
-              <input
-                type="password"
-                value={form.accessToken}
-                onChange={(event) => setForm({ ...form, accessToken: event.target.value })}
-                placeholder="EAAG..."
-                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Webhook Verify Token</label>
-              <input
-                type="text"
-                value={form.webhookVerifyToken}
-                onChange={(event) => setForm({ ...form, webhookVerifyToken: event.target.value })}
-                placeholder="zero-webhook-verify-xxxx"
-                className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
-              />
-              <p className="mt-1.5 text-[11px] text-[var(--muted)]">
-                Usá este mismo valor al configurar el webhook en Meta for Developers, apuntando a{' '}
-                <code className="rounded bg-[var(--bg)] px-1 py-0.5 text-[var(--accent-soft)]">/api/webhooks/whatsapp</code>.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button type="submit" disabled={saving} className="px-4 py-2.5 text-sm">
-                <Save size={16} />
-                {saving ? 'Guardando…' : 'Guardar y conectar'}
-              </Button>
-              {saveConfirmed && (
-                <p className="flex items-center gap-1.5 text-sm font-medium text-emerald-400">
-                  <CheckCircle2 size={16} /> Se guardó toda la información correctamente
-                </p>
-              )}
-              {saveError && (
-                <p className="flex items-center gap-1.5 text-sm font-medium text-red-400">
-                  <XCircle size={16} /> {saveError}
-                </p>
-              )}
-            </div>
-          </form>
-        </Card>
-      </div>
+        )}
+      </Card>
 
       {connection.connected && businessProfile && (
         <Card className="mt-6 p-6">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-sm font-semibold text-[var(--text-strong)]">Perfil de WhatsApp Business</h2>
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                Esto ya está cargado del lado de Meta (lo ven tus pacientes cuando tocan el nombre
-                del chat) — es de solo lectura acá, para que lo tengas de referencia sin entrar a
-                Meta.
-              </p>
-            </div>
-          </div>
+          <h2 className="text-base font-semibold text-[var(--text-strong)]">Perfil de WhatsApp Business</h2>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Esto es lo que ven tus pacientes cuando tocan el nombre del chat — está de solo lectura
+            acá, como referencia.
+          </p>
 
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {businessProfile.vertical && (
               <div className="flex items-start gap-2.5 text-sm">
                 <Tag size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
                 <div>
-                  <p className="text-[11px] text-[var(--muted)]">Categoría</p>
+                  <p className="text-xs text-[var(--muted)]">Categoría</p>
                   <p className="text-[var(--text-strong)]">{businessProfile.vertical}</p>
                 </div>
               </div>
@@ -481,7 +334,7 @@ export default function WhatsAppConnect() {
               <div className="flex items-start gap-2.5 text-sm">
                 <Mail size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
                 <div>
-                  <p className="text-[11px] text-[var(--muted)]">Email</p>
+                  <p className="text-xs text-[var(--muted)]">Email</p>
                   <p className="text-[var(--text-strong)]">{businessProfile.email}</p>
                 </div>
               </div>
@@ -490,7 +343,7 @@ export default function WhatsAppConnect() {
               <div className="flex items-start gap-2.5 text-sm">
                 <Globe size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
                 <div>
-                  <p className="text-[11px] text-[var(--muted)]">Sitio web</p>
+                  <p className="text-xs text-[var(--muted)]">Sitio web</p>
                   <p className="text-[var(--text-strong)]">{businessProfile.websites.join(', ')}</p>
                 </div>
               </div>
@@ -499,7 +352,7 @@ export default function WhatsAppConnect() {
               <div className="flex items-start gap-2.5 text-sm">
                 <Building2 size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
                 <div>
-                  <p className="text-[11px] text-[var(--muted)]">Descripción</p>
+                  <p className="text-xs text-[var(--muted)]">Descripción</p>
                   <p className="text-[var(--text-strong)]">{businessProfile.description}</p>
                 </div>
               </div>
@@ -509,7 +362,7 @@ export default function WhatsAppConnect() {
                 <div className="flex items-start gap-2.5 text-sm">
                   <MapPin size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
                   <div>
-                    <p className="text-[11px] text-[var(--muted)]">Dirección</p>
+                    <p className="text-xs text-[var(--muted)]">Dirección</p>
                     <p className="text-[var(--text-strong)]">{businessProfile.address}</p>
                   </div>
                 </div>
@@ -528,9 +381,8 @@ export default function WhatsAppConnect() {
           </div>
 
           {!businessProfile.vertical && !businessProfile.email && !businessProfile.address && !businessProfile.description && (
-            <p className="mt-3 text-xs text-[var(--muted)]">
-              Todavía no cargaste nada de esto en el perfil de WhatsApp Business (Meta → Administrador
-              de WhatsApp → Números de teléfono → Perfil).
+            <p className="mt-3 text-sm text-[var(--muted)]">
+              Todavía no cargaste nada de esto en el perfil de WhatsApp Business.
             </p>
           )}
         </Card>

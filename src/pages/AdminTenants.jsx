@@ -214,7 +214,7 @@ export default function AdminTenants() {
                           <Badge variant={lab.botActive ? 'success' : 'neutral'}>
                             Bot {lab.botActive ? 'ON' : 'OFF'}
                           </Badge>
-                          <span className="flex items-center gap-1 text-[11px] text-[var(--muted)]">
+                          <span className="flex items-center gap-1 text-xs text-[var(--muted)]">
                             {lab.whatsappConnected ? (
                               <>
                                 <MessageCircle size={12} className="text-emerald-400" />
@@ -228,12 +228,12 @@ export default function AdminTenants() {
                             )}
                           </span>
                           {lab.pendingHandoffCount > 0 && (
-                            <span className="flex items-center gap-1 text-[11px] text-amber-400">
+                            <span className="flex items-center gap-1 text-xs text-amber-400">
                               <Headset size={12} /> {lab.pendingHandoffCount} esperando atención
                             </span>
                           )}
                           {lab.geminiFallbacksLast7Days > 0 && (
-                            <span className="flex items-center gap-1 text-[11px] text-red-400" title="Veces que la IA falló y se mandó un aviso genérico en los últimos 7 días">
+                            <span className="flex items-center gap-1 text-xs text-red-400" title="Veces que la IA falló y se mandó un aviso genérico en los últimos 7 días">
                               <AlertTriangle size={12} /> {lab.geminiFallbacksLast7Days} fallas de IA (7d)
                             </span>
                           )}
@@ -245,7 +245,7 @@ export default function AdminTenants() {
                           {status.text}
                         </Badge>
                         {lab.pendingTransfer && (
-                          <span className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-[var(--accent)]">
+                          <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-[var(--accent)]">
                             <Send size={11} />
                             Transferencia sin verificar
                           </span>
@@ -254,7 +254,7 @@ export default function AdminTenants() {
                       <td className="px-6 py-4">
                         <p className="text-[var(--text)]">{lab.tokensConsumed.toLocaleString()} tokens</p>
                         {lab.averageTokensPerInteraction > 0 && (
-                          <p className="text-[11px] text-[var(--muted)]">~{lab.averageTokensPerInteraction.toLocaleString()} tokens/mensaje</p>
+                          <p className="text-xs text-[var(--muted)]">~{lab.averageTokensPerInteraction.toLocaleString()} tokens/mensaje</p>
                         )}
                         <TrendBadge usageHistory={lab.usageHistory} />
                       </td>

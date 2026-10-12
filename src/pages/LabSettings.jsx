@@ -230,7 +230,7 @@ export default function LabSettings() {
                 placeholder='Ej: "Laboratorio de análisis clínicos — turnos y resultados por WhatsApp"'
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)]"
               />
-              <p className="mt-1.5 text-[11px] text-[var(--muted)]">
+              <p className="mt-1.5 text-xs text-[var(--muted)]">
                 Al guardar, esto (junto con Dirección y Nombre del laboratorio) se actualiza automáticamente
                 en el perfil real de WhatsApp Business — se aplica cuando ya conectaste tu número. El
                 nombre grande que se ve arriba del todo en WhatsApp ("verified name") no se puede cambiar
@@ -458,7 +458,7 @@ export default function LabSettings() {
                 <span className="text-sm text-[var(--text-strong)]">
                   {obraSocial.nombre}
                   {obraSocial.personalizado && (
-                    <span className="ml-1.5 rounded-full bg-[var(--accent)]/15 px-1.5 py-0.5 text-[10px] font-medium text-[var(--accent-soft)]">
+                    <span className="ml-1.5 rounded-full bg-[var(--accent)]/15 px-1.5 py-0.5 text-[11px] font-medium text-[var(--accent-soft)]">
                       Personalizado
                     </span>
                   )}
@@ -551,7 +551,7 @@ export default function LabSettings() {
                 <FileText size={16} className="shrink-0 text-[var(--accent)]" />
                 <div className="min-w-0">
                   <p className="truncate text-sm text-[var(--text-strong)]">{doc.name}</p>
-                  <p className="text-[11px] text-[var(--muted)]">
+                  <p className="text-xs text-[var(--muted)]">
                     {doc.size} · {doc.uploadedAt}
                   </p>
                 </div>

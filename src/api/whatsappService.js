@@ -11,21 +11,6 @@ export async function getConnection() {
   return apiFetch('/lab/whatsapp')
 }
 
-// PUT /api/lab/whatsapp { phoneNumberId, wabaId, accessToken, webhookVerifyToken }
-// El backend guarda el access token cifrado y registra el webhook en Meta.
-export async function saveConnection(payload) {
-  if (USE_MOCKS) {
-    connectionState = {
-      ...connectionState,
-      ...payload,
-      connected: true,
-      lastSyncedAt: new Date().toISOString(),
-    }
-    return mockDelay({ ...connectionState }, 900)
-  }
-  return apiFetch('/lab/whatsapp', { method: 'PUT', body: JSON.stringify(payload) })
-}
-
 // POST /api/lab/whatsapp/test -> envía un mensaje de prueba con la Cloud API
 export async function testConnection() {
   if (USE_MOCKS) return mockDelay({ ok: true, message: 'Mensaje de prueba enviado correctamente.' }, 1000)

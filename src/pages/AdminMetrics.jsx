@@ -120,7 +120,7 @@ export default function AdminMetrics() {
             <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
               ${metrics.estimatedGeminiCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
-            <p className="mt-1 text-[10px] text-[var(--muted)]">
+            <p className="mt-1 text-[11px] text-[var(--muted)]">
               Estimado sobre {metrics.totalTokensConsumed.toLocaleString('es-AR')} tokens — no es la
               factura real de Google, es una guía.
             </p>
@@ -144,7 +144,7 @@ export default function AdminMetrics() {
             {editingCosts ? (
               <div className="mt-2 space-y-2">
                 <div>
-                  <label className="text-[10px] text-[var(--muted)]">Render (USD/mes)</label>
+                  <label className="text-[11px] text-[var(--muted)]">Render (USD/mes)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -154,7 +154,7 @@ export default function AdminMetrics() {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-[var(--muted)]">Dominio (USD/mes)</label>
+                  <label className="text-[11px] text-[var(--muted)]">Dominio (USD/mes)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -177,7 +177,7 @@ export default function AdminMetrics() {
                 <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
                   ${metrics.fixedInfraCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                 </p>
-                <p className="mt-1 text-[10px] text-[var(--muted)]">Por mes, sin importar el uso — tocá el lápiz para actualizarlo.</p>
+                <p className="mt-1 text-[11px] text-[var(--muted)]">Por mes, sin importar el uso — tocá el lápiz para actualizarlo.</p>
               </>
             )}
           </Card>
@@ -186,7 +186,7 @@ export default function AdminMetrics() {
             <p className={`mt-1.5 text-xl font-bold ${metrics.estimatedNetProfitUSD >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               ${metrics.estimatedNetProfitUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
-            <p className="mt-1 text-[10px] text-[var(--muted)]">Ingresos − Gemini estimado − costos fijos.</p>
+            <p className="mt-1 text-[11px] text-[var(--muted)]">Ingresos − Gemini estimado − costos fijos.</p>
           </Card>
         </div>
 

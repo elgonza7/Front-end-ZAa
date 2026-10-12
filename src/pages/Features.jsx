@@ -29,7 +29,7 @@ function PhoneFrame({ children }) {
           </div>
           <div>
             <p className="text-xs font-semibold text-[var(--text-strong)]">Laboratorio Ameghino</p>
-            <p className="text-[10px] text-emerald-400">en línea</p>
+            <p className="text-[11px] text-emerald-400">en línea</p>
           </div>
         </div>
         <div className="space-y-2">{children}</div>
