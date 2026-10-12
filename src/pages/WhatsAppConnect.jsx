@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, XCircle, Send, Unlink, Phone, Smartphone, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
+import { CheckCircle2, XCircle, Send, Unlink, Phone, Smartphone, Wifi, WifiOff, BadgeCheck, Gauge, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -72,6 +72,20 @@ export function WhatsappTutorial() {
         </a>
       </div>
     </>
+  )
+}
+
+function StatusTile({ icon: Icon, iconClass = 'text-[var(--accent)] bg-[var(--accent)]/10', label, children }) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4">
+      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconClass}`}>
+        <Icon size={19} />
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs text-[var(--muted)]">{label}</p>
+        <div className="mt-1 truncate">{children}</div>
+      </div>
+    </div>
   )
 }
 
@@ -256,9 +270,12 @@ export default function WhatsAppConnect() {
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-x-10 gap-y-3 sm:grid-cols-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--muted)]">Estado</span>
+        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <StatusTile
+            icon={connection.connected ? Wifi : WifiOff}
+            iconClass={connection.connected ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10'}
+            label="Estado"
+          >
             {connection.connected ? (
               <Badge variant="success">
                 <CheckCircle2 size={12} /> Conectado
@@ -268,21 +285,20 @@ export default function WhatsAppConnect() {
                 <XCircle size={12} /> Desconectado
               </Badge>
             )}
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--muted)]">Número</span>
-            <span className="text-sm font-medium text-[var(--text-strong)]">{connection.displayPhoneNumber || '—'}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--muted)]">Nombre verificado</span>
-            <span className="text-sm font-medium text-[var(--text-strong)]">{connection.verifiedName || '—'}</span>
-          </div>
-          {connection.connected && (
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-[var(--muted)]">Calidad</span>
+          </StatusTile>
+          <StatusTile icon={Phone} label="Número">
+            <span className="text-base font-semibold text-[var(--text-strong)]">{connection.displayPhoneNumber || '—'}</span>
+          </StatusTile>
+          <StatusTile icon={BadgeCheck} label="Nombre verificado">
+            <span className="text-base font-semibold text-[var(--text-strong)]">{connection.verifiedName || '—'}</span>
+          </StatusTile>
+          <StatusTile icon={Gauge} label="Calidad">
+            {connection.connected ? (
               <Badge variant={quality.variant}>{quality.text}</Badge>
-            </div>
-          )}
+            ) : (
+              <span className="text-base font-semibold text-[var(--text-strong)]">—</span>
+            )}
+          </StatusTile>
         </div>
 
         {connection.connected && (
