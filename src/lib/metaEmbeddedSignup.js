@@ -21,7 +21,7 @@ function loadFacebookSdk() {
     }
 
     window.fbAsyncInit = function initFacebookSdk() {
-      window.FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: false, version: 'v23.0' })
+      window.FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: false, version: 'v26.0' })
       resolve(window.FB)
     }
 
@@ -63,11 +63,14 @@ export function startEmbeddedSignup() {
       reject(new Error(message))
     }
 
+    // phoneNumberId es opcional: el evento de fin del flujo de Coexistence
+    // (FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING) puede traer solo waba_id —
+    // en ese caso el backend busca el número de la WABA por su cuenta.
     function tryResolve() {
-      if (state.settled || !state.code || !state.wabaId || !state.phoneNumberId) return
+      if (state.settled || !state.code || !state.wabaId) return
       state.settled = true
       cleanup()
-      resolve({ code: state.code, wabaId: state.wabaId, phoneNumberId: state.phoneNumberId })
+      resolve({ code: state.code, wabaId: state.wabaId, phoneNumberId: state.phoneNumberId ?? null })
     }
 
     function handleMessage(event) {
