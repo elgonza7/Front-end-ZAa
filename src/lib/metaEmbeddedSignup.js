@@ -88,7 +88,7 @@ export function startEmbeddedSignup() {
       }
       if (data.type !== 'WA_EMBEDDED_SIGNUP') return
 
-      if (data.event === 'FINISH' || data.event === 'FINISH_ONLY_WABA') {
+      if (data.event === 'FINISH' || data.event === 'FINISH_ONLY_WABA' || data.event === 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING') {
         state.wabaId = data.data?.waba_id ?? state.wabaId
         state.phoneNumberId = data.data?.phone_number_id ?? state.phoneNumberId
         tryResolve()
@@ -117,7 +117,10 @@ export function startEmbeddedSignup() {
             config_id: WHATSAPP_CONFIG_ID,
             response_type: 'code',
             override_default_response_type: true,
-            extras: { sessionInfoVersion: '3' },
+            // featureType: sin esto, Meta solo ofrece crear un número nuevo o
+            // uno virtual — con esto ofrece conectar el número que el
+            // laboratorio ya usa en la app de WhatsApp Business (Coexistence).
+            extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' },
           },
         )
       })
