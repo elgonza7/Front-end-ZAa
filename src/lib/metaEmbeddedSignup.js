@@ -21,7 +21,7 @@ function loadFacebookSdk() {
     }
 
     window.fbAsyncInit = function initFacebookSdk() {
-      window.FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: false, version: 'v21.0' })
+      window.FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: false, version: 'v23.0' })
       resolve(window.FB)
     }
 
