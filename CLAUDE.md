@@ -21,6 +21,10 @@ Auth: JWT en `sessionStorage` (NO localStorage) — a propósito, así pestañas
 
 El botón se **oculta solo** (`EMBEDDED_SIGNUP_AVAILABLE`) si faltan `VITE_META_APP_ID` / `VITE_META_WHATSAPP_CONFIG_ID` en el `.env`.
 
+Desde el 12 oct 2026 el formulario manual de credenciales (Phone Number ID / WABA ID / Access Token / Verify Token) **se sacó de la UI** — la única forma de conectar desde el panel es "Conectar con Facebook". El endpoint `PUT /api/lab/whatsapp` del backend sigue existiendo (las conexiones manuales viejas siguen funcionando), solo que el frontend ya no lo llama.
+
+**Gotcha — CSP en `vercel.json`:** la Content-Security-Policy es estricta (`script-src 'self'`, etc.). Cualquier script/iframe/API externo nuevo que se agregue al frontend hay que habilitarlo ahí también, o falla en silencio en producción (funciona en `npm run dev` porque Vite no aplica esos headers). Así se rompió el SDK de Facebook la primera vez ("No se pudo cargar el SDK de Facebook"): hoy está habilitado `connect.facebook.net` en script-src y `*.facebook.com` en frame-src/connect-src/img-src.
+
 **Estado (4 oct 2026): ya configurado y pusheado.** `VITE_META_APP_ID`/`VITE_META_WHATSAPP_CONFIG_ID` están cargadas en Vercel (Production). Si el botón no aparece en producción, lo primero a chequear es si hubo un **redeploy** después de cargar esas variables — Vite las compila adentro del bundle en build time, cargarlas en el dashboard no alcanza si no se re-buildea. Ver `Zero/CLAUDE.md` para el resto (webhook central, Configuration ID, gotcha de nombres de env vars en Render). Falta probar el flujo completo con un número real — todavía nadie conectó un WhatsApp por este camino, solo se verificó que el webhook responde.
 
 ## UX / diseño
