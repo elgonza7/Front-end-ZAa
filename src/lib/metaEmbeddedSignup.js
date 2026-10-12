@@ -120,7 +120,7 @@ export function startEmbeddedSignup() {
             // featureType: sin esto, Meta solo ofrece crear un número nuevo o
             // uno virtual — con esto ofrece conectar el número que el
             // laboratorio ya usa en la app de WhatsApp Business (Coexistence).
-            extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' },
+            extras: { setup: {}, version: 'v4', featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' },
           },
         )
       })
