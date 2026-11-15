@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Save, Info } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import ErrorState from '../components/ui/ErrorState.jsx'
+import { useToast } from '../lib/toastContext.js'
 import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import FlowMap from '../components/flow/FlowMap.jsx'
@@ -81,19 +83,31 @@ export default function FlowBuilder() {
   const [autoSaving, setAutoSaving] = useState(false)
   const [savedAt, setSavedAt] = useState(null)
   const [selectedPath, setSelectedPath] = useState(null)
+  const [loadError, setLoadError] = useState('')
+  const toast = useToast()
 
   // Arranca en true para no disparar un guardado apenas termina de cargar el
   // flujo inicial (ese setTree no es una edición del usuario) — se consume
   // una sola vez, en el primer cambio de "tree" que ya no sea null.
   const skipNextAutosave = useRef(true)
 
-  useEffect(() => {
-    Promise.all([getFlow(), getLabProfile()]).then(([flow, profile]) => {
-      setTree(flow)
-      setAllowHandoff(profile.handlesHumanHandoff)
-      setLoading(false)
-    })
-  }, [])
+  function fetchFlow() {
+    Promise.all([getFlow(), getLabProfile()])
+      .then(([flow, profile]) => {
+        setTree(flow)
+        setAllowHandoff(profile.handlesHumanHandoff)
+      })
+      .catch((err) => setLoadError(err.message || 'Revisá tu conexión e intentá de nuevo.'))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(fetchFlow, [])
+
+  function retryFlow() {
+    setLoading(true)
+    setLoadError('')
+    fetchFlow()
+  }
 
   // Guardado automático: para que un cambio nunca se pierda por olvidarse de
   // tocar "Guardar flujo" (algo que pasaba seguido) — no reemplaza el botón,
@@ -113,23 +127,31 @@ export default function FlowBuilder() {
         // mismo efecto de nuevo con una referencia nueva (loop infinito).
         await saveFlow(tree)
         setSavedAt(new Date())
+      } catch (err) {
+        toast.error(err.message || 'No se pudo guardar el último cambio automáticamente. Probá con "Guardar flujo".')
       } finally {
         setAutoSaving(false)
       }
     }, AUTOSAVE_DELAY_MS)
 
     return () => clearTimeout(timeoutId)
-  }, [tree])
+  }, [tree, toast])
 
   async function handleSave() {
     setSaving(true)
-    const saved = await saveFlow(tree)
-    // Ya se guardó recién — que el efecto de autosave no dispare otro guardado
-    // redundante solo porque "tree" cambió de referencia al reasignarlo.
-    skipNextAutosave.current = true
-    setTree(saved)
-    setSavedAt(new Date())
-    setSaving(false)
+    try {
+      const saved = await saveFlow(tree)
+      // Ya se guardó recién — que el efecto de autosave no dispare otro guardado
+      // redundante solo porque "tree" cambió de referencia al reasignarlo.
+      skipNextAutosave.current = true
+      setTree(saved)
+      setSavedAt(new Date())
+      toast.success('Flujo guardado')
+    } catch (err) {
+      toast.error(err.message || 'No se pudo guardar el flujo. Intentá de nuevo.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function handleChangeSelectedNode(patchedNode) {
@@ -143,6 +165,14 @@ export default function FlowBuilder() {
   function handleDeleteSelected() {
     setTree((prev) => deleteOptionAtPath(prev, selectedPath))
     setSelectedPath(null)
+  }
+
+  if (loadError !== '') {
+    return (
+      <LabLayout title="Flujo de conversación">
+        <ErrorState message={loadError} onRetry={retryFlow} />
+      </LabLayout>
+    )
   }
 
   if (loading || !tree) {

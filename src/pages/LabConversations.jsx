@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { MessagesSquare, Bot, User, Headset, Inbox } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import ErrorState from '../components/ui/ErrorState.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import { getConversations, getConversationMessages } from '../api/conversationsService.js'
 
@@ -45,22 +46,33 @@ export default function LabConversations() {
   const [selectedId, setSelectedId] = useState(null)
   const [messages, setMessages] = useState([])
   const [loadingMessages, setLoadingMessages] = useState(false)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    getConversations().then((data) => {
-      setConversations(data)
-      setLoading(false)
-      if (data.length > 0) setSelectedId(data[0].conversationId)
-    })
-  }, [])
+  function fetchConversations() {
+    getConversations()
+      .then((data) => {
+        setConversations(data)
+        if (data.length > 0) setSelectedId(data[0].conversationId)
+      })
+      .catch((err) => setError(err.message || 'Revisá tu conexión e intentá de nuevo.'))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(fetchConversations, [])
+
+  function retryConversations() {
+    setLoading(true)
+    setError('')
+    fetchConversations()
+  }
 
   useEffect(() => {
     if (!selectedId) return
     setLoadingMessages(true)
-    getConversationMessages(selectedId).then((data) => {
-      setMessages(data)
-      setLoadingMessages(false)
-    })
+    getConversationMessages(selectedId)
+      .then(setMessages)
+      .catch(() => setMessages([]))
+      .finally(() => setLoadingMessages(false))
   }, [selectedId])
 
   return (
@@ -75,6 +87,8 @@ export default function LabConversations() {
     >
       {loading ? (
         <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+      ) : error !== '' ? (
+        <ErrorState message={error} onRetry={retryConversations} />
       ) : conversations.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
           <Inbox size={32} className="text-[var(--muted)]" />

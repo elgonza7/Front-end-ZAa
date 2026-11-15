@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Headset, Phone, CheckCircle2, FileText, IdCard } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import ErrorState from '../components/ui/ErrorState.jsx'
+import { useToast } from '../lib/toastContext.js'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
@@ -57,19 +59,34 @@ export default function HandoffInbox() {
   const [queue, setQueue] = useState([])
   const [loading, setLoading] = useState(true)
   const [claimingId, setClaimingId] = useState(null)
+  const [error, setError] = useState('')
+  const toast = useToast()
 
-  useEffect(() => {
-    getHandoffQueue().then((data) => {
-      setQueue(data)
-      setLoading(false)
-    })
-  }, [])
+  function fetchQueue() {
+    getHandoffQueue()
+      .then(setQueue)
+      .catch((err) => setError(err.message || 'Revisá tu conexión e intentá de nuevo.'))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(fetchQueue, [])
+
+  function retryQueue() {
+    setLoading(true)
+    setError('')
+    fetchQueue()
+  }
 
   async function handleClaim(id) {
     setClaimingId(id)
-    await claimConversation(id)
-    setQueue((prev) => prev.filter((conv) => conv.id !== id))
-    setClaimingId(null)
+    try {
+      await claimConversation(id)
+      setQueue((prev) => prev.filter((conv) => conv.id !== id))
+    } catch (err) {
+      toast.error(err.message || 'No se pudo tomar la conversación. Intentá de nuevo.')
+    } finally {
+      setClaimingId(null)
+    }
   }
 
   return (
@@ -84,6 +101,8 @@ export default function HandoffInbox() {
     >
       {loading ? (
         <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+      ) : error !== '' ? (
+        <ErrorState message={error} onRetry={retryQueue} />
       ) : queue.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
           <CheckCircle2 size={32} className="text-emerald-400" />

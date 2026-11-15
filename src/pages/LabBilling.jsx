@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Copy, Check, ExternalLink, Receipt, RefreshCw, Send } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import ConfirmDialog from '../components/ui/ConfirmDialog.jsx'
+import { useToast } from '../lib/toastContext.js'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import Switch from '../components/ui/Switch.jsx'
@@ -96,6 +98,8 @@ export default function LabBilling() {
   const [reportingTransfer, setReportingTransfer] = useState(false)
   const [changingPlan, setChangingPlan] = useState(null)
   const [planError, setPlanError] = useState('')
+  const [planToConfirm, setPlanToConfirm] = useState(null)
+  const toast = useToast()
 
   useEffect(() => {
     Promise.all([getLabBilling(), getPlatformBillingDestination()])
@@ -116,42 +120,59 @@ export default function LabBilling() {
 
   async function handleCheckout() {
     setCheckingOut(true)
-    const { checkoutUrl } = await startCheckout()
-    window.open(checkoutUrl, '_blank', 'noopener,noreferrer')
-    setCheckingOut(false)
+    try {
+      const { checkoutUrl } = await startCheckout()
+      window.open(checkoutUrl, '_blank', 'noopener,noreferrer')
+    } catch (err) {
+      toast.error(err.message || 'No se pudo abrir el pago. Intentá de nuevo.')
+    } finally {
+      setCheckingOut(false)
+    }
   }
 
   async function handleToggleAutoRenew(nextEnabled) {
     setUpdatingAutoRenew(true)
-    const updated = nextEnabled ? await enableAutoRenew() : await cancelAutoRenew()
-    setBilling(updated)
-    setUpdatingAutoRenew(false)
+    try {
+      const updated = nextEnabled ? await enableAutoRenew() : await cancelAutoRenew()
+      setBilling(updated)
+      toast.success(nextEnabled ? 'Renovación automática activada' : 'Renovación automática desactivada')
+    } catch (err) {
+      toast.error(err.message || 'No se pudo cambiar la renovación automática.')
+    } finally {
+      setUpdatingAutoRenew(false)
+    }
   }
 
   async function handleReportTransfer(event) {
     event.preventDefault()
     if (!transferReference.trim()) return
     setReportingTransfer(true)
-    const updated = await reportManualTransfer(transferReference.trim())
-    setBilling(updated)
-    setTransferReference('')
-    setReportingTransfer(false)
+    try {
+      const updated = await reportManualTransfer(transferReference.trim())
+      setBilling(updated)
+      setTransferReference('')
+      toast.success('Transferencia informada. La revisamos y te avisamos.')
+    } catch (err) {
+      toast.error(err.message || 'No se pudo informar la transferencia.')
+    } finally {
+      setReportingTransfer(false)
+    }
   }
 
-  async function handleChangePlan(planName) {
-    if (planName === billing.plan) return
-    if (!window.confirm(`¿Cambiar al plan ${planName}? El cambio es inmediato y tu próxima factura ya va a reflejar el nuevo precio.`)) {
-      return
-    }
+  async function handleChangePlan() {
+    const planName = planToConfirm
+    if (!planName || planName === billing.plan) return
     setPlanError('')
     setChangingPlan(planName)
     try {
       const updated = await changePlan(planName)
       setBilling(updated)
+      toast.success(`Plan cambiado a ${planName}`)
     } catch (err) {
       setPlanError(err.message || 'No se pudo cambiar de plan.')
     } finally {
       setChangingPlan(null)
+      setPlanToConfirm(null)
     }
   }
 
@@ -350,7 +371,7 @@ export default function LabBilling() {
                     <Button
                       variant="outline"
                       disabled={changingPlan !== null}
-                      onClick={() => handleChangePlan(planName)}
+                      onClick={() => setPlanToConfirm(planName)}
                       className="mt-3 px-3 py-2 text-xs"
                     >
                       {changingPlan === planName ? 'Cambiando…' : `Cambiar a ${planName}`}
@@ -407,6 +428,17 @@ export default function LabBilling() {
           </div>
         </Card>
       </div>
+
+      <ConfirmDialog
+        open={planToConfirm !== null}
+        onCancel={() => setPlanToConfirm(null)}
+        onConfirm={handleChangePlan}
+        title={`¿Cambiar al plan ${planToConfirm ?? ''}?`}
+        confirmLabel="Cambiar de plan"
+        loading={changingPlan !== null}
+      >
+        <p>El cambio es inmediato y tu próxima factura ya va a reflejar el nuevo precio.</p>
+      </ConfirmDialog>
     </LabLayout>
   )
 }

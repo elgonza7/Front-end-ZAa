@@ -3,6 +3,7 @@ import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
 import LandingNavbar from '../components/layout/LandingNavbar.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Card from '../components/ui/Card.jsx'
+import ErrorState from '../components/ui/ErrorState.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import { getSystemStatus } from '../api/contentService.js'
 
@@ -14,10 +15,20 @@ const STATUS_META = {
 
 export default function SystemStatus() {
   const [status, setStatus] = useState(null)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    getSystemStatus().then(setStatus)
-  }, [])
+  function fetchStatus() {
+    getSystemStatus()
+      .then(setStatus)
+      .catch((err) => setError(err.message || 'No pudimos consultar el estado del sistema.'))
+  }
+
+  useEffect(fetchStatus, [])
+
+  function retryStatus() {
+    setError('')
+    fetchStatus()
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
@@ -26,7 +37,13 @@ export default function SystemStatus() {
       <section className="mx-auto max-w-2xl px-6 pb-24 pt-20">
         <div className="text-center">
           <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">Estado del sistema</h1>
-          {status && (
+          {error !== '' && (
+          <div className="mt-8">
+            <ErrorState message={error} onRetry={retryStatus} />
+          </div>
+        )}
+
+        {status && (
             <p className="mt-4 inline-flex items-center gap-2 text-sm text-[var(--muted)]">
               {(() => {
                 const meta = STATUS_META[status.overall]

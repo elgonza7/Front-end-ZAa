@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
@@ -11,12 +12,25 @@ const MAX_WIDTH = {
 }
 
 export default function Modal({ open, onClose, title, children, size = 'md' }) {
+  // Esc cierra el modal — hábito básico de teclado en cualquier diálogo.
+  useEffect(() => {
+    if (!open) return undefined
+    function onKeyDown(event) {
+      if (event.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open, onClose])
+
   if (!open) return null
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/70" onClick={onClose} aria-hidden="true" />
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
         className={`relative flex max-h-[85vh] w-full ${MAX_WIDTH[size] ?? MAX_WIDTH.md} flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-2xl`}
       >
         <div className="flex shrink-0 items-center justify-between">

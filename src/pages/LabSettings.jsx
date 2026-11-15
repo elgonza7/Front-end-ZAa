@@ -9,6 +9,7 @@ import Button from '../components/ui/Button.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import ObraSocialEditModal from '../components/settings/ObraSocialEditModal.jsx'
+import { useToast } from '../lib/toastContext.js'
 import {
   getLabProfile,
   updateLabSettings,
@@ -35,6 +36,7 @@ export default function LabSettings() {
   const [obrasSocialesSaved, setObrasSocialesSaved] = useState(false)
   const [editingObraSocial, setEditingObraSocial] = useState(null)
   const [obrasSocialesFilter, setObrasSocialesFilter] = useState('')
+  const toast = useToast()
 
   useEffect(() => {
     Promise.all([getLabProfile(), getKnowledgeDocs(), getObrasSociales()])
@@ -72,11 +74,16 @@ export default function LabSettings() {
     setSavingObrasSociales(true)
     setObrasSocialesSaved(false)
     const ids = obrasSociales.filter((o) => o.habilitada).map((o) => o.id)
-    const updated = await updateObrasSociales(ids)
-    setObrasSociales(updated)
-    setSavingObrasSociales(false)
-    setObrasSocialesSaved(true)
-    setTimeout(() => setObrasSocialesSaved(false), 4000)
+    try {
+      const updated = await updateObrasSociales(ids)
+      setObrasSociales(updated)
+      setObrasSocialesSaved(true)
+      setTimeout(() => setObrasSocialesSaved(false), 4000)
+    } catch (err) {
+      toast.error(err.message || 'No se pudieron guardar las obras sociales. Intentá de nuevo.')
+    } finally {
+      setSavingObrasSociales(false)
+    }
   }
 
   function handleObraSocialTextoSaved(updated) {
@@ -90,46 +97,68 @@ export default function LabSettings() {
 
   async function handleLogoSelect(file) {
     setLogoUploading(true)
-    const { logoUrl } = await uploadLogo(file)
-    set('logoUrl', logoUrl)
-    setLogoUploading(false)
+    try {
+      const { logoUrl } = await uploadLogo(file)
+      set('logoUrl', logoUrl)
+    } catch (err) {
+      toast.error(err.message || 'No se pudo subir el logo. Probá con otra imagen.')
+    } finally {
+      setLogoUploading(false)
+    }
   }
 
   async function handleBannerSelect(file) {
     setBannerUploading(true)
-    const { bannerUrl } = await uploadBanner(file)
-    set('bannerUrl', bannerUrl)
-    setBannerUploading(false)
+    try {
+      const { bannerUrl } = await uploadBanner(file)
+      set('bannerUrl', bannerUrl)
+    } catch (err) {
+      toast.error(err.message || 'No se pudo subir el banner. Probá con otra imagen.')
+    } finally {
+      setBannerUploading(false)
+    }
   }
 
   async function handleSave(event) {
     event.preventDefault()
     setSaving(true)
-    const updated = await updateLabSettings({
-      businessName: form.businessName,
-      ownerName: form.ownerName,
-      address: form.address,
-      contactPhone: form.contactPhone,
-      whatsappAbout: form.whatsappAbout,
-      handlesAppointments: form.handlesAppointments,
-      handlesHumanHandoff: form.handlesHumanHandoff,
-      handoffNotifyEmail: form.handoffNotifyEmail,
-      handoffNotifyEmailAddress: form.handoffNotifyEmailAddress,
-      resultsDeliveryMethod: form.resultsDeliveryMethod,
-      resultsPortalUrl: form.resultsPortalUrl,
-    })
-    setForm(updated)
-    setSaving(false)
+    try {
+      const updated = await updateLabSettings({
+        businessName: form.businessName,
+        ownerName: form.ownerName,
+        address: form.address,
+        contactPhone: form.contactPhone,
+        whatsappAbout: form.whatsappAbout,
+        handlesAppointments: form.handlesAppointments,
+        handlesHumanHandoff: form.handlesHumanHandoff,
+        handoffNotifyEmail: form.handoffNotifyEmail,
+        handoffNotifyEmailAddress: form.handoffNotifyEmailAddress,
+        resultsDeliveryMethod: form.resultsDeliveryMethod,
+        resultsPortalUrl: form.resultsPortalUrl,
+      })
+      setForm(updated)
+      toast.success('Cambios guardados')
+    } catch (err) {
+      toast.error(err.message || 'No se pudieron guardar los cambios. Intentá de nuevo.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function handleDocUpload(event) {
     const file = event.target.files?.[0]
     if (!file) return
     setDocUploading(true)
-    const newDoc = await uploadKnowledgeDoc(file)
-    setDocs((prev) => [newDoc, ...prev])
-    setDocUploading(false)
-    event.target.value = ''
+    try {
+      const newDoc = await uploadKnowledgeDoc(file)
+      setDocs((prev) => [newDoc, ...prev])
+      toast.success('Documento subido')
+    } catch (err) {
+      toast.error(err.message || 'No se pudo subir el documento.')
+    } finally {
+      setDocUploading(false)
+      event.target.value = ''
+    }
   }
 
   function handleRemoveDoc(id) {

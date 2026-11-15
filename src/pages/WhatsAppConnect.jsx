@@ -4,6 +4,8 @@ import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
+import ConfirmDialog from '../components/ui/ConfirmDialog.jsx'
+import { useToast } from '../lib/toastContext.js'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import { getConnection, testConnection, disconnect, getBusinessProfile, completeEmbeddedSignup } from '../api/whatsappService.js'
 import { updateLabSettings } from '../api/labService.js'
@@ -106,6 +108,8 @@ export default function WhatsAppConnect() {
   const [signupLoading, setSignupLoading] = useState(false)
   const [signupError, setSignupError] = useState('')
   const [disconnecting, setDisconnecting] = useState(false)
+  const [confirmingDisconnect, setConfirmingDisconnect] = useState(false)
+  const toast = useToast()
 
   useEffect(() => {
     getConnection().then((data) => {
@@ -157,17 +161,18 @@ export default function WhatsAppConnect() {
   }
 
   async function handleDisconnect() {
-    if (!window.confirm('¿Desvincular tu WhatsApp? El asistente va a dejar de responder a tus pacientes hasta que lo vuelvas a conectar.')) {
-      return
-    }
     setDisconnecting(true)
     try {
       const updated = await disconnect()
       setConnection(updated)
       setBusinessProfile(null)
       setTestResult(null)
+      toast.success('WhatsApp desvinculado')
+    } catch (err) {
+      toast.error(err.message || 'No se pudo desvincular. Intentá de nuevo.')
     } finally {
       setDisconnecting(false)
+      setConfirmingDisconnect(false)
     }
   }
 
@@ -314,7 +319,7 @@ export default function WhatsAppConnect() {
                 <Send size={15} />
                 {testing ? 'Enviando…' : 'Enviar mensaje de prueba'}
               </Button>
-              <Button type="button" variant="danger" className="px-4 py-2.5 text-sm" onClick={handleDisconnect} disabled={disconnecting}>
+              <Button type="button" variant="danger" className="px-4 py-2.5 text-sm" onClick={() => setConfirmingDisconnect(true)} disabled={disconnecting}>
                 <Unlink size={15} />
                 {disconnecting ? 'Desvinculando…' : 'Desvincular WhatsApp'}
               </Button>
@@ -403,6 +408,24 @@ export default function WhatsAppConnect() {
           )}
         </Card>
       )}
+
+      <ConfirmDialog
+        open={confirmingDisconnect}
+        onCancel={() => setConfirmingDisconnect(false)}
+        onConfirm={handleDisconnect}
+        title="¿Desvincular tu WhatsApp?"
+        confirmLabel="Desvincular"
+        danger
+        loading={disconnecting}
+      >
+        <p>
+          El asistente va a <strong>dejar de responder a tus pacientes</strong> hasta que vuelvas a
+          conectar el número.
+        </p>
+        <p className="mt-2 text-[var(--muted)]">
+          No se borra nada: tu WhatsApp Business sigue funcionando en el celular con todos sus chats.
+        </p>
+      </ConfirmDialog>
     </LabLayout>
   )
 }

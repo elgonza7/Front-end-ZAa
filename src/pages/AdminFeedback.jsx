@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Bug, Lightbulb, MessageCircleQuestion, Check } from 'lucide-react'
 import AdminLayout from '../components/layout/AdminLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import ErrorState from '../components/ui/ErrorState.jsx'
+import { useToast } from '../lib/toastContext.js'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import { getFeedback, resolveFeedback } from '../api/feedbackService.js'
@@ -16,19 +18,34 @@ export default function AdminFeedback() {
   const [feedback, setFeedback] = useState([])
   const [loading, setLoading] = useState(true)
   const [resolvingId, setResolvingId] = useState(null)
+  const [error, setError] = useState('')
+  const toast = useToast()
 
-  useEffect(() => {
-    getFeedback().then((data) => {
-      setFeedback(data)
-      setLoading(false)
-    })
-  }, [])
+  function fetchFeedback() {
+    getFeedback()
+      .then(setFeedback)
+      .catch((err) => setError(err.message || 'Revisá tu conexión e intentá de nuevo.'))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(fetchFeedback, [])
+
+  function retryFeedback() {
+    setLoading(true)
+    setError('')
+    fetchFeedback()
+  }
 
   async function handleResolve(id) {
     setResolvingId(id)
-    await resolveFeedback(id)
-    setFeedback((prev) => prev.map((item) => (item.id === id ? { ...item, status: 'RESOLVED' } : item)))
-    setResolvingId(null)
+    try {
+      await resolveFeedback(id)
+      setFeedback((prev) => prev.map((item) => (item.id === id ? { ...item, status: 'RESOLVED' } : item)))
+    } catch (err) {
+      toast.error(err.message || 'No se pudo marcar como resuelto.')
+    } finally {
+      setResolvingId(null)
+    }
   }
 
   const open = feedback.filter((item) => item.status === 'OPEN')
@@ -38,6 +55,8 @@ export default function AdminFeedback() {
     <AdminLayout title="Soporte" subtitle="Reclamos y sugerencias enviados por los laboratorios">
       {loading ? (
         <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+      ) : error !== '' ? (
+        <ErrorState message={error} onRetry={retryFeedback} />
       ) : (
         <div className="space-y-6">
           <div>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Mail, Send, CheckCircle2, ChevronDown, GraduationCap } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import { useToast } from '../lib/toastContext.js'
 import Button from '../components/ui/Button.jsx'
 import { submitFeedback } from '../api/feedbackService.js'
 
@@ -126,16 +127,22 @@ export default function LabHelpCenter() {
   const [message, setMessage] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const toast = useToast()
 
   async function handleSubmit(event) {
     event.preventDefault()
     setSending(true)
-    // El laboratorio lo determina el backend a partir del JWT, nunca de acá.
-    await submitFeedback({ category, subject, message })
-    setSending(false)
-    setSent(true)
-    setSubject('')
-    setMessage('')
+    try {
+      // El laboratorio lo determina el backend a partir del JWT, nunca de acá.
+      await submitFeedback({ category, subject, message })
+      setSent(true)
+      setSubject('')
+      setMessage('')
+    } catch (err) {
+      toast.error(err.message || 'No se pudo enviar tu mensaje. Probá de nuevo en un rato.')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (

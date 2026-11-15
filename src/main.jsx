@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import { ToastProvider } from './components/ui/Toast.jsx'
 import { initTheme } from './lib/theme.js'
 import { initCrossTabAuthSync } from './api/client.js'
 
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </BrowserRouter>
     </ErrorBoundary>
   </StrictMode>,

@@ -3,19 +3,29 @@ import { Rocket } from 'lucide-react'
 import LandingNavbar from '../components/layout/LandingNavbar.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Card from '../components/ui/Card.jsx'
+import ErrorState from '../components/ui/ErrorState.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import { getChangelog } from '../api/contentService.js'
 
 export default function Changelog() {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    getChangelog().then((data) => {
-      setEntries(data)
-      setLoading(false)
-    })
-  }, [])
+  function fetchChangelog() {
+    getChangelog()
+      .then(setEntries)
+      .catch((err) => setError(err.message || 'Revisá tu conexión e intentá de nuevo.'))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(fetchChangelog, [])
+
+  function retryChangelog() {
+    setLoading(true)
+    setError('')
+    fetchChangelog()
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
@@ -30,6 +40,7 @@ export default function Changelog() {
 
       <section className="mx-auto max-w-3xl px-6 pb-24">
         {loading && <p className="text-center text-sm text-[var(--muted)]">Cargando…</p>}
+        {error !== '' && <ErrorState message={error} onRetry={retryChangelog} />}
 
         <div className="space-y-5">
           {entries.map((entry) => (
