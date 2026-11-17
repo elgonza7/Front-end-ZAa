@@ -315,8 +315,9 @@ export default function AdminTenants() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Nuevo laboratorio">
         <form className="space-y-4" onSubmit={handleCreate}>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre</label>
+            <label htmlFor="admin-tenants-nombre" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre</label>
             <input
+              id="admin-tenants-nombre"
               required
               type="text"
               value={form.name}
@@ -325,8 +326,9 @@ export default function AdminTenants() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Email</label>
+            <label htmlFor="admin-tenants-email" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Email</label>
             <input
+              id="admin-tenants-email"
               required
               type="email"
               value={form.email}
@@ -335,8 +337,9 @@ export default function AdminTenants() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono</label>
+            <label htmlFor="admin-tenants-telefono" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono</label>
             <input
+              id="admin-tenants-telefono"
               type="text"
               value={form.phone}
               onChange={(event) => setForm({ ...form, phone: event.target.value })}
@@ -344,8 +347,9 @@ export default function AdminTenants() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Plan</label>
+            <label htmlFor="admin-tenants-plan" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Plan</label>
             <select
+              id="admin-tenants-plan"
               value={form.plan}
               onChange={(event) => setForm({ ...form, plan: event.target.value })}
               className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"

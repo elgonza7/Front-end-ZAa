@@ -180,8 +180,9 @@ export default function LabOnboarding() {
 
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre del laboratorio</label>
+                <label htmlFor="lab-onboarding-nombre-del-laboratorio" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre del laboratorio</label>
                 <input
+                  id="lab-onboarding-nombre-del-laboratorio"
                   type="text"
                   value={form.businessName}
                   onChange={(event) => set('businessName', event.target.value)}
@@ -189,8 +190,9 @@ export default function LabOnboarding() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Titular / Responsable</label>
+                <label htmlFor="lab-onboarding-titular-responsable" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Titular / Responsable</label>
                 <input
+                  id="lab-onboarding-titular-responsable"
                   type="text"
                   value={form.ownerName}
                   onChange={(event) => set('ownerName', event.target.value)}
@@ -198,8 +200,9 @@ export default function LabOnboarding() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Dirección</label>
+                <label htmlFor="lab-onboarding-direccion" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Dirección</label>
                 <input
+                  id="lab-onboarding-direccion"
                   type="text"
                   value={form.address ?? ''}
                   onChange={(event) => set('address', event.target.value)}
@@ -207,8 +210,9 @@ export default function LabOnboarding() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono de contacto</label>
+                <label htmlFor="lab-onboarding-telefono-de-contacto" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono de contacto</label>
                 <input
+                  id="lab-onboarding-telefono-de-contacto"
                   type="text"
                   value={form.contactPhone ?? ''}
                   onChange={(event) => set('contactPhone', event.target.value)}
@@ -216,10 +220,11 @@ export default function LabOnboarding() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+                <label htmlFor="lab-onboarding-descripcion-para-whatsapp-se-ve-" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
                   Descripción para WhatsApp (se ve en "Info. del contacto")
                 </label>
                 <input
+                  id="lab-onboarding-descripcion-para-whatsapp-se-ve-"
                   type="text"
                   maxLength={139}
                   value={form.whatsappAbout ?? ''}
@@ -335,8 +340,9 @@ export default function LabOnboarding() {
 
             {form.resultsDeliveryMethod === 'PORTAL' && (
               <div className="mt-4">
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">URL del portal de resultados</label>
+                <label htmlFor="lab-onboarding-url-del-portal-de-resultados" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">URL del portal de resultados</label>
                 <input
+                  id="lab-onboarding-url-del-portal-de-resultados"
                   type="text"
                   value={form.resultsPortalUrl ?? ''}
                   onChange={(event) => set('resultsPortalUrl', event.target.value)}

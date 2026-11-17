@@ -199,8 +199,9 @@ export default function LabHelpCenter() {
           ) : (
             <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Categoría</label>
+                <label htmlFor="lab-help-center-categoria" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Categoría</label>
                 <select
+                  id="lab-help-center-categoria"
                   value={category}
                   onChange={(event) => setCategory(event.target.value)}
                   className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
@@ -213,8 +214,9 @@ export default function LabHelpCenter() {
                 </select>
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Asunto</label>
+                <label htmlFor="lab-help-center-asunto" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Asunto</label>
                 <input
+                  id="lab-help-center-asunto"
                   required
                   type="text"
                   value={subject}
@@ -223,8 +225,9 @@ export default function LabHelpCenter() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Mensaje</label>
+                <label htmlFor="lab-help-center-mensaje" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Mensaje</label>
                 <textarea
+                  id="lab-help-center-mensaje"
                   required
                   rows={4}
                   value={message}

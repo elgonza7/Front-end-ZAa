@@ -212,8 +212,9 @@ export default function LabSettings() {
 
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre del laboratorio</label>
+              <label htmlFor="lab-settings-nombre-del-laboratorio" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nombre del laboratorio</label>
               <input
+                id="lab-settings-nombre-del-laboratorio"
                 type="text"
                 value={form.businessName}
                 onChange={(event) => set('businessName', event.target.value)}
@@ -221,8 +222,9 @@ export default function LabSettings() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Titular / Responsable</label>
+              <label htmlFor="lab-settings-titular-responsable" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Titular / Responsable</label>
               <input
+                id="lab-settings-titular-responsable"
                 type="text"
                 value={form.ownerName}
                 onChange={(event) => set('ownerName', event.target.value)}
@@ -230,8 +232,9 @@ export default function LabSettings() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Dirección</label>
+              <label htmlFor="lab-settings-direccion" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Dirección</label>
               <input
+                id="lab-settings-direccion"
                 type="text"
                 value={form.address}
                 onChange={(event) => set('address', event.target.value)}
@@ -239,8 +242,9 @@ export default function LabSettings() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono de contacto</label>
+              <label htmlFor="lab-settings-telefono-de-contacto" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono de contacto</label>
               <input
+                id="lab-settings-telefono-de-contacto"
                 type="text"
                 value={form.contactPhone}
                 onChange={(event) => set('contactPhone', event.target.value)}
@@ -248,10 +252,11 @@ export default function LabSettings() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+              <label htmlFor="lab-settings-descripcion-para-whatsapp-se-ve-" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
                 Descripción para WhatsApp (se ve en "Info. del contacto")
               </label>
               <input
+                id="lab-settings-descripcion-para-whatsapp-se-ve-"
                 type="text"
                 maxLength={139}
                 value={form.whatsappAbout ?? ''}
@@ -285,10 +290,11 @@ export default function LabSettings() {
 
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="flex-1">
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+              <label htmlFor="lab-settings-telefono-de-seguridad-con-codigo" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
                 Teléfono de seguridad (con código de país, ej. +5491122334455)
               </label>
               <input
+                id="lab-settings-telefono-de-seguridad-con-codigo"
                 type="text"
                 disabled
                 value={securityPhone}
@@ -385,8 +391,9 @@ export default function LabSettings() {
 
           {form.resultsDeliveryMethod === 'PORTAL' && (
             <div className="mt-4">
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">URL del portal de resultados</label>
+              <label htmlFor="lab-settings-url-del-portal-de-resultados" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">URL del portal de resultados</label>
               <input
+                id="lab-settings-url-del-portal-de-resultados"
                 type="text"
                 value={form.resultsPortalUrl}
                 onChange={(event) => set('resultsPortalUrl', event.target.value)}
@@ -487,7 +494,7 @@ export default function LabSettings() {
                 <span className="text-sm text-[var(--text-strong)]">
                   {obraSocial.nombre}
                   {obraSocial.personalizado && (
-                    <span className="ml-1.5 rounded-full bg-[var(--accent)]/15 px-1.5 py-0.5 text-[11px] font-medium text-[var(--accent-soft)]">
+                    <span className="ml-1.5 rounded-full bg-[var(--accent)]/15 px-1.5 py-0.5 text-xs font-medium text-[var(--accent-soft)]">
                       Personalizado
                     </span>
                   )}

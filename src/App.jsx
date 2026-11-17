@@ -1,31 +1,41 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import RequireAuth from './components/auth/RequireAuth.jsx'
 import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
-import ForgotPassword from './pages/ForgotPassword.jsx'
-import ResetPassword from './pages/ResetPassword.jsx'
-import ChangePassword from './pages/ChangePassword.jsx'
-import LabOnboarding from './pages/LabOnboarding.jsx'
-import Features from './pages/Features.jsx'
-import Pricing from './pages/Pricing.jsx'
-import Changelog from './pages/Changelog.jsx'
-import Legal from './pages/Legal.jsx'
-import HelpCenterPublic from './pages/HelpCenterPublic.jsx'
-import SystemStatus from './pages/SystemStatus.jsx'
-import LabDashboard from './pages/LabDashboard.jsx'
-import LabHistory from './pages/LabHistory.jsx'
-import WhatsAppConnect from './pages/WhatsAppConnect.jsx'
-import FlowBuilder from './pages/FlowBuilder.jsx'
-import LabSettings from './pages/LabSettings.jsx'
-import HandoffInbox from './pages/HandoffInbox.jsx'
-import LabBilling from './pages/LabBilling.jsx'
-import LabHelpCenter from './pages/LabHelpCenter.jsx'
-import LabTutorials from './pages/LabTutorials.jsx'
-import LabConversations from './pages/LabConversations.jsx'
-import AdminPanel from './pages/AdminPanel.jsx'
-import AdminTenants from './pages/AdminTenants.jsx'
-import AdminMetrics from './pages/AdminMetrics.jsx'
-import AdminFeedback from './pages/AdminFeedback.jsx'
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword.jsx'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword.jsx'))
+const ChangePassword = lazy(() => import('./pages/ChangePassword.jsx'))
+const LabOnboarding = lazy(() => import('./pages/LabOnboarding.jsx'))
+const Features = lazy(() => import('./pages/Features.jsx'))
+const Pricing = lazy(() => import('./pages/Pricing.jsx'))
+const Changelog = lazy(() => import('./pages/Changelog.jsx'))
+const Legal = lazy(() => import('./pages/Legal.jsx'))
+const HelpCenterPublic = lazy(() => import('./pages/HelpCenterPublic.jsx'))
+const SystemStatus = lazy(() => import('./pages/SystemStatus.jsx'))
+const LabDashboard = lazy(() => import('./pages/LabDashboard.jsx'))
+const LabHistory = lazy(() => import('./pages/LabHistory.jsx'))
+const WhatsAppConnect = lazy(() => import('./pages/WhatsAppConnect.jsx'))
+const FlowBuilder = lazy(() => import('./pages/FlowBuilder.jsx'))
+const LabSettings = lazy(() => import('./pages/LabSettings.jsx'))
+const HandoffInbox = lazy(() => import('./pages/HandoffInbox.jsx'))
+const LabBilling = lazy(() => import('./pages/LabBilling.jsx'))
+const LabHelpCenter = lazy(() => import('./pages/LabHelpCenter.jsx'))
+const LabTutorials = lazy(() => import('./pages/LabTutorials.jsx'))
+const LabConversations = lazy(() => import('./pages/LabConversations.jsx'))
+const AdminPanel = lazy(() => import('./pages/AdminPanel.jsx'))
+const AdminTenants = lazy(() => import('./pages/AdminTenants.jsx'))
+const AdminMetrics = lazy(() => import('./pages/AdminMetrics.jsx'))
+const AdminFeedback = lazy(() => import('./pages/AdminFeedback.jsx'))
+
+// Mientras baja el código de la pantalla (se carga recién al entrar).
+function PageFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] text-sm text-[var(--muted)]" role="status">
+      Cargando…
+    </div>
+  )
+}
 
 export default function App() {
   const location = useLocation()
@@ -35,6 +45,7 @@ export default function App() {
     // nuevo la animación CSS ".page-transition" (@keyframes page-enter) — sin
     // esto, entre páginas del mismo layout no habría transición visible.
     <div key={location.pathname} className="page-transition">
+      <Suspense fallback={<PageFallback />}>
       <Routes location={location}>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -67,6 +78,7 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </div>
   )
 }

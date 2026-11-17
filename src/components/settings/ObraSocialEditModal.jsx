@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useId } from 'react'
 import { RotateCcw, Save, Sparkles } from 'lucide-react'
 import Modal from '../ui/Modal.jsx'
 import Button from '../ui/Button.jsx'
@@ -22,6 +22,8 @@ function EditableField({ label, value, onChange, rows = 3 }) {
     el.style.height = `${el.scrollHeight}px`
   }, [value])
 
+  const fieldId = useId()
+
   async function handleImprove() {
     if (!value.trim()) return
     setImproving(true)
@@ -36,8 +38,9 @@ function EditableField({ label, value, onChange, rows = 3 }) {
 
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">{label}</label>
+      <label htmlFor={fieldId} className="mb-1.5 block text-xs font-medium text-[var(--muted)]">{label}</label>
       <textarea
+        id={fieldId}
         ref={textareaRef}
         rows={rows}
         value={value}

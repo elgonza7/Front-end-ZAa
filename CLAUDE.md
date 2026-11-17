@@ -27,6 +27,15 @@ Desde el 12 oct 2026 el formulario manual de credenciales (Phone Number ID / WAB
 
 **Estado (4 oct 2026): ya configurado y pusheado.** `VITE_META_APP_ID`/`VITE_META_WHATSAPP_CONFIG_ID` están cargadas en Vercel (Production). Si el botón no aparece en producción, lo primero a chequear es si hubo un **redeploy** después de cargar esas variables — Vite las compila adentro del bundle en build time, cargarlas en el dashboard no alcanza si no se re-buildea. Configuration ID de Embedded Signup en uso: `1108009258296748` (creada después de ser Tech Provider; la vieja `1453899306638942` no ofrecía Coexistence). Ver `Zero/CLAUDE.md` para el resto (webhook central, gotcha de nombres de env vars en Render). Falta probar el flujo completo con un número real — todavía nadie conectó un WhatsApp por este camino, solo se verificó que el webhook responde.
 
+## Piezas compartidas de UX (nov 2026, no reinventar)
+
+- **Avisos**: `useToast()` (`lib/toastContext.js`, provider en `components/ui/Toast.jsx`, montado en `main.jsx`) → `toast.success(msg)` / `toast.error(msg)`. Usarlo en cualquier guardado/acción en vez de estados inline o `alert()`.
+- **Confirmaciones**: `components/ui/ConfirmDialog.jsx` (sobre `Modal`) en lugar de `window.confirm`.
+- **Errores de carga**: `components/ui/ErrorState.jsx` con botón "Reintentar". Patrón de pantalla: `fetchX()` sin setState síncrono para el `useEffect` inicial + `retryX()` que resetea `loading/error` y vuelve a pedir (así no salta el lint `set-state-in-effect`).
+- **Refresco automático**: `lib/useVisiblePolling.js` (solo con la pestaña visible). `LabLayout` lo usa para el contador de "Atención humana" (45 s) y lo muestra en el título de la pestaña.
+- **Accesibilidad**: cada `<label>` de un campo lleva `htmlFor` + `id` en el campo (ver `Login.jsx`); `Modal` tiene `role="dialog"` y cierra con Esc; `index.css` define `:focus-visible` global para teclado. Textos mínimos `text-xs` (13px), no usar `text-[11px]`.
+- **Carga por pantalla**: `App.jsx` usa `React.lazy` + `Suspense` para todas las páginas salvo `Landing` y `Login` (el bundle inicial bajó de ~912 KB a ~207 KB). Una pantalla nueva debería seguir ese patrón.
+
 ## UX / diseño
 
 Se hizo una revisión completa contra investigación de UX actual (Nielsen Norman, comparativas de ManyChat/Landbot/Typebot/Gallabox, guías de dashboards SaaS) el 28 sep 2026: la conclusión fue que la app **ya sigue bien la mayoría de las buenas prácticas** (semáforo de estado con CTA accionable en el Panel, ayuda progresiva detrás de botones "?", estados vacíos en todos los gráficos, un solo color de acento, grillas responsive). No hacer un rediseño visual grande sin que el dueño dé una dirección concreta (paleta, layout, qué pantalla puntual) — no hay pedido pendiente de eso, ya se le avisó y no pidió más por ahora.

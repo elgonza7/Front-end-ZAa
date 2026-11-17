@@ -428,7 +428,7 @@ export default function LabDashboard() {
               {faqRanking.map((faq, index) => (
                 <li key={faq.question} className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[var(--bg)] text-[11px] font-bold text-[var(--accent)] border border-[var(--border)]">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[var(--bg)] text-xs font-bold text-[var(--accent)] border border-[var(--border)]">
                       {index + 1}
                     </span>
                     <span className="truncate text-sm text-[var(--text)]">{faq.question}</span>

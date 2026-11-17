@@ -57,7 +57,7 @@ function PlanCalculator() {
           onChange={(event) => setDailyContacts(Number(event.target.value))}
           className="mt-3 w-full accent-[var(--accent)]"
         />
-        <div className="mt-1 flex justify-between text-[11px] text-[var(--muted)]">
+        <div className="mt-1 flex justify-between text-xs text-[var(--muted)]">
           <span>1</span>
           <span>{CALCULATOR_MAX_CONTACTS}+</span>
         </div>

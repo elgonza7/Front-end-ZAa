@@ -120,7 +120,7 @@ export default function AdminMetrics() {
             <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
               ${metrics.estimatedGeminiCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
-            <p className="mt-1 text-[11px] text-[var(--muted)]">
+            <p className="mt-1 text-xs text-[var(--muted)]">
               Estimado sobre {metrics.totalTokensConsumed.toLocaleString('es-AR')} tokens — no es la
               factura real de Google, es una guía.
             </p>
@@ -144,8 +144,9 @@ export default function AdminMetrics() {
             {editingCosts ? (
               <div className="mt-2 space-y-2">
                 <div>
-                  <label className="text-[11px] text-[var(--muted)]">Render (USD/mes)</label>
+                  <label htmlFor="admin-metrics-render-usd-mes" className="text-xs text-[var(--muted)]">Render (USD/mes)</label>
                   <input
+                    id="admin-metrics-render-usd-mes"
                     type="number"
                     step="0.01"
                     value={costForm.renderMonthlyCostUSD}
@@ -154,8 +155,9 @@ export default function AdminMetrics() {
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-[var(--muted)]">Dominio (USD/mes)</label>
+                  <label htmlFor="admin-metrics-dominio-usd-mes" className="text-xs text-[var(--muted)]">Dominio (USD/mes)</label>
                   <input
+                    id="admin-metrics-dominio-usd-mes"
                     type="number"
                     step="0.01"
                     value={costForm.domainMonthlyCostUSD}
@@ -177,7 +179,7 @@ export default function AdminMetrics() {
                 <p className="mt-1.5 text-xl font-bold text-[var(--text)]">
                   ${metrics.fixedInfraCostUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                 </p>
-                <p className="mt-1 text-[11px] text-[var(--muted)]">Por mes, sin importar el uso — tocá el lápiz para actualizarlo.</p>
+                <p className="mt-1 text-xs text-[var(--muted)]">Por mes, sin importar el uso — tocá el lápiz para actualizarlo.</p>
               </>
             )}
           </Card>
@@ -186,7 +188,7 @@ export default function AdminMetrics() {
             <p className={`mt-1.5 text-xl font-bold ${metrics.estimatedNetProfitUSD >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               ${metrics.estimatedNetProfitUSD.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
-            <p className="mt-1 text-[11px] text-[var(--muted)]">Ingresos − Gemini estimado − costos fijos.</p>
+            <p className="mt-1 text-xs text-[var(--muted)]">Ingresos − Gemini estimado − costos fijos.</p>
           </Card>
         </div>
 

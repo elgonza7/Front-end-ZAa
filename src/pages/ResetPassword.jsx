@@ -52,8 +52,10 @@ export default function ResetPassword() {
         ) : (
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nueva contraseña</label>
+              <label htmlFor="reset-password-nueva-contrasena" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nueva contraseña</label>
               <input
+                id="reset-password-nueva-contrasena"
+                autoComplete="new-password"
                 type="password"
                 required
                 minLength={8}
@@ -65,10 +67,11 @@ export default function ResetPassword() {
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+              <label htmlFor="reset-password-codigo-por-sms-si-cargaste-un-te" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
                 Código por SMS (si cargaste un teléfono de seguridad)
               </label>
               <input
+                id="reset-password-codigo-por-sms-si-cargaste-un-te"
                 type="text"
                 value={smsCode}
                 onChange={(event) => setSmsCode(event.target.value)}

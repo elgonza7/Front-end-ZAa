@@ -52,8 +52,10 @@ export default function ChangePassword() {
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nueva contraseña</label>
+            <label htmlFor="change-password-nueva-contrasena" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Nueva contraseña</label>
             <input
+              id="change-password-nueva-contrasena"
+              autoComplete="new-password"
               type="password"
               required
               minLength={8}
@@ -65,8 +67,10 @@ export default function ChangePassword() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Confirmar contraseña</label>
+            <label htmlFor="change-password-confirmar-contrasena" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Confirmar contraseña</label>
             <input
+              id="change-password-confirmar-contrasena"
+              autoComplete="new-password"
               type="password"
               required
               minLength={8}
