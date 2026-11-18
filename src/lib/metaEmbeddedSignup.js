@@ -5,7 +5,12 @@
 // de WhatsAppConnect.jsx no se muestra y se sigue usando el formulario manual.
 const META_APP_ID = import.meta.env.VITE_META_APP_ID
 const WHATSAPP_CONFIG_ID = import.meta.env.VITE_META_WHATSAPP_CONFIG_ID
-const SDK_TIMEOUT_MS = 5 * 60 * 1000
+// Coexistence incluye pasos en el celular (escanear el QR, aceptar permisos,
+// importar historial) y puede tardar bastante más que un login normal — con
+// 5 minutos el flujo vencía en la pantalla final de Meta y se perdía el
+// "code" aunque la conexión ya estuviera hecha del lado de Meta. El code
+// recién se genera al cerrarse el popup, así que esperar más no lo vence.
+const SDK_TIMEOUT_MS = 20 * 60 * 1000
 
 export const EMBEDDED_SIGNUP_AVAILABLE = Boolean(META_APP_ID && WHATSAPP_CONFIG_ID)
 
