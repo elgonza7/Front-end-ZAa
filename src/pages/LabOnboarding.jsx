@@ -1,26 +1,28 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react'
+import { ArrowRight, ArrowLeft, CheckCircle2, Stethoscope, MessageCircle } from 'lucide-react'
 import Card from '../components/ui/Card.jsx'
 import Button from '../components/ui/Button.jsx'
 import Switch from '../components/ui/Switch.jsx'
-import Badge from '../components/ui/Badge.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
 import Logo from '../components/ui/Logo.jsx'
+import ConnectPanel from '../components/whatsapp/ConnectPanel.jsx'
+import { CoexistenceExplainer } from '../components/whatsapp/ConnectGuide.jsx'
 import { getLabProfile, updateLabSettings, uploadLogo, uploadBanner } from '../api/labService.js'
 import { setOnboardingCompleted } from '../api/client.js'
 import { DELIVERY_METHODS } from '../lib/deliveryMethods.js'
 
-const STEPS = ['Marca y datos', 'Reglas del asistente', 'Entrega de resultados']
+const STEPS = ['Marca y datos', 'Reglas del asistente', 'Entrega de resultados', 'Conectar WhatsApp']
+const SETTINGS_LAST_STEP = 2
 
 // Sin sidebar a propósito, igual que ChangePassword.jsx: es una pantalla de
 // paso obligatorio, no un panel más — no tiene sentido ofrecer links de
 // navegación que igual van a rebotar de vuelta acá (ver el gate en
 // RequireAuth.jsx).
-function OnboardingShell({ children }) {
+function OnboardingShell({ children, wide = false }) {
   return (
     <div className="min-h-screen bg-[var(--bg)] px-6 py-10">
-      <div className="mx-auto max-w-2xl">
+      <div className={`mx-auto ${wide ? 'max-w-4xl' : 'max-w-2xl'}`}>
         <div className="flex justify-center">
           <Logo size={44} />
         </div>
@@ -53,6 +55,7 @@ export default function LabOnboarding() {
   const [bannerUploading, setBannerUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [whatsappConnected, setWhatsappConnected] = useState(false)
 
   useEffect(() => {
     getLabProfile()
@@ -78,7 +81,7 @@ export default function LabOnboarding() {
     setBannerUploading(false)
   }
 
-  async function handleFinish() {
+  async function handleSaveAndContinue() {
     setSaving(true)
     setSaveError('')
     try {
@@ -96,7 +99,7 @@ export default function LabOnboarding() {
         resultsPortalUrl: form.resultsPortalUrl,
       })
       setOnboardingCompleted(true)
-      navigate('/dashboard', { replace: true })
+      setStep(SETTINGS_LAST_STEP + 1)
     } catch (err) {
       setSaveError(err.message || 'No se pudo guardar la configuración.')
     } finally {
@@ -120,10 +123,14 @@ export default function LabOnboarding() {
     )
   }
 
-  const isLastStep = step === STEPS.length - 1
+  const isWhatsappStep = step === STEPS.length - 1
+
+  function goToPanel() {
+    navigate('/dashboard', { replace: true })
+  }
 
   return (
-    <OnboardingShell>
+    <OnboardingShell wide={isWhatsappStep}>
       <div className="space-y-5">
         <div className="flex items-center justify-center gap-2">
           {STEPS.map((label, index) => (
@@ -293,18 +300,12 @@ export default function LabOnboarding() {
             </div>
 
             <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3">
-              <Sparkles size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
-              <div>
-                <p className="flex items-center gap-2 text-xs font-semibold text-[var(--text-strong)]">
-                  Próximamente <Badge variant="neutral">En camino</Badge>
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-[var(--muted)]">
-                  Vas a poder indicar acá qué obras sociales aceptás y qué estudios hacés, para que las ramas
-                  que no te aplican (por ejemplo, una obra social que no tenés o un estudio que no realizás)
-                  se oculten solas del flujo. Todavía no está disponible — por ahora, sacá esas ramas a mano
-                  desde "Flujo de conversación".
-                </p>
-              </div>
+              <Stethoscope size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+              <p className="text-xs leading-relaxed text-[var(--muted)]">
+                <span className="font-semibold text-[var(--text-strong)]">Obras sociales:</span> arrancás con
+                todas las del catálogo habilitadas. Después, en Configuración → Obras sociales, destildás las
+                que no aceptás y podés escribir los requisitos propios de cada una.
+              </p>
             </div>
           </Card>
         )}
@@ -363,22 +364,62 @@ export default function LabOnboarding() {
           </Card>
         )}
 
+        {isWhatsappStep && (
+          <Card className="p-6">
+            <div className="flex items-start gap-2.5">
+              <MessageCircle size={20} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+              <div>
+                <h2 className="text-base font-semibold text-[var(--text-strong)]">Último paso: conectá tu WhatsApp</h2>
+                <p className="mt-1 text-sm text-[var(--muted)]">
+                  Tu configuración ya quedó guardada. Ahora conectamos el WhatsApp Business del laboratorio para
+                  que el asistente empiece a responder. Si hoy no tenés el celular a mano, podés hacerlo después
+                  desde el menú "WhatsApp".
+                </p>
+              </div>
+            </div>
+
+            {whatsappConnected ? (
+              <div className="mt-6 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-5 text-center">
+                <CheckCircle2 size={32} className="mx-auto text-emerald-400" />
+                <p className="mt-2 text-base font-semibold text-[var(--text-strong)]">¡Tu WhatsApp quedó conectado!</p>
+                <p className="mt-1 text-sm text-[var(--muted)]">
+                  Para probarlo, mandale un mensaje a tu número desde OTRO celular.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="mt-5">
+                  <CoexistenceExplainer />
+                </div>
+                <div className="mt-8">
+                  <ConnectPanel onConnected={() => setWhatsappConnected(true)} />
+                </div>
+              </>
+            )}
+          </Card>
+        )}
+
         <div className="flex items-center justify-between">
           <Button
             type="button"
             variant="outline"
             className="px-4 py-2.5 text-sm"
             onClick={() => setStep((s) => Math.max(0, s - 1))}
-            disabled={step === 0}
+            disabled={step === 0 || isWhatsappStep}
           >
             <ArrowLeft size={16} />
             Atrás
           </Button>
 
-          {isLastStep ? (
-            <Button type="button" className="px-4 py-2.5 text-sm" onClick={handleFinish} disabled={saving}>
-              {saving ? 'Guardando…' : 'Finalizar configuración'}
-              <CheckCircle2 size={16} />
+          {isWhatsappStep ? (
+            <Button type="button" variant={whatsappConnected ? 'primary' : 'outline'} className="px-4 py-2.5 text-sm" onClick={goToPanel}>
+              {whatsappConnected ? 'Ir a mi panel' : 'Lo hago después, ir al panel'}
+              <ArrowRight size={16} />
+            </Button>
+          ) : step === SETTINGS_LAST_STEP ? (
+            <Button type="button" className="px-4 py-2.5 text-sm" onClick={handleSaveAndContinue} disabled={saving}>
+              {saving ? 'Guardando…' : 'Guardar y seguir'}
+              <ArrowRight size={16} />
             </Button>
           ) : (
             <Button type="button" className="px-4 py-2.5 text-sm" onClick={() => setStep((s) => s + 1)}>

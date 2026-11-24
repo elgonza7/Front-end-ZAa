@@ -36,6 +36,10 @@ Desde el 12 oct 2026 el formulario manual de credenciales (Phone Number ID / WAB
 - **Accesibilidad**: cada `<label>` de un campo lleva `htmlFor` + `id` en el campo (ver `Login.jsx`); `Modal` tiene `role="dialog"` y cierra con Esc; `index.css` define `:focus-visible` global para teclado. Textos mínimos `text-xs` (13px), no usar `text-[11px]`.
 - **Carga por pantalla**: `App.jsx` usa `React.lazy` + `Suspense` para todas las páginas salvo `Landing` y `Login` (el bundle inicial bajó de ~912 KB a ~207 KB). Una pantalla nueva debería seguir ese patrón.
 
+## Guía de conexión de WhatsApp (nov 2026)
+
+`components/whatsapp/ConnectPanel.jsx` (lista previa + botón + errores claros) y `ConnectGuide.jsx` (paso a paso con "pantallas" dibujadas — NO son capturas reales de Meta, son esquemas — y "Si algo sale mal"). Se usan en `WhatsAppConnect.jsx`, en su modal de ayuda / `LabTutorials` (`WhatsappTutorial`) y como **paso 4 del onboarding** (`LabOnboarding.jsx`: la config se guarda al pasar del paso 3 al 4, así "Lo hago después" no pierde nada). Textos y datos en `lib/whatsappConnectInfo.js`; traducción de errores de Meta a lenguaje simple en `lib/whatsappConnectErrors.js`. Todo sale de conexiones reales: si Meta cambia el flujo, actualizar los pasos ahí.
+
 ## UX / diseño
 
 Se hizo una revisión completa contra investigación de UX actual (Nielsen Norman, comparativas de ManyChat/Landbot/Typebot/Gallabox, guías de dashboards SaaS) el 28 sep 2026: la conclusión fue que la app **ya sigue bien la mayoría de las buenas prácticas** (semáforo de estado con CTA accionable en el Panel, ayuda progresiva detrás de botones "?", estados vacíos en todos los gráficos, un solo color de acento, grillas responsive). No hacer un rediseño visual grande sin que el dueño dé una dirección concreta (paleta, layout, qué pantalla puntual) — no hay pedido pendiente de eso, ya se le avisó y no pidió más por ahora.

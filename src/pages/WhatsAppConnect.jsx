@@ -7,69 +7,29 @@ import Button from '../components/ui/Button.jsx'
 import ConfirmDialog from '../components/ui/ConfirmDialog.jsx'
 import { useToast } from '../lib/toastContext.js'
 import HelpButton from '../components/ui/HelpButton.jsx'
-import { getConnection, testConnection, disconnect, getBusinessProfile, completeEmbeddedSignup } from '../api/whatsappService.js'
+import ConnectPanel from '../components/whatsapp/ConnectPanel.jsx'
+import { SUPPORT_MAILTO } from '../lib/whatsappConnectInfo.js'
+import { CoexistenceExplainer, ConnectSteps, ConnectTroubleshooting } from '../components/whatsapp/ConnectGuide.jsx'
+import { getConnection, testConnection, disconnect, getBusinessProfile } from '../api/whatsappService.js'
 import { updateLabSettings } from '../api/labService.js'
-import { EMBEDDED_SIGNUP_AVAILABLE, startEmbeddedSignup } from '../lib/metaEmbeddedSignup.js'
-
-const SUPPORT_MAILTO =
-  'mailto:zeroautoapp@gmail.com?subject=Quiero%20que%20conecten%20mi%20WhatsApp&body=Hola%2C%20quiero%20usar%20el%20n%C3%BAmero%3A%20%5Btu%20n%C3%BAmero%20de%20WhatsApp%20ac%C3%A1%5D'
 
 export function WhatsappTutorial() {
   return (
     <>
       <p>
-        Conectar tu WhatsApp lleva un par de minutos y se hace <strong>una sola vez</strong>. No
-        hace falta saber nada de tecnología ni copiar ningún código.
+        Conectar tu WhatsApp se hace <strong>una sola vez</strong> y no hace falta saber nada de
+        tecnología ni copiar ningún código: alcanza con tu Facebook y el celular con WhatsApp
+        Business.
       </p>
-
-      <p>
-        El asistente se conecta en modo <strong>Coexistence</strong>: seguís usando la app de
-        WhatsApp Business en tu celular exactamente como siempre —chats, historial, grupos— y el
-        asistente responde en paralelo, por el mismo número que ya usás con tus pacientes.
-      </p>
-
-      <div>
-        <p className="text-sm font-semibold text-[var(--text-strong)]">Antes de empezar, tené a mano:</p>
-        <ul className="mt-2 list-disc space-y-1.5 pl-5">
-          <li>La cuenta de Facebook del dueño o encargado del laboratorio.</li>
-          <li>
-            El celular con la app de <strong>WhatsApp Business</strong> del número que usás con tus
-            pacientes — Meta te va a mandar un código ahí para confirmar que el número es tuyo.
-          </li>
-        </ul>
-      </div>
-
-      <ol className="list-decimal space-y-3 pl-5">
-        <li>
-          Tocá <strong>"Conectar con Facebook"</strong>. Se abre una ventana de Facebook.
-        </li>
-        <li>
-          Iniciá sesión con tu cuenta de Facebook y aceptá los permisos que te pide (son para que
-          el asistente pueda leer y responder los mensajes de tu WhatsApp Business).
-        </li>
-        <li>
-          Elegí tu negocio (o creá uno nuevo si Meta te lo ofrece) y después elegí el número de
-          WhatsApp Business que querés conectar.
-        </li>
-        <li>
-          Confirmá el número con el código que te llega a la app de WhatsApp Business en el celular.
-        </li>
-        <li>
-          Listo: la ventana se cierra sola y acá vas a ver el estado en <strong>"Conectado"</strong>.
-          Tocá "Enviar mensaje de prueba" para confirmar que todo funciona.
-        </li>
-      </ol>
-
+      <CoexistenceExplainer />
+      <p className="text-sm font-semibold text-[var(--text-strong)]">Paso a paso</p>
+      <ConnectSteps />
+      <p className="text-sm font-semibold text-[var(--text-strong)]">Si algo sale mal</p>
+      <ConnectTroubleshooting />
       <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-4">
-        <p className="text-sm font-semibold text-[var(--text-strong)]">¿Algo no funciona o preferís que lo hagamos nosotros?</p>
-        <p className="mt-1.5">
-          No hace falta que sepas nada del tema ni de tecnología: contanos qué pasa y te ayudamos a
-          resolverlo, o lo conectamos nosotros por vos.
-        </p>
-        <a
-          href={SUPPORT_MAILTO}
-          className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] underline"
-        >
+        <p className="text-sm font-semibold text-[var(--text-strong)]">¿Preferís que lo hagamos con vos?</p>
+        <p className="mt-1.5">Escribinos y te acompañamos paso a paso, o lo conectamos nosotros.</p>
+        <a href={SUPPORT_MAILTO} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] underline">
           Pedir ayuda →
         </a>
       </div>
@@ -105,8 +65,6 @@ export default function WhatsAppConnect() {
   const [businessProfile, setBusinessProfile] = useState(null)
   const [addressCopied, setAddressCopied] = useState(false)
   const [connectConfirmed, setConnectConfirmed] = useState(false)
-  const [signupLoading, setSignupLoading] = useState(false)
-  const [signupError, setSignupError] = useState('')
   const [disconnecting, setDisconnecting] = useState(false)
   const [confirmingDisconnect, setConfirmingDisconnect] = useState(false)
   const toast = useToast()
@@ -130,21 +88,12 @@ export default function WhatsAppConnect() {
     setAddressCopied(true)
   }
 
-  async function handleEmbeddedSignup() {
-    setSignupLoading(true)
-    setSignupError('')
-    try {
-      const { code, wabaId, phoneNumberId } = await startEmbeddedSignup()
-      const updated = await completeEmbeddedSignup({ code, wabaId, phoneNumberId })
-      setConnection(updated)
-      setConnectConfirmed(true)
-      setTimeout(() => setConnectConfirmed(false), 6000)
-      getBusinessProfile().then(setBusinessProfile).catch(() => setBusinessProfile(null))
-    } catch (err) {
-      setSignupError(err.message || 'No se pudo completar la conexión con Facebook.')
-    } finally {
-      setSignupLoading(false)
-    }
+  function handleConnected(updated) {
+    setConnection(updated)
+    setConnectConfirmed(true)
+    setTimeout(() => setConnectConfirmed(false), 6000)
+    toast.success('¡Tu WhatsApp quedó conectado!')
+    getBusinessProfile().then(setBusinessProfile).catch(() => setBusinessProfile(null))
   }
 
   async function handleTest() {
@@ -219,42 +168,14 @@ export default function WhatsAppConnect() {
       </Card>
 
       {!connection.connected && (
-        <Card className="mb-6 border-[var(--accent)]/40 bg-[var(--accent)]/5 p-6">
-          {EMBEDDED_SIGNUP_AVAILABLE ? (
-            <>
-              <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-base font-semibold text-[var(--text-strong)]">Conectar tu WhatsApp</p>
-                  <p className="mt-1 text-sm text-[var(--muted)]">
-                    Iniciás sesión con la cuenta de Facebook del laboratorio, elegís tu WhatsApp
-                    Business, y listo — no hace falta copiar ningún código.
-                  </p>
-                </div>
-                <Button type="button" onClick={handleEmbeddedSignup} disabled={signupLoading} className="shrink-0 px-5 py-3 text-sm">
-                  {signupLoading ? 'Conectando…' : 'Conectar con Facebook'}
-                </Button>
-              </div>
-              {signupError && (
-                <p className="mt-4 flex items-center gap-1.5 text-sm font-medium text-red-400">
-                  <XCircle size={16} /> {signupError}
-                </p>
-              )}
-            </>
-          ) : (
-            <>
-              <p className="text-base font-semibold text-[var(--text-strong)]">Conectar tu WhatsApp</p>
-              <p className="mt-1 text-sm text-[var(--muted)]">
-                La conexión automática todavía no está disponible. Escribinos y lo conectamos por vos.
-              </p>
-            </>
-          )}
-          <p className="mt-4 text-sm text-[var(--muted)]">
-            ¿Algo no funciona? No hace falta que sepas de tecnología:{' '}
-            <a href={SUPPORT_MAILTO} className="font-semibold text-[var(--accent)] underline">
-              contanos y te ayudamos
-            </a>
-            .
+        <Card className="mb-6 p-6">
+          <p className="text-lg font-semibold text-[var(--text-strong)]">Conectá tu WhatsApp en 3 pasos</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Te guiamos pantalla por pantalla. Si en algún momento te trabás, escribinos y lo hacemos con vos.
           </p>
+          <div className="mt-6">
+            <ConnectPanel onConnected={handleConnected} />
+          </div>
         </Card>
       )}
 

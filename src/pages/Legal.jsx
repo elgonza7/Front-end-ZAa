@@ -32,7 +32,7 @@ export default function Legal() {
 
       <section className="mx-auto max-w-3xl px-6 pb-8 pt-20 text-center">
         <h1 className="text-3xl font-extrabold text-[var(--text-strong)] sm:text-4xl">Términos, Condiciones y Privacidad</h1>
-        <p className="mt-3 text-sm text-[var(--muted)]">Versión 3.0 — Última actualización: 25 de agosto de 2026</p>
+        <p className="mt-3 text-sm text-[var(--muted)]">Versión 3.1 — Última actualización: 24 de noviembre de 2026</p>
         <p className="mt-4 text-sm text-[var(--muted)]">
           Este documento constituye un contrato legalmente vinculante entre ZeroAutoapp (domiciliado
           en San Juan, Provincia de San Juan, Argentina) y el "Cliente" (laboratorio clínico, centro
@@ -120,6 +120,54 @@ export default function Legal() {
               los números de teléfono de los pacientes que interactúen con el sistema son propiedad
               única y exclusiva del Cliente. ZeroAutoapp actúa como un mero canal de transmisión y
               no asume la titularidad de los pacientes del laboratorio.
+            </p>
+          </div>
+          <div>
+            <SubHeading>2. Proveedores que procesan los mensajes</SubHeading>
+            <p className="mt-2">
+              Para funcionar, el servicio utiliza proveedores tecnológicos externos que procesan los
+              mensajes de los pacientes: <strong>Meta Platforms</strong> (WhatsApp Business Platform),
+              que transporta los mensajes entre el paciente y el laboratorio, y{' '}
+              <strong>Google</strong> (Gemini API), el servicio de inteligencia artificial que lee el
+              mensaje del paciente y redacta la respuesta del asistente. Estos proveedores pueden
+              procesar la información en servidores ubicados fuera de la República Argentina, bajo sus
+              propias condiciones de servicio y políticas de privacidad. ZeroAutoapp les envía solo lo
+              necesario para generar cada respuesta (el mensaje, el historial reciente de esa
+              conversación y la configuración del laboratorio) y no utiliza los datos de los pacientes
+              con fines publicitarios.
+            </p>
+          </div>
+          <div>
+            <SubHeading>3. Datos de salud y deber de información al paciente</SubHeading>
+            <p className="mt-2">
+              Los datos de salud son "datos sensibles" según la Ley 25.326 de Protección de Datos
+              Personales. El Cliente, como responsable de la base de datos de sus pacientes, se
+              compromete a informarles que el canal de WhatsApp es atendido por un asistente
+              automático con inteligencia artificial provista por terceros, y a obtener su
+              consentimiento cuando la normativa lo exija (por ejemplo, mediante el mensaje de
+              bienvenida del asistente). ZeroAutoapp actúa como encargado del tratamiento por cuenta
+              del Cliente.
+            </p>
+          </div>
+          <div>
+            <SubHeading>4. Uso responsable del chat</SubHeading>
+            <p className="mt-2">
+              Se recomienda al Cliente no solicitar por el asistente datos de salud que no sean
+              necesarios para la gestión (diagnósticos, antecedentes, resultados) y configurar la
+              entrega de resultados por los medios que el Cliente considere seguros. El asistente
+              brinda información administrativa (requisitos, horarios, obras sociales, preparación
+              de estudios) y no reemplaza la consulta con un profesional de la salud.
+            </p>
+          </div>
+          <div>
+            <SubHeading>5. Derechos de los pacientes</SubHeading>
+            <p className="mt-2">
+              Los pacientes pueden ejercer sus derechos de acceso, rectificación y supresión de sus
+              datos ante el Cliente (el laboratorio). ZeroAutoapp colaborará con el Cliente para
+              atender esas solicitudes. Consultas: zeroautoapp@gmail.com. La Agencia de Acceso a la
+              Información Pública, órgano de control de la Ley 25.326, tiene la atribución de atender
+              las denuncias y reclamos que se interpongan con relación al incumplimiento de las normas
+              sobre protección de datos personales.
             </p>
           </div>
         </Section>
