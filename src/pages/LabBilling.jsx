@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Copy, Check, ExternalLink, Receipt, RefreshCw, Send } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import ConfirmDialog from '../components/ui/ConfirmDialog.jsx'
 import { useToast } from '../lib/toastContext.js'
 import Badge from '../components/ui/Badge.jsx'
@@ -179,7 +180,7 @@ export default function LabBilling() {
   if (!billing || !destination) {
     return (
       <LabLayout title="Facturación" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+        <PageLoader />
       </LabLayout>
     )
   }

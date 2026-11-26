@@ -17,6 +17,7 @@ import {
 import { Pencil } from 'lucide-react'
 import AdminLayout from '../components/layout/AdminLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import Button from '../components/ui/Button.jsx'
 import { getMetricsHistory, getGlobalMetrics, getCostSettings, updateCostSettings } from '../api/adminService.js'
 
@@ -96,7 +97,7 @@ export default function AdminMetrics() {
   if (!history || !metrics) {
     return (
       <AdminLayout title="Métricas" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando métricas…</div>
+        <PageLoader label="Cargando métricas…" />
       </AdminLayout>
     )
   }

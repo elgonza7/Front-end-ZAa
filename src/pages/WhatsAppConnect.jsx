@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { CheckCircle2, XCircle, Send, Unlink, Phone, Smartphone, Wifi, WifiOff, BadgeCheck, Gauge, Lock, Building2, Mail, Globe, MapPin, Tag, ArrowDownToLine } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
 import ConfirmDialog from '../components/ui/ConfirmDialog.jsx'
@@ -128,7 +129,7 @@ export default function WhatsAppConnect() {
   if (loading || !connection) {
     return (
       <LabLayout title="Conexión de WhatsApp" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+        <PageLoader />
       </LabLayout>
     )
   }

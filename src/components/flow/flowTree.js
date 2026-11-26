@@ -11,10 +11,10 @@
 // "falta" contenido: el bot igual tiene y usa esa info en la conversación.
 export const FLOW_LINK_TARGETS = {
   'obras-sociales': {
-    path: '/dashboard/configuracion#obras-sociales',
-    shortLabel: 'Ir a Configuración',
+    path: '/dashboard/obras-sociales',
+    shortLabel: 'Ir a Obras sociales',
     description:
-      'Lleva a Configuración → Obras sociales, donde se activan y se personalizan los requisitos de cada una. No es una rama real de la conversación: el asistente ya usa esa información aunque no esté dibujada acá.',
+      'Lleva a la pantalla Obras sociales, donde se activan y se personalizan los requisitos de cada una. No es una rama real de la conversación: el asistente ya usa esa información aunque no esté dibujada acá.',
   },
 }
 

@@ -105,7 +105,7 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
   const hoveredBox = boxes.find((box) => box.id === hoveredId)
 
   return (
-    <div className="relative overflow-auto rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6">
+    <div className="relative overflow-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-3 sm:p-6">
       <div className="relative" style={{ width: width + 40, height: height + BOX_HEIGHT + 20 }}>
         <svg className="absolute left-0 top-0" width={width + 40} height={height + BOX_HEIGHT + 20}>
           {edges.map((edge, index) => {

@@ -1,23 +1,23 @@
 import { useState } from 'react'
-import { GraduationCap, LayoutDashboard, MessageCircle, MessagesSquare, GitBranch, Headset, CreditCard } from 'lucide-react'
+import { GraduationCap, LayoutDashboard, MessageCircle, GitBranch, Stethoscope, Headset, CreditCard } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import { PanelTutorial } from './LabDashboard.jsx'
 import { WhatsappTutorial } from './WhatsAppConnect.jsx'
-import { ConversationsTutorial } from './LabConversations.jsx'
 import { FlowTutorial } from './FlowBuilder.jsx'
+import { ObrasSocialesTutorial } from './LabObrasSociales.jsx'
 import { AtencionHumanaTutorial } from './HandoffInbox.jsx'
 import { BillingTutorial } from './LabBilling.jsx'
 
-// Mismas 6 secciones y el mismo orden que el menú de la izquierda
+// Mismas secciones y el mismo orden que el menú de la izquierda
 // (config/nav.js) — cada una reusa el tutorial que ya existe en esa propia
 // pantalla (el botón "?" de ahí), para no mantener el mismo texto escrito
 // dos veces en dos lugares distintos.
 const SECTIONS = [
   { id: 'panel', label: 'Panel', icon: LayoutDashboard, Content: PanelTutorial },
   { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, Content: WhatsappTutorial },
-  { id: 'mensajes', label: 'Mensajes', icon: MessagesSquare, Content: ConversationsTutorial },
   { id: 'flujo', label: 'Flujo de conversación', icon: GitBranch, Content: FlowTutorial },
+  { id: 'obras-sociales', label: 'Obras sociales', icon: Stethoscope, Content: ObrasSocialesTutorial },
   { id: 'atencion', label: 'Atención humana', icon: Headset, Content: AtencionHumanaTutorial },
   { id: 'facturacion', label: 'Facturación', icon: CreditCard, Content: BillingTutorial },
 ]
@@ -33,19 +33,6 @@ export default function LabTutorials() {
       subtitle="Elegí una sección para ver cómo funciona, explicado sin vueltas ni palabras técnicas"
     >
       <div className="space-y-6">
-        <Card className="p-6">
-          <div className="flex items-center gap-2">
-            <GraduationCap size={17} className="text-[var(--accent)]" />
-            <h2 className="text-base font-bold text-[var(--text-strong)]">Lo más importante, en una frase</h2>
-          </div>
-          <p className="mt-3 text-sm leading-relaxed text-[var(--text)]">
-            ZeroAutoapp es un empleado que nunca duerme: cuando un paciente le escribe por
-            WhatsApp a tu laboratorio, este sistema le contesta solo — sin que vos tengas que
-            tocar nada — usando la información que cargaste en "Flujo de conversación". Vos no
-            tenés que estar mirando el celular todo el día para que funcione.
-          </p>
-        </Card>
-
         <div className="flex flex-wrap gap-2">
           {SECTIONS.map((section) => {
             const Icon = section.icon

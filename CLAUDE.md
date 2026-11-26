@@ -11,7 +11,7 @@ Auth: JWT en `sessionStorage` (NO localStorage) — a propósito, así pestañas
 ## Cosas agregadas en la sesión del 28 sep 2026 (no reinventar)
 
 - **WhatsAppConnect.jsx**: ya no tiene selector Manual/Coexistence — el panel solo ofrece Coexistence. El tutorial (`WhatsappTutorial`, exportado y reusado en `LabTutorials.jsx`) está reescrito para ese flujo únicamente.
-- **LabSettings.jsx → sección "Obras sociales"**: checklist de las 24 coberturas del catálogo (buscador + botones Todas/Ninguna porque son demasiados ítems para escanear de un vistazo — ver investigación de UX citada abajo), con un ✏️ por cada una que abre `components/settings/ObraSocialEditModal.jsx` para escribir texto propio (con "Mejorar con IA" por campo, mismo patrón que `FlowNodeEditor`). Se llega ahí también desde el Flow Builder con `#obras-sociales` en la URL (scroll automático).
+- **Obras sociales → pantalla propia `LabObrasSociales.jsx` (/dashboard/obras-sociales, en el menú debajo de Flujo)** desde nov 2026 (antes era una sección de Configuración, el dueño la encontraba tediosa): tarjetas con interruptor que **se guardan solas** (debounce de 700 ms → `PUT /lab/obras-sociales`), filtros Todas/Activas/Inactivas/Personalizadas, buscador, activar/desactivar lo filtrado y "Editar requisitos" que abre `components/settings/ObraSocialEditModal.jsx` (con "Mejorar con IA"). El atajo del Flujo (`FLOW_LINK_TARGETS`) apunta a esa pantalla.
 - **Flow Builder (`components/flow/`)**: soporta opciones "atajo" que no abren un nodo sino que navegan a otra pantalla del panel — `option.linkTo` + `FLOW_LINK_TARGETS` en `flowTree.js`. Se ven con ícono de enlace y color distinto en `FlowMap`, `FlowNodeEditor` y `FlowNodePreview`. Usado hoy solo para "Ver todas las obras sociales" dentro del nodo de autorización de estudios.
 - **Modal.jsx**: ahora acepta `size="lg"` (por defecto sigue siendo el tamaño chico de siempre) y tiene scroll interno con `max-h-[85vh]` — usarlo en vez de agrandar un modal a mano si hace falta más espacio.
 
@@ -35,6 +35,9 @@ Desde el 12 oct 2026 el formulario manual de credenciales (Phone Number ID / WAB
 - **Refresco automático**: `lib/useVisiblePolling.js` (solo con la pestaña visible). `LabLayout` lo usa para el contador de "Atención humana" (45 s) y lo muestra en el título de la pestaña.
 - **Accesibilidad**: cada `<label>` de un campo lleva `htmlFor` + `id` en el campo (ver `Login.jsx`); `Modal` tiene `role="dialog"` y cierra con Esc; `index.css` define `:focus-visible` global para teclado. Textos mínimos `text-xs` (13px), no usar `text-[11px]`.
 - **Carga por pantalla**: `App.jsx` usa `React.lazy` + `Suspense` para todas las páginas salvo `Landing` y `Login` (el bundle inicial bajó de ~912 KB a ~207 KB). Una pantalla nueva debería seguir ese patrón.
+- **Animaciones/carga** (nov 2026): `components/ui/PageLoader.jsx` (puntos + bloques "fantasma") en lugar de "Cargando…" suelto; `DashboardLayout` envuelve el contenido en `.content-stagger` (las secciones entran escalonadas) y hay clases `card-enter`, `success-pop`, `skeleton` en `index.css` (todas se apagan con prefers-reduced-motion).
+- **Pantalla "Mensajes" eliminada** (nov 2026, a pedido del dueño: con Coexistence las charlas se ven en el celular). El backend de `message_logs` NO se borra: es la memoria de la IA (historial que se manda a Gemini), el anti-duplicados del webhook y la fuente de las métricas/preguntas frecuentes. `/dashboard/mensajes` redirige al panel.
+- El encabezado muestra el **nombre del laboratorio** (cacheado por labId en `LabLayout`), no el id interno.
 
 ## Guía de conexión de WhatsApp (nov 2026)
 

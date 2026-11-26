@@ -10,10 +10,11 @@ export default function HelpButton({ title, children, label = 'Tutorial' }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
+        aria-label={label}
         className="flex shrink-0 items-center gap-1.5 rounded-xl border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--accent-soft)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
       >
         <CircleHelp size={14} />
-        {label}
+        <span className="hidden sm:inline">{label}</span>
       </button>
 
       <Modal open={open} onClose={() => setOpen(false)} title={title}>

@@ -81,6 +81,7 @@ function ObraSocialEditForm({ obraSocial, onSaved }) {
   })
   const [saving, setSaving] = useState(false)
   const [resetting, setResetting] = useState(false)
+  const [error, setError] = useState('')
 
   function set(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -88,20 +89,32 @@ function ObraSocialEditForm({ obraSocial, onSaved }) {
 
   async function handleSave() {
     setSaving(true)
-    const updated = await updateObraSocialTexto(obraSocial.id, {
-      requisitosRegistro: form.requisitosRegistro.trim(),
-      requisitosEstudio: form.requisitosEstudio.trim(),
-      notas: form.notas.trim() || null,
-    })
-    setSaving(false)
-    onSaved(updated)
+    setError('')
+    try {
+      const updated = await updateObraSocialTexto(obraSocial.id, {
+        requisitosRegistro: form.requisitosRegistro.trim(),
+        requisitosEstudio: form.requisitosEstudio.trim(),
+        notas: form.notas.trim() || null,
+      })
+      onSaved(updated)
+    } catch (err) {
+      setError(err.message || 'No se pudo guardar. Revisá tu conexión e intentá de nuevo.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function handleReset() {
     setResetting(true)
-    const updated = await resetObraSocialTexto(obraSocial.id)
-    setResetting(false)
-    onSaved(updated)
+    setError('')
+    try {
+      const updated = await resetObraSocialTexto(obraSocial.id)
+      onSaved(updated)
+    } catch (err) {
+      setError(err.message || 'No se pudo restaurar. Intentá de nuevo.')
+    } finally {
+      setResetting(false)
+    }
   }
 
   return (
@@ -130,7 +143,13 @@ function ObraSocialEditForm({ obraSocial, onSaved }) {
         />
       </div>
 
-      <div className="mt-5 flex items-center justify-between gap-3">
+      {error && (
+        <p className="mt-4 text-sm text-red-400" role="alert">
+          {error}
+        </p>
+      )}
+
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         {obraSocial.personalizado ? (
           <Button type="button" variant="outline" className="px-3 py-2 text-xs" onClick={handleReset} disabled={resetting}>
             <RotateCcw size={14} />

@@ -19,7 +19,7 @@ export default function DashboardLayout({ navItems, title, subtitle, userLabel, 
       <Sidebar items={navItems} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[var(--border)] bg-[var(--bg)]/95 px-5 py-4 backdrop-blur">
+        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg)]/95 px-4 py-3 backdrop-blur sm:px-5 sm:py-4">
           <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
@@ -30,17 +30,17 @@ export default function DashboardLayout({ navItems, title, subtitle, userLabel, 
               <Menu size={22} />
             </button>
             <div className="min-w-0">
-              <h1 className="truncate text-xl font-bold text-[var(--text-strong)] sm:text-2xl">{title}</h1>
-              {subtitle && <p className="truncate text-sm text-[var(--muted)]">{subtitle}</p>}
+              <h1 className="truncate text-lg font-bold text-[var(--text-strong)] sm:text-2xl">{title}</h1>
+              {subtitle && <p className="line-clamp-2 text-xs text-[var(--muted)] sm:line-clamp-1 sm:text-sm">{subtitle}</p>}
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {headerActions}
             <ThemeToggle />
             <div className="hidden items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 sm:flex">
               <UserCircle2 size={18} className="text-[var(--accent)]" />
-              <span className="text-sm text-[var(--text-strong)]">{userLabel}</span>
+              <span className="max-w-[180px] truncate text-sm text-[var(--text-strong)]">{userLabel}</span>
             </div>
             <button
               type="button"
@@ -53,7 +53,9 @@ export default function DashboardLayout({ navItems, title, subtitle, userLabel, 
           </div>
         </header>
 
-        <main className="flex-1 px-5 py-6">{children}</main>
+        <main className="flex-1 px-4 py-6 sm:px-5">
+          <div className="content-stagger">{children}</div>
+        </main>
       </div>
     </div>
   )

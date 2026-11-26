@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Bug, Lightbulb, MessageCircleQuestion, Check } from 'lucide-react'
 import AdminLayout from '../components/layout/AdminLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import ErrorState from '../components/ui/ErrorState.jsx'
 import { useToast } from '../lib/toastContext.js'
 import Badge from '../components/ui/Badge.jsx'
@@ -54,7 +55,7 @@ export default function AdminFeedback() {
   return (
     <AdminLayout title="Soporte" subtitle="Reclamos y sugerencias enviados por los laboratorios">
       {loading ? (
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+        <PageLoader />
       ) : error !== '' ? (
         <ErrorState message={error} onRetry={retryFeedback} />
       ) : (

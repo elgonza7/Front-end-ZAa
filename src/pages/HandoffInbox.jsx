@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Headset, Phone, CheckCircle2, FileText, IdCard } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import ErrorState from '../components/ui/ErrorState.jsx'
 import { useToast } from '../lib/toastContext.js'
 import Badge from '../components/ui/Badge.jsx'
@@ -100,7 +101,7 @@ export default function HandoffInbox() {
       }
     >
       {loading ? (
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+        <PageLoader />
       ) : error !== '' ? (
         <ErrorState message={error} onRetry={retryQueue} />
       ) : queue.length === 0 ? (

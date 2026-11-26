@@ -4,6 +4,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { ArrowLeft } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import { getTokenUsageRange, getPatientsPerDayRange, getLabProfile } from '../api/labService.js'
 import { AVG_TOKENS_PER_INTERACTION_ESTIMATE } from '../lib/pricing.js'
 
@@ -168,7 +169,7 @@ export default function LabHistory() {
         )}
 
         {loading ? (
-          <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+          <PageLoader />
         ) : (
           <>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">

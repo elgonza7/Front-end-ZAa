@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, CheckCircle2, Stethoscope, Search, CheckSquare, Square } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Save, Upload, FileText, Trash2, Link as LinkIcon, ShieldCheck, Stethoscope, ArrowRight } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
 import Badge from '../components/ui/Badge.jsx'
@@ -8,7 +8,7 @@ import Switch from '../components/ui/Switch.jsx'
 import Button from '../components/ui/Button.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
-import ObraSocialEditModal from '../components/settings/ObraSocialEditModal.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import { useToast } from '../lib/toastContext.js'
 import {
   getLabProfile,
@@ -18,11 +18,9 @@ import {
   getKnowledgeDocs,
   uploadKnowledgeDoc,
 } from '../api/labService.js'
-import { getObrasSociales, updateObrasSociales } from '../api/obrasSocialesService.js'
 import { DELIVERY_METHODS } from '../lib/deliveryMethods.js'
 
 export default function LabSettings() {
-  const location = useLocation()
   const [form, setForm] = useState(null)
   const [logoUploading, setLogoUploading] = useState(false)
   const [bannerUploading, setBannerUploading] = useState(false)
@@ -31,65 +29,17 @@ export default function LabSettings() {
   const [docUploading, setDocUploading] = useState(false)
   const [securityPhone, setSecurityPhone] = useState('')
   const [loadError, setLoadError] = useState('')
-  const [obrasSociales, setObrasSociales] = useState([])
-  const [savingObrasSociales, setSavingObrasSociales] = useState(false)
-  const [obrasSocialesSaved, setObrasSocialesSaved] = useState(false)
-  const [editingObraSocial, setEditingObraSocial] = useState(null)
-  const [obrasSocialesFilter, setObrasSocialesFilter] = useState('')
   const toast = useToast()
 
   useEffect(() => {
-    Promise.all([getLabProfile(), getKnowledgeDocs(), getObrasSociales()])
-      .then(([profile, knowledgeDocs, obrasSocialesList]) => {
+    Promise.all([getLabProfile(), getKnowledgeDocs()])
+      .then(([profile, knowledgeDocs]) => {
         setForm(profile)
         setSecurityPhone(profile.securityPhone || '')
         setDocs(knowledgeDocs)
-        setObrasSociales(obrasSocialesList)
       })
       .catch((err) => setLoadError(err.message || 'No se pudo cargar la configuración.'))
   }, [])
-
-  // Llegar acá desde el atajo del Flujo de conversación (ver flowTree.js)
-  // deja el foco justo en la tarjeta de Obras sociales en vez de arriba de
-  // todo — recién se puede hacer scroll una vez que la tarjeta existe en el
-  // DOM (después de cargar el catálogo).
-  useEffect(() => {
-    if (location.hash !== '#obras-sociales' || obrasSociales.length === 0) return
-    document.getElementById('obras-sociales')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [location.hash, obrasSociales.length])
-
-  function toggleObraSocial(id) {
-    setObrasSociales((prev) => prev.map((o) => (o.id === id ? { ...o, habilitada: !o.habilitada } : o)))
-  }
-
-  function setAllObrasSociales(habilitada) {
-    setObrasSociales((prev) => prev.map((o) => ({ ...o, habilitada })))
-  }
-
-  const filteredObrasSociales = obrasSociales.filter((o) =>
-    o.nombre.toLowerCase().includes(obrasSocialesFilter.trim().toLowerCase()),
-  )
-
-  async function handleSaveObrasSociales() {
-    setSavingObrasSociales(true)
-    setObrasSocialesSaved(false)
-    const ids = obrasSociales.filter((o) => o.habilitada).map((o) => o.id)
-    try {
-      const updated = await updateObrasSociales(ids)
-      setObrasSociales(updated)
-      setObrasSocialesSaved(true)
-      setTimeout(() => setObrasSocialesSaved(false), 4000)
-    } catch (err) {
-      toast.error(err.message || 'No se pudieron guardar las obras sociales. Intentá de nuevo.')
-    } finally {
-      setSavingObrasSociales(false)
-    }
-  }
-
-  function handleObraSocialTextoSaved(updated) {
-    setObrasSociales((prev) => prev.map((o) => (o.id === updated.id ? updated : o)))
-    setEditingObraSocial(null)
-  }
 
   function set(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -176,13 +126,12 @@ export default function LabSettings() {
   if (!form) {
     return (
       <LabLayout title="Configuración" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+        <PageLoader />
       </LabLayout>
     )
   }
 
   return (
-    <>
     <LabLayout title="Configuración" subtitle="Marca, reglas del asistente y base de conocimiento">
       <form onSubmit={handleSave} className="space-y-6">
         <Card className="p-6">
@@ -309,6 +258,7 @@ export default function LabSettings() {
           </div>
         </Card>
 
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="p-6">
           <h2 className="text-sm font-semibold text-[var(--text-strong)]">Reglas del asistente</h2>
           <p className="mt-1 text-xs text-[var(--muted)]">
@@ -402,141 +352,27 @@ export default function LabSettings() {
             </div>
           )}
         </Card>
+        </div>
+
+        <Link
+          to="/dashboard/obras-sociales"
+          className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 transition-colors hover:border-[var(--accent)]"
+        >
+          <span className="flex items-center gap-3">
+            <Stethoscope size={20} className="text-[var(--accent)]" />
+            <span>
+              <span className="block text-sm font-semibold text-[var(--text-strong)]">Obras sociales</span>
+              <span className="block text-xs text-[var(--muted)]">Ahora tienen su propia pantalla en el menú: elegí cuáles aceptás y sus requisitos.</span>
+            </span>
+          </span>
+          <ArrowRight size={18} className="shrink-0 text-[var(--muted)]" />
+        </Link>
 
         <Button type="submit" disabled={saving} className="px-4 py-2.5 text-sm">
           <Save size={16} />
           {saving ? 'Guardando…' : 'Guardar configuración'}
         </Button>
       </form>
-
-      <Card id="obras-sociales" className="mt-6 p-6 scroll-mt-6">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-strong)]">
-            <Stethoscope size={16} className="text-[var(--accent)]" />
-            Obras sociales
-          </h2>
-          <HelpButton title="Cómo funcionan las obras sociales" label="¿Cómo funciona?">
-            <p>
-              Activá acá las obras sociales y prepagas que este laboratorio acepta. El asistente
-              solo va a mencionar y usar los requisitos de las que estén activas — si un paciente
-              nombra una que desactivaste, el bot le pide la orden médica y avisa que el equipo la
-              va a confirmar a mano, en vez de inventar requisitos.
-            </p>
-            <p>
-              Con el lápiz al lado de cada una podés escribir tu propio texto de requisitos — útil
-              si tu laboratorio pide algo distinto a lo genérico para esa cobertura. Es solo para tu
-              cuenta, no afecta a otros laboratorios que también la tengan activada.
-            </p>
-            <p className="text-xs text-[var(--muted)]">
-              El listado es el mismo para todos los laboratorios; cada uno elige cuáles de estas
-              acepta. Si te falta una obra social que no está en la lista, escribinos a{' '}
-              <a href="mailto:zeroautoapp@gmail.com" className="text-[var(--accent)] underline">
-                zeroautoapp@gmail.com
-              </a>{' '}
-              y la agregamos al catálogo.
-            </p>
-          </HelpButton>
-        </div>
-        <p className="mt-1 text-xs text-[var(--muted)]">
-          Marcá las que acepta este laboratorio — las que dejes sin marcar, el asistente no las va a
-          ofrecer. Usá el lápiz para escribir tu propio texto en vez del genérico.
-        </p>
-
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
-            <input
-              type="text"
-              value={obrasSocialesFilter}
-              onChange={(event) => setObrasSocialesFilter(event.target.value)}
-              placeholder="Buscar obra social…"
-              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] py-2 pl-9 pr-3 text-sm text-[var(--text-strong)] outline-none placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)]"
-            />
-          </div>
-          <div className="flex items-center gap-3 text-xs">
-            <span className="text-[var(--muted)]">
-              {obrasSociales.filter((o) => o.habilitada).length} de {obrasSociales.length} activas
-            </span>
-            <button
-              type="button"
-              onClick={() => setAllObrasSociales(true)}
-              className="flex items-center gap-1 font-medium text-[var(--accent)] hover:underline"
-            >
-              <CheckSquare size={13} /> Todas
-            </button>
-            <button
-              type="button"
-              onClick={() => setAllObrasSociales(false)}
-              className="flex items-center gap-1 font-medium text-[var(--muted)] hover:text-[var(--text-strong)] hover:underline"
-            >
-              <Square size={13} /> Ninguna
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {filteredObrasSociales.map((obraSocial) => (
-            <div
-              key={obraSocial.id}
-              className={`flex items-start justify-between gap-2 rounded-xl border px-3.5 py-2.5 transition-colors ${
-                obraSocial.habilitada
-                  ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5'
-                  : 'border-[var(--border)] bg-[var(--bg)]'
-              }`}
-            >
-              <label className="flex flex-1 cursor-pointer items-start gap-2.5">
-                <input
-                  type="checkbox"
-                  className="mt-0.5"
-                  checked={obraSocial.habilitada}
-                  onChange={() => toggleObraSocial(obraSocial.id)}
-                />
-                <span className="text-sm text-[var(--text-strong)]">
-                  {obraSocial.nombre}
-                  {obraSocial.personalizado && (
-                    <span className="ml-1.5 rounded-full bg-[var(--accent)]/15 px-1.5 py-0.5 text-xs font-medium text-[var(--accent-soft)]">
-                      Personalizado
-                    </span>
-                  )}
-                </span>
-              </label>
-              <button
-                type="button"
-                onClick={() => setEditingObraSocial(obraSocial)}
-                className="shrink-0 rounded-lg border border-[var(--border)] px-2.5 py-1 text-xs font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                aria-label={`Personalizar texto de ${obraSocial.nombre}`}
-              >
-                Editar
-              </button>
-            </div>
-          ))}
-          {obrasSociales.length === 0 && (
-            <p className="py-4 text-center text-xs text-[var(--muted)] sm:col-span-2">Cargando catálogo…</p>
-          )}
-          {obrasSociales.length > 0 && filteredObrasSociales.length === 0 && (
-            <p className="py-4 text-center text-xs text-[var(--muted)] sm:col-span-2">
-              Ninguna obra social coincide con "{obrasSocialesFilter}".
-            </p>
-          )}
-        </div>
-
-        <div className="mt-4 flex items-center gap-3">
-          <Button
-            type="button"
-            onClick={handleSaveObrasSociales}
-            disabled={savingObrasSociales || obrasSociales.length === 0}
-            className="px-4 py-2.5 text-sm"
-          >
-            <Save size={16} />
-            {savingObrasSociales ? 'Guardando…' : 'Guardar obras sociales'}
-          </Button>
-          {obrasSocialesSaved && (
-            <p className="flex items-center gap-1.5 text-sm font-medium text-emerald-400">
-              <CheckCircle2 size={16} /> Se guardó correctamente
-            </p>
-          )}
-        </div>
-      </Card>
 
       <Card className="mt-6 p-6">
         <div className="flex items-center justify-between gap-3">
@@ -608,11 +444,5 @@ export default function LabSettings() {
         </ul>
       </Card>
     </LabLayout>
-    <ObraSocialEditModal
-      obraSocial={editingObraSocial}
-      onClose={() => setEditingObraSocial(null)}
-      onSaved={handleObraSocialTextoSaved}
-    />
-    </>
   )
 }

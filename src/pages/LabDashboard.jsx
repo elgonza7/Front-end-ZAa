@@ -4,6 +4,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { Headset, ArrowRight, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import Badge from '../components/ui/Badge.jsx'
 import Switch from '../components/ui/Switch.jsx'
 import ProgressBar from '../components/ui/ProgressBar.jsx'
@@ -182,9 +183,7 @@ export default function LabDashboard() {
   if (loading || !profile) {
     return (
       <LabLayout title="Panel de control" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">
-          Cargando panel del laboratorio…
-        </div>
+        <PageLoader label="Cargando panel del laboratorio…" blocks={4} />
       </LabLayout>
     )
   }

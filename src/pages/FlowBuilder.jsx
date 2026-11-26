@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Save, Info } from 'lucide-react'
 import LabLayout from '../components/layout/LabLayout.jsx'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import ErrorState from '../components/ui/ErrorState.jsx'
 import { useToast } from '../lib/toastContext.js'
 import Button from '../components/ui/Button.jsx'
@@ -178,7 +179,7 @@ export default function FlowBuilder() {
   if (loading || !tree) {
     return (
       <LabLayout title="Flujo de conversación" userLabel="Cargando…">
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando flujo…</div>
+        <PageLoader label="Cargando flujo…" />
       </LabLayout>
     )
   }
@@ -197,8 +198,8 @@ export default function FlowBuilder() {
         <Card className="flex items-start gap-3 p-4">
           <Info size={16} className="mt-0.5 shrink-0 text-[var(--accent)]" />
           <p className="text-xs text-[var(--muted)]">
-            Pasá el mouse sobre una caja para ver un preview del mensaje y hacé click para
-            editarla. Podés anidar tantos niveles como necesites (por ejemplo Obras Sociales →
+            Tocá una caja para editarla (en la computadora, pasando el mouse por encima ves un
+            preview del mensaje). En el celular, deslizá el mapa con el dedo para recorrerlo. Podés anidar tantos niveles como necesites (por ejemplo Obras Sociales →
             Obra Social Provincia → instrucciones puntuales). La rama especial "Hablar con un
             humano" (ícono de auricular) pausa las respuestas automáticas de esa conversación y la
             suma a la bandeja de Atención humana.
@@ -207,7 +208,7 @@ export default function FlowBuilder() {
 
         <FlowMap tree={tree} selectedPath={selectedPath} onSelect={setSelectedPath} />
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <Button onClick={handleSave} disabled={saving} className="px-4 py-2.5 text-sm">
             <Save size={16} />
             {saving ? 'Guardando…' : 'Guardar flujo'}

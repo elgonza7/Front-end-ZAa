@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import DashboardLayout from './DashboardLayout.jsx'
 import { LAB_NAV_ITEMS } from '../../config/nav.js'
 import { getHandoffQueue } from '../../api/handoffService.js'
+import { getLabProfile } from '../../api/labService.js'
 import { getAuthLabId } from '../../api/client.js'
 import { useVisiblePolling } from '../../lib/useVisiblePolling.js'
 
@@ -10,19 +11,51 @@ import { useVisiblePolling } from '../../lib/useVisiblePolling.js'
 // y no se castiga a la API (solo corre con la pestaña visible).
 const HANDOFF_POLL_MS = 45_000
 const BASE_TITLE = 'ZeroAutoapp'
+const LOADING_LABELS = new Set(['Cargando…', 'Error'])
+
+// Nombre del laboratorio por sesión (labId): se pide una sola vez y se
+// reusa en todas las pantallas. Antes, mientras cada pantalla cargaba, el
+// encabezado mostraba el id interno (un código largo) en vez del nombre.
+const labNameCache = new Map()
+
+function loadLabName(labId) {
+  if (!labNameCache.has(labId)) {
+    labNameCache.set(
+      labId,
+      getLabProfile()
+        .then((profile) => profile.businessName || profile.name || null)
+        .catch(() => {
+          labNameCache.delete(labId)
+          return null
+        }),
+    )
+  }
+  return labNameCache.get(labId)
+}
 
 export default function LabLayout({
   title,
   subtitle,
-  // Si la página que renderiza el layout todavía no cargó el perfil del
-  // laboratorio (ej. getLabProfile()), no mostramos un nombre de laboratorio
-  // fijo que no corresponde a la sesión real — mostramos el labId de la
-  // sesión persistida como placeholder mínimo.
-  userLabel = getAuthLabId() ?? 'Laboratorio',
+  userLabel,
   headerActions,
   children,
 }) {
   const [handoffCount, setHandoffCount] = useState(0)
+  const [labName, setLabName] = useState(null)
+
+  useEffect(() => {
+    const labId = getAuthLabId()
+    if (!labId) return undefined
+    let active = true
+    loadLabName(labId).then((name) => {
+      if (active) setLabName(name)
+    })
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const headerLabel = labName || (userLabel && !LOADING_LABELS.has(userLabel) ? userLabel : 'Mi laboratorio')
 
   // Si falla (red caída, API reiniciando) se conserva el último número en
   // vez de romper la pantalla ni mostrar un error por un simple contador.
@@ -56,7 +89,7 @@ export default function LabLayout({
       navItems={navItems}
       title={title}
       subtitle={subtitle}
-      userLabel={userLabel}
+      userLabel={headerLabel}
       headerActions={headerActions}
     >
       {children}

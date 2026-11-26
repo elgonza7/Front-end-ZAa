@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, ArrowLeft, CheckCircle2, Stethoscope, MessageCircle } from 'lucide-react'
 import Card from '../components/ui/Card.jsx'
+import PageLoader from '../components/ui/PageLoader.jsx'
 import Button from '../components/ui/Button.jsx'
 import Switch from '../components/ui/Switch.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
@@ -118,7 +119,7 @@ export default function LabOnboarding() {
   if (!form) {
     return (
       <OnboardingShell>
-        <div className="flex h-64 items-center justify-center text-sm text-[var(--muted)]">Cargando…</div>
+        <PageLoader />
       </OnboardingShell>
     )
   }

@@ -189,9 +189,14 @@ export default function LabHelpCenter() {
           <p className="mt-1 text-xs text-[var(--muted)]">Contanos qué encontraste o qué te gustaría que agreguemos.</p>
 
           {sent ? (
-            <div className="mt-6 flex flex-col items-center gap-2 py-6 text-center">
-              <CheckCircle2 size={28} className="text-emerald-400" />
-              <p className="text-sm text-[var(--text-strong)]">¡Gracias! Ya lo recibimos.</p>
+            <div className="card-enter mt-6 flex flex-col items-center gap-2 py-6 text-center" role="status">
+              <span className="success-pop flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15">
+                <CheckCircle2 size={34} className="text-emerald-400" />
+              </span>
+              <p className="text-base font-semibold text-[var(--text-strong)]">¡Gracias! Ya lo recibimos.</p>
+              <p className="max-w-sm text-sm text-[var(--muted)]">
+                Le llegó al equipo de ZeroAutoapp. Te respondemos al email de tu cuenta lo antes posible.
+              </p>
               <Button variant="outline" className="mt-2 px-4 py-2 text-xs" onClick={() => setSent(false)}>
                 Enviar otro mensaje
               </Button>

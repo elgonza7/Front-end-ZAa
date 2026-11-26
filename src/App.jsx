@@ -22,7 +22,7 @@ const HandoffInbox = lazy(() => import('./pages/HandoffInbox.jsx'))
 const LabBilling = lazy(() => import('./pages/LabBilling.jsx'))
 const LabHelpCenter = lazy(() => import('./pages/LabHelpCenter.jsx'))
 const LabTutorials = lazy(() => import('./pages/LabTutorials.jsx'))
-const LabConversations = lazy(() => import('./pages/LabConversations.jsx'))
+const LabObrasSociales = lazy(() => import('./pages/LabObrasSociales.jsx'))
 const AdminPanel = lazy(() => import('./pages/AdminPanel.jsx'))
 const AdminTenants = lazy(() => import('./pages/AdminTenants.jsx'))
 const AdminMetrics = lazy(() => import('./pages/AdminMetrics.jsx'))
@@ -64,7 +64,8 @@ export default function App() {
         <Route path="/dashboard/historial" element={<RequireAuth role="lab"><LabHistory /></RequireAuth>} />
         <Route path="/dashboard/whatsapp" element={<RequireAuth role="lab"><WhatsAppConnect /></RequireAuth>} />
         <Route path="/dashboard/tutoriales" element={<RequireAuth role="lab"><LabTutorials /></RequireAuth>} />
-        <Route path="/dashboard/mensajes" element={<RequireAuth role="lab"><LabConversations /></RequireAuth>} />
+        <Route path="/dashboard/obras-sociales" element={<RequireAuth role="lab"><LabObrasSociales /></RequireAuth>} />
+        <Route path="/dashboard/mensajes" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard/flujo" element={<RequireAuth role="lab"><FlowBuilder /></RequireAuth>} />
         <Route path="/dashboard/configuracion" element={<RequireAuth role="lab"><LabSettings /></RequireAuth>} />
         <Route path="/dashboard/conversaciones" element={<RequireAuth role="lab"><HandoffInbox /></RequireAuth>} />
