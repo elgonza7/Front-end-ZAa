@@ -5,7 +5,7 @@ import LandingNavbar from '../components/layout/LandingNavbar.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Card from '../components/ui/Card.jsx'
 import Button from '../components/ui/Button.jsx'
-import { PLAN_PRICING, AVG_TOKENS_PER_INTERACTION_ESTIMATE } from '../lib/pricing.js'
+import { PLAN_PRICING, AVG_TOKENS_PER_INTERACTION_ESTIMATE, INTERACTIONS_PER_PATIENT_ESTIMATE, interactionsPerDay, patientsPerDay } from '../lib/pricing.js'
 
 // Estimación para recomendar un plan según cuántos pacientes por día
 // escriben por WhatsApp: ~7.500 tokens promedio por conversación completa
@@ -14,21 +14,21 @@ import { PLAN_PRICING, AVG_TOKENS_PER_INTERACTION_ESTIMATE } from '../lib/pricin
 // × 7.500 tokens, comparado contra el cupo de cada plan. Es una guía, no
 // una promesa exacta — el consumo real depende de cuán largas son las
 // conversaciones de cada laboratorio.
-const TOKENS_PER_CONTACT_ESTIMATE = 7500
-const CALCULATOR_MAX_CONTACTS = 30
+const TOKENS_PER_CONTACT_ESTIMATE = AVG_TOKENS_PER_INTERACTION_ESTIMATE * INTERACTIONS_PER_PATIENT_ESTIMATE
+const CALCULATOR_MAX_CONTACTS = 500
 
+// El plan más chico cuyo cupo diario alcanza para esa cantidad de pacientes.
 function recommendPlan(dailyContacts) {
-  if (dailyContacts <= 5) return 'Básico'
-  if (dailyContacts <= 12) return 'Profesional'
-  return 'Premium'
+  const needed = dailyContacts * 30 * TOKENS_PER_CONTACT_ESTIMATE
+  const fits = Object.entries(PLAN_PRICING).find(([, plan]) => plan.tokensLimit >= needed)
+  return fits ? fits[0] : 'Premium'
 }
 
 function PlanCalculator() {
   const [dailyContacts, setDailyContacts] = useState(5)
   const recommended = recommendPlan(dailyContacts)
-  const estimatedTokens = dailyContacts * 30 * TOKENS_PER_CONTACT_ESTIMATE
-  const estimatedInteractions = Math.round(estimatedTokens / AVG_TOKENS_PER_INTERACTION_ESTIMATE)
-  const recommendedInteractions = Math.round(PLAN_PRICING[recommended].tokensLimit / AVG_TOKENS_PER_INTERACTION_ESTIMATE)
+  const estimatedPerDay = dailyContacts * INTERACTIONS_PER_PATIENT_ESTIMATE
+  const recommendedPerDay = interactionsPerDay(PLAN_PRICING[recommended].tokensLimit)
 
   return (
     <Card className="p-6">
@@ -51,14 +51,15 @@ function PlanCalculator() {
         </div>
         <input
           type="range"
-          min={1}
+          min={5}
+          step={5}
           max={CALCULATOR_MAX_CONTACTS}
           value={dailyContacts}
           onChange={(event) => setDailyContacts(Number(event.target.value))}
           className="mt-3 w-full accent-[var(--accent)]"
         />
         <div className="mt-1 flex justify-between text-xs text-[var(--muted)]">
-          <span>1</span>
+          <span>5</span>
           <span>{CALCULATOR_MAX_CONTACTS}+</span>
         </div>
       </div>
@@ -67,16 +68,15 @@ function PlanCalculator() {
         <p className="text-xs text-[var(--muted)]">Plan recomendado</p>
         <p className="mt-1 text-lg font-bold text-[var(--text-strong)]">{recommended}</p>
         <p className="mt-1 text-xs text-[var(--muted)]">
-          Con ~{estimatedInteractions.toLocaleString()} interacciones estimadas por mes, entra dentro
-          del cupo de ~{recommendedInteractions.toLocaleString()} interacciones de {recommended}
-          ({estimatedTokens.toLocaleString()} de {PLAN_PRICING[recommended].tokensLimit.toLocaleString()} tokens).
+          Con ~{estimatedPerDay.toLocaleString()} interacciones por día, entra dentro de las
+          ~{recommendedPerDay.toLocaleString()} interacciones por día que incluye {recommended}.
         </p>
       </div>
 
       <p className="mt-3 text-xs text-[var(--muted)]">
         Es una estimación (varía según cuán largas sean las conversaciones). Si en algún mes te
-        pasás del cupo de tu plan, el asistente no se corta — el excedente se cobra aparte, a un
-        precio por cada 1.000 tokens extra.
+        pasás del cupo, el asistente no se corta y no hay cobros extra: te avisamos para que
+        evalúes pasarte a un plan más grande.
       </p>
     </Card>
   )
@@ -186,10 +186,10 @@ export default function Pricing() {
               </div>
 
               <p className="mt-2 text-sm font-bold text-[var(--accent-soft)]">
-                ≈ {Math.round(plan.tokensLimit / AVG_TOKENS_PER_INTERACTION_ESTIMATE).toLocaleString()} interacciones por mes
+                ≈ {interactionsPerDay(plan.tokensLimit).toLocaleString()} interacciones por día
               </p>
               <p className="text-xs text-[var(--muted)]">
-                {plan.tokensLimit.toLocaleString()} tokens de IA (cada interacción usa ~{AVG_TOKENS_PER_INTERACTION_ESTIMATE.toLocaleString()} tokens aprox.)
+                Alcanza para ~{patientsPerDay(plan.tokensLimit).toLocaleString()} pacientes por día (estimado)
               </p>
 
               <ul className="mt-5 flex-1 space-y-2.5">
@@ -258,8 +258,8 @@ export default function Pricing() {
             y el 3° en adelante, 25% — se gestiona desde el panel de Facturación.
           </p>
           <p className="mt-3 text-xs text-[var(--muted)]">
-            ¿Y si me paso de los tokens de mi plan? El asistente sigue funcionando sin cortes — el
-            excedente se cobra aparte, a un precio por cada 1.000 tokens de más que uses ese mes.
+            ¿Y si me paso del cupo de mi plan? El asistente sigue funcionando sin cortes y no hay
+            cobros extra: te avisamos en el panel para que evalúes pasarte a un plan más grande.
           </p>
         </Card>
       </section>

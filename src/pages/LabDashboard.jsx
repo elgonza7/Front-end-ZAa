@@ -41,8 +41,8 @@ export function PanelTutorial() {
           asistente a pacientes, del cupo de tu plan. Es un número estimado (tu plan en realidad se
           mide en tokens, la unidad con la que la IA mide texto — lo ves más chico al lado) porque
           "interacciones" es más fácil de entender de un vistazo que "tokens". Superar el cupo no
-          corta el servicio — el excedente se cobra aparte, y te avisamos ahí mismo si conviene
-          pasarte a un plan más grande.
+          corta el servicio ni genera cobros extra — te avisamos ahí mismo si conviene pasarte a
+          un plan más grande.
         </li>
         <li>
           <strong>El gráfico:</strong> cuánto usó el asistente en los últimos 7 días, para ver si
@@ -99,7 +99,7 @@ function computeOverallStatus({ profile, connected }) {
     return {
       level: 'warning',
       title: 'Funcionando, pasaste tu cupo',
-      detail: 'El asistente sigue respondiendo — el excedente se cobra aparte.',
+      detail: 'El asistente sigue respondiendo, sin cobros extra. Si te pasa seguido, conviene un plan más grande.',
       icon: AlertTriangle,
       cta: { label: 'Ver planes', to: '/dashboard/facturacion' },
     }
@@ -339,7 +339,7 @@ export default function LabDashboard() {
               </p>
               {profile.tokensUsed >= profile.tokensLimit && (
                 <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
-                  <p>Superaste el cupo de tu plan. El asistente sigue funcionando igual — el excedente se cobra aparte.</p>
+                  <p>Superaste el cupo de tu plan. El asistente sigue funcionando igual y no hay cobros extra.</p>
                   <Link to="/dashboard/facturacion" className="mt-1.5 inline-block font-semibold underline">
                     Te recomendamos pasarte al siguiente plan para no tener sorpresas el próximo mes →
                   </Link>
@@ -350,7 +350,7 @@ export default function LabDashboard() {
             <div className="space-y-2.5 border-t border-[var(--border)] pt-3.5 md:border-l md:border-t-0 md:pl-5 md:pt-0">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[var(--muted)]">Interacciones incluidas (estimado)</span>
-                <span className="font-semibold text-[var(--text-strong)]">~{interactionsLimit.toLocaleString()} / mes</span>
+                <span className="font-semibold text-[var(--text-strong)]">~{Math.round(interactionsLimit / 30).toLocaleString()} por día</span>
               </div>
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[var(--muted)]">Cada interacción usa</span>

@@ -78,7 +78,7 @@ const TUTORIAL_ITEMS = [
     answer:
       'La diferencia entre planes es la cantidad de tokens que incluye cada uno por mes — eso ' +
       'determina, en definitiva, ' +
-      'cuántas conversaciones podés atender sin pagar excedente. Si tenés pocos pacientes por día, ' +
+      'cuántas conversaciones por día podés atender (no hay cobros extra si te pasás). Si tenés pocos pacientes por día, ' +
       'con un plan chico alcanza; si tenés mucho movimiento de WhatsApp, conviene un plan con más ' +
       'cupo. En la página de Precios hay una calculadora que te sugiere cuál te conviene según ' +
       'cuántos pacientes te contactan por día.',

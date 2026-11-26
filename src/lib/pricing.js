@@ -15,10 +15,15 @@
 // Cupos ajustados con la calculadora de rentabilidad (margen ~75-85% sobre
 // el costo real de Gemini, cupo lleno, antes de infraestructura) —
 // devolvemos el margen extra como más cupo en vez de bajar precios.
+//
+// Nov 2026: el dueño pidió presentar los planes por interacciones POR DÍA
+// (~400 / 800 / 1.600) y sacar el cobro de excedente. Cupo mensual = por día
+// × 30 × AVG_TOKENS_PER_INTERACTION_ESTIMATE. Mismos números en
+// Zero/src/Zero.Infrastructure/Data/DbSeeder.cs (la fuente real del backend).
 export const PLAN_PRICING = {
-  Básico: { setupFeeUSD: 25, priceUSD: 35, tokensLimit: 2_200_000 },
-  Profesional: { setupFeeUSD: 35, priceUSD: 65, tokensLimit: 4_100_000 },
-  Premium: { setupFeeUSD: 45, priceUSD: 90, tokensLimit: 9_500_000 },
+  Básico: { setupFeeUSD: 25, priceUSD: 35, tokensLimit: 60_000_000 },
+  Profesional: { setupFeeUSD: 35, priceUSD: 65, tokensLimit: 120_000_000 },
+  Premium: { setupFeeUSD: 45, priceUSD: 90, tokensLimit: 240_000_000 },
 }
 
 // Cuánto gasta en promedio UNA interacción (un mensaje de respuesta del
@@ -29,3 +34,14 @@ export const PLAN_PRICING = {
 // laboratorio ya conectado se usa su propio promedio real
 // (profile.averageTokensPerInteraction) en vez de este número fijo.
 export const AVG_TOKENS_PER_INTERACTION_ESTIMATE = 5000
+
+// Un paciente promedio intercambia unos 4 mensajes con el asistente.
+export const INTERACTIONS_PER_PATIENT_ESTIMATE = 4
+
+export function interactionsPerDay(tokensLimit, tokensPerInteraction = AVG_TOKENS_PER_INTERACTION_ESTIMATE) {
+  return Math.round(tokensLimit / tokensPerInteraction / 30)
+}
+
+export function patientsPerDay(tokensLimit, tokensPerInteraction = AVG_TOKENS_PER_INTERACTION_ESTIMATE) {
+  return Math.round(interactionsPerDay(tokensLimit, tokensPerInteraction) / INTERACTIONS_PER_PATIENT_ESTIMATE)
+}
