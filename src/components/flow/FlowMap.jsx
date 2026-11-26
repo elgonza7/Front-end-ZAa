@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ExternalLink, Headset, MessageSquare } from 'lucide-react'
+import { ExternalLink, Headset, MessageSquare, Move } from 'lucide-react'
 import { FLOW_LINK_TARGETS } from './flowTree.js'
 
 const COL_WIDTH = 236
@@ -103,9 +103,50 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
   const { boxes, edges, width, height } = useMemo(() => computeLayout(tree), [tree])
   const [hoveredId, setHoveredId] = useState(null)
   const hoveredBox = boxes.find((box) => box.id === hoveredId)
+  const scrollRef = useRef(null)
+  const drag = useRef(null)
+  const [dragging, setDragging] = useState(false)
+
+  // Arrastrar con el mouse sobre un espacio vacío mueve el mapa (como Google
+  // Maps). Sobre una caja no: ahí el clic abre el editor. En pantallas
+  // táctiles no hace falta: el dedo ya desplaza el contenedor solo.
+  function handlePointerDown(event) {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || event.target.closest('button')) return
+    const el = scrollRef.current
+    drag.current = { x: event.clientX, y: event.clientY, left: el.scrollLeft, top: el.scrollTop }
+    el.setPointerCapture(event.pointerId)
+    setDragging(true)
+  }
+
+  function handlePointerMove(event) {
+    if (!drag.current) return
+    const el = scrollRef.current
+    el.scrollLeft = drag.current.left - (event.clientX - drag.current.x)
+    el.scrollTop = drag.current.top - (event.clientY - drag.current.y)
+  }
+
+  function endDrag(event) {
+    if (!drag.current) return
+    drag.current = null
+    scrollRef.current?.releasePointerCapture?.(event.pointerId)
+    setDragging(false)
+  }
 
   return (
-    <div className="relative overflow-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-3 sm:p-6">
+    <div className="relative">
+    <p className="mb-2 hidden items-center gap-1.5 text-xs text-[var(--muted)] sm:flex">
+      <Move size={13} /> Arrastrá un espacio vacío para moverte por el mapa. La ruedita baja; con Shift + ruedita vas de costado.
+    </p>
+    <div
+      ref={scrollRef}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      className={`relative max-h-[70vh] min-h-[320px] overflow-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-3 sm:p-6 ${
+        dragging ? 'cursor-grabbing select-none' : 'cursor-grab'
+      }`}
+    >
       <div className="relative" style={{ width: width + 40, height: height + BOX_HEIGHT + 20 }}>
         <svg className="absolute left-0 top-0" width={width + 40} height={height + BOX_HEIGHT + 20}>
           {edges.map((edge, index) => {
@@ -142,7 +183,7 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
               onMouseLeave={() => setHoveredId((prev) => (prev === box.id ? null : prev))}
               onFocus={() => setHoveredId(box.id)}
               onBlur={() => setHoveredId((prev) => (prev === box.id ? null : prev))}
-              className={`absolute flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs shadow-sm transition-colors ${
+              className={`absolute flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs shadow-sm transition-colors ${
                 isLink
                   ? 'border-[var(--accent)]/60 bg-[var(--accent)]/10 text-[var(--accent-soft)] hover:border-[var(--accent)]'
                   : isHandoff
@@ -174,6 +215,7 @@ export default function FlowMap({ tree, selectedPath, onSelect }) {
           </div>
         )}
       </div>
+    </div>
     </div>
   )
 }

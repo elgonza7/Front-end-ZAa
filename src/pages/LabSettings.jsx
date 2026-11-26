@@ -7,6 +7,7 @@ import Badge from '../components/ui/Badge.jsx'
 import Switch from '../components/ui/Switch.jsx'
 import Button from '../components/ui/Button.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
+import MapsLink from '../components/ui/MapsLink.jsx'
 import HelpButton from '../components/ui/HelpButton.jsx'
 import PageLoader from '../components/ui/PageLoader.jsx'
 import { useToast } from '../lib/toastContext.js'
@@ -189,6 +190,7 @@ export default function LabSettings() {
                 onChange={(event) => set('address', event.target.value)}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
               />
+              <MapsLink address={form.address} />
             </div>
             <div>
               <label htmlFor="lab-settings-telefono-de-contacto" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono de contacto</label>

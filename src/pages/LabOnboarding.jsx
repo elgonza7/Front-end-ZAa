@@ -6,6 +6,7 @@ import PageLoader from '../components/ui/PageLoader.jsx'
 import Button from '../components/ui/Button.jsx'
 import Switch from '../components/ui/Switch.jsx'
 import ImageDrop from '../components/ui/ImageDrop.jsx'
+import MapsLink from '../components/ui/MapsLink.jsx'
 import Logo from '../components/ui/Logo.jsx'
 import ConnectPanel from '../components/whatsapp/ConnectPanel.jsx'
 import { CoexistenceExplainer } from '../components/whatsapp/ConnectGuide.jsx'
@@ -216,6 +217,7 @@ export default function LabOnboarding() {
                   onChange={(event) => set('address', event.target.value)}
                   className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)]"
                 />
+                <MapsLink address={form.address} />
               </div>
               <div>
                 <label htmlFor="lab-onboarding-telefono-de-contacto" className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Teléfono de contacto</label>
